@@ -7,6 +7,7 @@ import subprocess
 import sys
 import zipfile
 from font_assets import ROOT, archive_member
+from privacy_rules import content_findings
 
 ALLOWED_ROOTS = {'app', 'docs', 'scripts', 'tests', 'tools', 'vendor', '.github'}
 ALLOWED_FILES = {'README.md', 'INSTALL.md', 'AGENTS.md', 'CHANGELOG.md', 'CONTRIBUTING.md', 'SECURITY.md', 'PRIVACY.md', 'LICENSE', 'THIRD_PARTY_NOTICES.md', 'package.json', 'package-lock.json', 'requirements-build.txt', '.gitignore'}
@@ -19,10 +20,18 @@ def validate_widget(path):
             raise ValueError('Invalid widget archive')
         for name in names:
             part = Path(name)
-            if part.is_absolute() or '..' in part.parts or part.suffix.lower() in {'.p12', '.pfx', '.pem', '.key'} or (name == 'author-signature.xml' or re.fullmatch(r'signature\d+\.xml', name) or part.name in {'password.txt', 'profiles.xml', 'session.json'}) or name.startswith('assets/private-fonts/'):
+            if part.is_absolute() or '..' in part.parts or part.suffix.lower() in {'.p12', '.pfx', '.pem', '.key', '.csr', '.crt', '.cer', '.der', '.jks', '.keystore'} or (name == 'author-signature.xml' or re.fullmatch(r'signature\d+\.xml', name) or part.name in {'password.txt', 'profiles.xml', 'session.json'}) or name.startswith('assets/private-fonts/'):
                 raise ValueError('Private or signed widget member: ' + name)
+        for name in names:
+            if Path(name).suffix.lower() in {'.js', '.css', '.xml', '.json', '.html', '.md', '.txt', '.svg'}:
+                try:
+                    content = package.read(name).decode()
+                except UnicodeError:
+                    continue
+                if content_findings(name, content, device_config=name == 'device-config.js'):
+                    raise ValueError('Private data pattern in widget member: ' + name)
         config = package.read('device-config.js').decode()
-        if re.search(r'verifiedAppIds\s*=|\b(?:192\.168\.|10\.\d+\.)', config):
+        if re.search(r'verifiedAppIds\s*=', config) or content_findings('device-config.js', config, device_config=True):
             raise ValueError('Personal device profile in release widget')
         if not all(name in names for name in ['LICENSE', 'THIRD_PARTY_NOTICES.md', 'config.xml']):
             raise ValueError('Missing release notices or manifest')
@@ -35,8 +44,14 @@ def source_names():
         path = Path(name)
         if path.parts[0] not in ALLOWED_ROOTS and name not in ALLOWED_FILES:
             raise ValueError('Unexpected tracked release path: ' + name)
-        if (ROOT / path).is_symlink() or path.suffix.lower() in {'.wgt', '.p12', '.pfx', '.pem', '.key', '.pyc'}:
+        if (ROOT / path).is_symlink() or path.suffix.lower() in {'.wgt', '.p12', '.pfx', '.pem', '.key', '.csr', '.crt', '.cer', '.der', '.jks', '.keystore', '.pyc'}:
             raise ValueError('Unsafe source member: ' + name)
+        try:
+            text = (ROOT / path).read_text()
+        except UnicodeError:
+            text = ''
+        if content_findings(name, text):
+            raise ValueError('Private data pattern in source member: ' + name)
         result.append(name)
     if not result:
         raise ValueError('Stage and review the source before preparing a release')

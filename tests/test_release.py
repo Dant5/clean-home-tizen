@@ -32,7 +32,7 @@ def test_release_rejects_private_or_unsafe_members(tmp_path, name):
     with pytest.raises(ValueError):
         release.validate_widget(widget(tmp_path, {name:'fake fixture'}))
 
-@pytest.mark.parametrize('config', ['window.CleanHomeConfig.verifiedAppIds = {};', 'window.CleanHomeConfig.host="192.168.10.20";'])
+@pytest.mark.parametrize('config', ['window.CleanHomeConfig.verifiedAppIds = {};', 'window.CleanHomeConfig.host="203.0.113.20";'])
 def test_release_rejects_personal_profile(tmp_path, config):
     with pytest.raises(ValueError):
         release.validate_widget(widget(tmp_path, config=config))
@@ -43,3 +43,15 @@ def test_browser_download_must_match_pinned_digest(tmp_path):
     with pytest.raises(ValueError, match='checksum'):
         engine.install(path, tmp_path / 'engine')
     assert not (tmp_path / 'engine').exists()
+
+
+@pytest.mark.parametrize('suffix', ['.pfx', '.crt', '.cer', '.der', '.jks', '.keystore'])
+def test_release_rejects_certificate_exports_and_signing_stores(tmp_path, suffix):
+    with pytest.raises(ValueError):
+        release.validate_widget(widget(tmp_path, {'hidden/owner' + suffix:'fake fixture'}))
+
+
+def test_release_rejects_private_data_outside_the_device_profile(tmp_path):
+    host = '.'.join(map(str, [10, 25, 30, 40]))
+    with pytest.raises(ValueError):
+        release.validate_widget(widget(tmp_path, {'helper.js': 'var host="' + host + '";'}))

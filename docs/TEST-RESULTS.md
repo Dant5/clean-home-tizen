@@ -33,4 +33,8 @@ Documentation images are offline browser renders with a mock app inventory and f
 
 ## Hosted CI status
 
-The first private GitHub Actions run did **not start either job**. GitHub reported an account payment/spending-limit restriction before any checkout/test step. This is not a passing CI run or an application test failure. The local results above are complete; hosted verification remains blocked until the account/repository can run Actions. No billing settings were changed. Keep the preview draft unpublished until the desired hosted and physical-remote checks are resolved.
+Hosted validation has not completed for this preview. The local results above are complete; no successful hosted run is claimed. Keep the preview draft unpublished until the required hosted and physical-remote checks are complete. Private maintainer diagnostics are kept outside the repository.
+
+## Publication privacy checks
+
+The source/release guards also reject accidental network addresses, local user paths, hardware identifiers and signing material. Image metadata is checked for location and device/owner identifiers. These checks use synthetic data; they do not connect to a TV. They supplement manual asset review and full-history secret scanning. Original code, image and font credits are retained.

@@ -39,3 +39,10 @@ original-home.json
 *.pfx
 password.txt
 device-profile.xml
+
+# Signing stores and certificate exports are never public source.
+*.crt
+*.cer
+*.der
+*.jks
+*.keystore

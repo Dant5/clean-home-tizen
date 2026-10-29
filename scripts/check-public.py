@@ -9,6 +9,7 @@ import re
 import subprocess
 
 from font_assets import ROOT
+from privacy_rules import content_findings
 
 
 def git(*args):
@@ -19,7 +20,7 @@ candidates = set(git('ls-files', '--cached', '--others', '--exclude-standard', '
 objects = git('rev-list', '--objects', '--all').decode().splitlines()
 findings = []
 font_suffixes = {'.ttf', '.otf', '.woff', '.woff2', '.eot'}
-private_suffixes = {'.p12', '.pem', '.key', '.csr', '.wgt'}
+private_suffixes = {'.p12', '.pfx', '.pem', '.key', '.csr', '.crt', '.cer', '.der', '.jks', '.keystore', '.wgt'}
 
 
 def forbidden(name):
@@ -53,6 +54,8 @@ for name in sorted(candidates):
         content = path.read_text()
     except UnicodeError:
         continue
+    for category in content_findings(name, content):
+        findings.append(category + ': ' + name)
     # Print filenames only, so a failing check does not leak a matched credential.
     patterns = [r'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----',
                 r'gh[pousr]_[A-Za-z0-9]{25,}', r'github_pat_[A-Za-z0-9_]{25,}',

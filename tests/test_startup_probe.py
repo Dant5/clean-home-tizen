@@ -3,7 +3,8 @@ from pathlib import Path
 import pytest
 spec=importlib.util.spec_from_file_location('startup_probe',Path(__file__).parents[1]/'scripts/startup-app-probe.py')
 m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
-CONFIG={'host':'192.168.0.20','protected_app_ids':['one.App','two.App']}
+# Reserved documentation address; every probe is mocked and sends no TV request.
+CONFIG={'host':'192.0.2.50','protected_app_ids':['one.App','two.App']}
 
 def test_existing_home_skips_other_probes():
     calls=[]
