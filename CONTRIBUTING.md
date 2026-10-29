@@ -1,6 +1,26 @@
 # Development and contributions
 
-Use the setup in README first. Browser checks mock only the Tizen boundary and external pictures; they must never contact a real TV. On headless Linux, `npx playwright install --with-deps chromium` installs the browser/runtime dependencies on that machine. Keep private certificates, diagnostic logs and TV recovery state outside Git.
+The front-page installation guide is for people using the ready-made download. This page is for developers building or testing the source. Keep private certificates, diagnostic logs and TV recovery state outside Git.
+
+## Set up a local checkout
+
+Requirements: Node 22+ and Python 3.10+ with venv/pip support. These commands use Linux/macOS paths. On Debian/Ubuntu, install `python3-venv` if the venv command reports missing ensurepip.
+
+```sh
+npm ci
+python3 -m venv .local/venv
+.local/venv/bin/python -m pip install -r requirements-build.txt
+npx playwright install chromium
+npm run dev:public
+```
+
+Open the localhost address printed by the preview. Arrows, Enter and Escape correspond to the remote. A desktop browser cannot discover a television’s apps; installed-app choices require the TV, while tests supply a mock inventory. The public preview uses Manrope, Geist and Newsreader; no proprietary font files are needed.
+
+On headless Linux, `npx playwright install --with-deps chromium` installs the browser/runtime dependencies on that machine. Browser checks mock only the Tizen boundary and external pictures; they must never contact a real TV.
+
+## Build and validate
+
+`npm run package` creates `dist/CleanHome-Q60B-unsigned.wgt`. It includes public fonts and notices without a device profile or signing keys. Consumer TVs require local signing before installation. See the advanced section of [INSTALL.md](INSTALL.md) for the supported signing routes.
 
 ```sh
 npm test
