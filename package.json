@@ -1,0 +1,35 @@
+{
+  "name": "clean-home-tizen",
+  "version": "1.4.0",
+  "private": true,
+  "description": "Clean Home for Samsung Tizen 6.5, tested on Q60B; choose your own apps.",
+  "scripts": {
+    "dev": "python3 scripts/preview.py",
+    "check": "node scripts/check-es5.mjs && python3 scripts/check.py",
+    "package": "python3 scripts/package.py",
+    "check:browser": "node scripts/check-browser.mjs",
+    "dev:public": "python3 scripts/preview.py --public-fonts",
+    "export:public": "python3 scripts/export-public.py",
+    "check:public": "python3 scripts/check-public.py",
+    "check:q60b": "node scripts/check-q60b.mjs",
+    "check:device": "node --test tests/device.test.cjs",
+    "check:signer": ".local/venv/bin/python -m pytest -q tests/test_signer.py",
+    "test": "npm run check && npm run check:device && npm run check:browser && npm run check:q60b && npm run check:bing && npm run check:reliability && npm run check:onboarding && npm run check:startup-input && npm run check:backgrounds && npm run check:responsive && npm run check:python",
+    "check:reliability": "node scripts/check-reliability.mjs",
+    "check:bing": "node scripts/_bing-next.mjs",
+    "check:performance": "node scripts/check-performance.mjs",
+    "check:python": ".local/venv/bin/python -m pytest -q tests",
+    "check:package": "node scripts/check-package.mjs",
+    "check:backgrounds": "node scripts/check-backgrounds.mjs",
+    "build:backgrounds": "node scripts/build-background-overlays.mjs",
+    "check:startup-input": "node scripts/check-startup-input.mjs",
+    "check:onboarding": "node scripts/check-onboarding.mjs",
+    "release:prepare": ".local/venv/bin/python scripts/prepare-release.py",
+    "check:responsive": "node scripts/check-responsive.mjs"
+  },
+  "devDependencies": {
+    "acorn": "8.15.0",
+    "playwright": "1.64.1"
+  },
+  "license": "MIT"
+}

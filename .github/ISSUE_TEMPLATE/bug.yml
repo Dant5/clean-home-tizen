@@ -1,0 +1,41 @@
+name: Bug report
+description: A reproducible problem with the launcher.
+body:
+  - type: markdown
+    attributes:
+      value: Please omit serial numbers, DUIDs, addresses, credentials and account screens. Other TV models are welcome; support is experimental.
+  - type: input
+    id: model
+    attributes:
+      label: TV model and year
+      placeholder: Q60B, 2022
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Firmware, Tizen and Clean Home versions
+      description: Unknown Tizen version is fine. Do not include a serial number.
+    validations:
+      required: true
+  - type: dropdown
+    id: install
+    attributes:
+      label: Installation method
+      options:
+        - Apps2Samsung
+        - Tizen Studio
+        - Browser preview
+        - Other
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps, expected result and actual result
+      description: Explain the shortest repeatable sequence. A cropped photo without private information can help.
+    validations:
+      required: true
+  - type: textarea
+    id: recovery
+    attributes:
+      label: Does reopening the launcher help?
+      description: Mention native Home/startup changes if any. Do not reset Smart Hub or reinstall your favourite apps.

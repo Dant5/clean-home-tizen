@@ -1,0 +1,160 @@
+{
+  "engine": "85.0.4182.0",
+  "sourceHashes": {
+    "app/style.css": "d6cd17a9452146628b8a892cb92c122addfe9a01c1108344fa1b28575194139f",
+    "app/assets/adaptive-ink.js": "ffe76cca340e0ee4ca970b42610191172631a1126c35cd807e33907759d3c0b8",
+    "app/assets/wallpapers/catalog.js": "5426aecdcdf5460999c494066e9ce613103ebef6d38298b7db19086bbf62c18b"
+  },
+  "entries": [
+    {
+      "wall": "misty",
+      "layout": "dock",
+      "file": "014a8baca9b87aa2.png"
+    },
+    {
+      "wall": "misty",
+      "layout": "list",
+      "file": "31c2afe0acb785f3.png"
+    },
+    {
+      "wall": "cove",
+      "layout": "dock",
+      "file": "5f550a9e99873270.png"
+    },
+    {
+      "wall": "cove",
+      "layout": "list",
+      "file": "2c7f387ac203174f.png"
+    },
+    {
+      "wall": "forest",
+      "layout": "dock",
+      "file": "00060b5c1304472c.png"
+    },
+    {
+      "wall": "forest",
+      "layout": "list",
+      "file": "a763a8562a9f286e.png"
+    },
+    {
+      "wall": "valley",
+      "layout": "dock",
+      "file": "0a380010a351ad64.png"
+    },
+    {
+      "wall": "valley",
+      "layout": "list",
+      "file": "7e616935295b8416.png"
+    },
+    {
+      "wall": "night",
+      "layout": "dock",
+      "file": "fef8c1e0cf7d01a3.png"
+    },
+    {
+      "wall": "night",
+      "layout": "list",
+      "file": "f05337a68a530e19.png"
+    },
+    {
+      "wall": "peaks",
+      "layout": "dock",
+      "file": "b32bc486ad9ae950.png"
+    },
+    {
+      "wall": "peaks",
+      "layout": "list",
+      "file": "96289c2960e1c790.png"
+    },
+    {
+      "wall": "bridge",
+      "layout": "dock",
+      "file": "b8c2a436d15e9b10.png"
+    },
+    {
+      "wall": "bridge",
+      "layout": "list",
+      "file": "ebdd922b03860b00.png"
+    },
+    {
+      "wall": "ridge",
+      "layout": "dock",
+      "file": "00060b5c1304472c.png"
+    },
+    {
+      "wall": "ridge",
+      "layout": "list",
+      "file": "a763a8562a9f286e.png"
+    },
+    {
+      "wall": "golden",
+      "layout": "dock",
+      "file": "00060b5c1304472c.png"
+    },
+    {
+      "wall": "golden",
+      "layout": "list",
+      "file": "2453cd9b24c99d63.png"
+    },
+    {
+      "wall": "summit",
+      "layout": "dock",
+      "file": "d1a4cfdcef478d63.png"
+    },
+    {
+      "wall": "summit",
+      "layout": "list",
+      "file": "363581d6dfdce330.png"
+    },
+    {
+      "wall": "goldcoast",
+      "layout": "dock",
+      "file": "014a8baca9b87aa2.png"
+    },
+    {
+      "wall": "goldcoast",
+      "layout": "list",
+      "file": "113b24a2c71367b9.png"
+    },
+    {
+      "wall": "sydney",
+      "layout": "dock",
+      "file": "2118f12cabc1c629.png"
+    },
+    {
+      "wall": "sydney",
+      "layout": "list",
+      "file": "113b24a2c71367b9.png"
+    },
+    {
+      "wall": "amber",
+      "layout": "dock",
+      "file": "014a8baca9b87aa2.png"
+    },
+    {
+      "wall": "amber",
+      "layout": "list",
+      "file": "123273cfc3244016.png"
+    },
+    {
+      "wall": "mint",
+      "layout": "dock",
+      "file": "014a8baca9b87aa2.png"
+    },
+    {
+      "wall": "mint",
+      "layout": "list",
+      "file": "bb0892e4dfd5ba68.png"
+    },
+    {
+      "wall": "alpine",
+      "layout": "dock",
+      "file": "014a8baca9b87aa2.png"
+    },
+    {
+      "wall": "alpine",
+      "layout": "list",
+      "file": "123273cfc3244016.png"
+    }
+  ]
+}

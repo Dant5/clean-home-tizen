@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp3.1;net6.0</TargetFrameworks>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>CleanHomeReadOnlyInspection</AssemblyName>
+    <UseAppHost>false</UseAppHost>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup><Compile Include="HomeInspection.cs" /><Compile Include="StartupStrings.cs" /></ItemGroup>
+</Project>

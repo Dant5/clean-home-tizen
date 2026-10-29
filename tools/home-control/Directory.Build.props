@@ -1,0 +1,1 @@
+<Project><PropertyGroup><BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)../../.local/native-control/obj/$(MSBuildProjectName)/</BaseIntermediateOutputPath><BaseOutputPath>$(MSBuildThisFileDirectory)../../.local/native-control/bin/</BaseOutputPath></PropertyGroup></Project>

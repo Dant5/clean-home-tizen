@@ -1,0 +1,60 @@
+name: Test and build
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    name: Chromium ${{ matrix.engine }}
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        engine: [current, '85']
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+          cache: npm
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - name: Install development dependencies
+        run: |
+          npm ci
+          python3 -m venv .local/venv
+          .local/venv/bin/python -m pip install -r requirements-build.txt
+          npx playwright install --with-deps chromium
+      - name: Install historical test engine
+        if: matrix.engine == '85'
+        run: |
+          sudo apt-get install -y libgtk-3-0 libxss1
+          python3 scripts/install-test-browser.py
+      - name: Select historical test engine
+        if: matrix.engine == '85'
+        run: echo "CLEANHOME_CHROMIUM=$PWD/.local/chromium85/chrome-linux/chrome" >> "$GITHUB_ENV"
+      - name: Test production UI and device boundary
+        env:
+          CLEANFRAME_PUBLIC_FONTS: '1'
+        run: |
+          npm test
+          npm run package
+          npm run check:package
+      - name: Check public source
+        run: npm run check:public
+      - name: Prepare unsigned generic release assets
+        if: matrix.engine == 'current'
+        run: npm run release:prepare
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: matrix.engine == 'current'
+        with:
+          name: unsigned-preview
+          path: dist/release/
+          if-no-files-found: error

@@ -1,0 +1,43 @@
+/* Generated from the original style.css by build-background-overlays.mjs; do not edit. */
+.stage.bg-photo.l-dock[data-wall="misty"] #bg>div,.stage.bg-photo.l-dock[data-wall="goldcoast"] #bg>div,.stage.bg-photo.l-dock[data-wall="amber"] #bg>div,.stage.bg-photo.l-dock[data-wall="mint"] #bg>div,.stage.bg-photo.l-dock[data-wall="alpine"] #bg>div{display:none!important}
+.stage.bg-photo.l-dock[data-wall="misty"] #bg::after,.stage.bg-photo.l-dock[data-wall="goldcoast"] #bg::after,.stage.bg-photo.l-dock[data-wall="amber"] #bg::after,.stage.bg-photo.l-dock[data-wall="mint"] #bg::after,.stage.bg-photo.l-dock[data-wall="alpine"] #bg::after{content:"";position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none;background:url("014a8baca9b87aa2.png") no-repeat}
+.stage.bg-photo.l-list[data-wall="misty"] #bg>div{display:none!important}
+.stage.bg-photo.l-list[data-wall="misty"] #bg::after{content:"";position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none;background:url("31c2afe0acb785f3.png") no-repeat}
+.stage.bg-photo.l-dock[data-wall="cove"] #bg>div{display:none!important}
+.stage.bg-photo.l-dock[data-wall="cove"] #bg::after{content:"";position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none;background:url("5f550a9e99873270.png") no-repeat}
+.stage.bg-photo.l-list[data-wall="cove"] #bg>div{display:none!important}
+.stage.bg-photo.l-list[data-wall="cove"] #bg::after{content:"";position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none;background:url("2c7f387ac203174f.png") no-repeat}
+.stage.bg-photo.l-dock[data-wall="forest"] #bg>div,.stage.bg-photo.l-dock[data-wall="ridge"] #bg>div,.stage.bg-photo.l-dock[data-wall="golden"] #bg>div{display:none!important}
+.stage.bg-photo.l-dock[data-wall="forest"] #bg::after,.stage.bg-photo.l-dock[data-wall="ridge"] #bg::after,.stage.bg-photo.l-dock[data-wall="golden"] #bg::after{content:"";position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none;background:url("00060b5c1304472c.png") no-repeat}
+.stage.bg-photo.l-list[data-wall="forest"] #bg>div,.stage.bg-photo.l-list[data-wall="ridge"] #bg>div{display:none!important}
+.stage.bg-photo.l-list[data-wall="forest"] #bg::after,.stage.bg-photo.l-list[data-wall="ridge"] #bg::after{content:"";position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none;background:url("a763a8562a9f286e.png") no-repeat}
+.stage.bg-photo.l-dock[data-wall="valley"] #bg>div{display:none!important}
+.stage.bg-photo.l-dock[data-wall="valley"] #bg::after{content:"";position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none;background:url("0a380010a351ad64.png") no-repeat}
+.stage.bg-photo.l-list[data-wall="valley"] #bg>div{display:none!important}
+.stage.bg-photo.l-list[data-wall="valley"] #bg::after{content:"";position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none;background:url("7e616935295b8416.png") no-repeat}
+.stage.bg-photo.l-dock[data-wall="night"] #bg>div{display:none!important}
+.stage.bg-photo.l-dock[data-wall="night"] #bg::after{content:"";position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none;background:url("fef8c1e0cf7d01a3.png") no-repeat}
+.stage.bg-photo.l-list[data-wall="night"] #bg>div{display:none!important}
+.stage.bg-photo.l-list[data-wall="night"] #bg::after{content:"";position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none;background:url("f05337a68a530e19.png") no-repeat}
+.stage.bg-photo.l-dock[data-wall="peaks"] #bg>div{display:none!important}
+.stage.bg-photo.l-dock[data-wall="peaks"] #bg::after{content:"";position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none;background:url("b32bc486ad9ae950.png") no-repeat}
+.stage.bg-photo.l-list[data-wall="peaks"] #bg>div{display:none!important}
+.stage.bg-photo.l-list[data-wall="peaks"] #bg::after{content:"";position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none;background:url("96289c2960e1c790.png") no-repeat}
+.stage.bg-photo.l-dock[data-wall="bridge"] #bg>div{display:none!important}
+.stage.bg-photo.l-dock[data-wall="bridge"] #bg::after{content:"";position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none;background:url("b8c2a436d15e9b10.png") no-repeat}
+.stage.bg-photo.l-list[data-wall="bridge"] #bg>div{display:none!important}
+.stage.bg-photo.l-list[data-wall="bridge"] #bg::after{content:"";position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none;background:url("ebdd922b03860b00.png") no-repeat}
+.stage.bg-photo.l-list[data-wall="golden"] #bg>div{display:none!important}
+.stage.bg-photo.l-list[data-wall="golden"] #bg::after{content:"";position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none;background:url("2453cd9b24c99d63.png") no-repeat}
+.stage.bg-photo.l-dock[data-wall="summit"] #bg>div{display:none!important}
+.stage.bg-photo.l-dock[data-wall="summit"] #bg::after{content:"";position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none;background:url("d1a4cfdcef478d63.png") no-repeat}
+.stage.bg-photo.l-list[data-wall="summit"] #bg>div{display:none!important}
+.stage.bg-photo.l-list[data-wall="summit"] #bg::after{content:"";position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none;background:url("363581d6dfdce330.png") no-repeat}
+.stage.bg-photo.l-list[data-wall="goldcoast"] #bg>div,.stage.bg-photo.l-list[data-wall="sydney"] #bg>div{display:none!important}
+.stage.bg-photo.l-list[data-wall="goldcoast"] #bg::after,.stage.bg-photo.l-list[data-wall="sydney"] #bg::after{content:"";position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none;background:url("113b24a2c71367b9.png") no-repeat}
+.stage.bg-photo.l-dock[data-wall="sydney"] #bg>div{display:none!important}
+.stage.bg-photo.l-dock[data-wall="sydney"] #bg::after{content:"";position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none;background:url("2118f12cabc1c629.png") no-repeat}
+.stage.bg-photo.l-list[data-wall="amber"] #bg>div,.stage.bg-photo.l-list[data-wall="alpine"] #bg>div{display:none!important}
+.stage.bg-photo.l-list[data-wall="amber"] #bg::after,.stage.bg-photo.l-list[data-wall="alpine"] #bg::after{content:"";position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none;background:url("123273cfc3244016.png") no-repeat}
+.stage.bg-photo.l-list[data-wall="mint"] #bg>div{display:none!important}
+.stage.bg-photo.l-list[data-wall="mint"] #bg::after{content:"";position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none;background:url("bb0892e4dfd5ba68.png") no-repeat}

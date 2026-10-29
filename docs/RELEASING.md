@@ -1,0 +1,14 @@
+# Release process
+
+A release is a tested, generic **unsigned** widget plus reviewed source, checksums and compatibility notes. A public preview is appropriate while the new picker lacks a physical-remote test and other TV models remain unverified. Never upload an owner's signed widget or use their certificate identity.
+
+1. Review the changes and third-party notices. Confirm `package.json`, lockfile and `app/config.xml` versions agree. Preserve existing application identity for same-author updates.
+2. Run `npm test`, `npm run package`, `npm run check:package` and `npm run check:performance` with current Chromium and Chromium 85. The historical engine installer verifies a pinned official archive; use it only for local test pages. Record engine versions, counts, limitations and actual hardware evidence in [test results](TEST-RESULTS.md).
+3. Run `npm run check:public` and `sh scripts/check-secrets.sh`. Inspect explicit staged paths and diffs. Keep credentials, private app profiles, device addresses, original native settings, recordings and proprietary fonts outside the source and assets. Secret scanning is helpful, not a complete privacy review.
+4. Commit the reviewed source and require both CI jobs to pass. Run `npm run release:prepare` from a clean checkout. Inspect `release-manifest.json`: `working_tree_dirty` must be false, `signed` and `personal_profile` false, and `source_commit` the intended commit.
+5. Create a **draft prerelease**, attach the complete `dist/release/` contents and describe supported behaviour, remaining hardware checks, installation, recovery and upstream credits. Verify downloaded checksums before publishing. Do not attach local test logs containing device data.
+6. Publish only after the repository owner approves public visibility/publication. When available, consider GitHub immutable releases after the draft's tag and assets are complete. Do not silently replace an existing asset; issue a new version with clear notes.
+
+The source archive uses only reviewed tracked files, fixed ZIP timestamps and no personal Git history. Repeating the build from identical files produces identical widget/source archives. The manifest separately records commit and dirty status. CI uploads unsigned build artifacts for review; it never signs, contacts a TV or publishes a release.
+
+References: [GitHub releases](https://docs.github.com/en/repositories/releasing-projects-on-github/about-releases), [immutable releases](https://docs.github.com/en/code-security/concepts/supply-chain-security/immutable-releases), [Samsung certificates](https://developer.samsung.com/smarttv/develop/getting-started/setting-up-sdk/creating-certificates.html).

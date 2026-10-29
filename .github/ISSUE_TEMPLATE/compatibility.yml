@@ -1,0 +1,22 @@
+name: TV compatibility report
+description: Help document another model or firmware.
+body:
+  - type: input
+    id: model
+    attributes:
+      label: Model, year, firmware and Tizen version
+      description: No serial number or DUID.
+    validations:
+      required: true
+  - type: textarea
+    id: results
+    attributes:
+      label: What did you actually test?
+      description: Installation, remote navigation, app discovery/launch, standby/wake, daily photo, HDMI, Samsung Home and Settings. Separate observed results from assumptions.
+    validations:
+      required: true
+  - type: textarea
+    id: setup
+    attributes:
+      label: Installation and native Home setup
+      description: State whether this was an ordinary app installation or a separate native Home configuration. Display size/resolution and cropped pictures are optional.

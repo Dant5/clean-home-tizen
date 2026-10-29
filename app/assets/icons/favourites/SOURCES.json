@@ -1,0 +1,38 @@
+[
+  {
+    "file": "nuvio.png",
+    "source": "https://github.com/iqui27/nuvio-native-legacy/blob/db6ae4ee0dd2fa158c46ba375c1fe8c08de70504/deploy/app/tizen/icon.png",
+    "revision": "db6ae4ee0dd2fa158c46ba375c1fe8c08de70504",
+    "git_blob": "7bcd92ed4a79f4215128adc659890f405aeece9c",
+    "sha256": "ebd34fa792a160ad6e2886652a1a6f898b7d5676d6201dd5d110db66985f5f3d",
+    "licence": "GPL-3.0; full upstream text in nuvio-LICENSE.txt",
+    "changes": "None. This PNG is the unmodified source artwork. No application code is included."
+  },
+  {
+    "file": "moonlight.png",
+    "source": "https://github.com/brightcraft/moonlight-tizen/blob/e3b6777854f1ae20b323a2f6997e4ae4056c3bf7/res/icon.png",
+    "revision": "e3b6777854f1ae20b323a2f6997e4ae4056c3bf7",
+    "git_blob": "482c404d4d5c9532a06503bb4a5e14f057359cb5",
+    "sha256": "66faa10df11928c430e03a3b7ecb6e323e1cf4addbc9434fc0a420feb5665ffa",
+    "licence": "GPL-3.0; full upstream text in moonlight-LICENSE.txt",
+    "changes": "None. This PNG is the unmodified source artwork. No application code is included."
+  },
+  {
+    "file": "nuvio-monochrome.svg",
+    "source": "https://github.com/iqui27/nuvio-native-legacy/blob/db6ae4ee0dd2fa158c46ba375c1fe8c08de70504/design/logo-novo/simbolo.svg",
+    "revision": "db6ae4ee0dd2fa158c46ba375c1fe8c08de70504",
+    "source_sha256": "53a782ff26dd699458065cbf901841701c7b69bac07ee6c32b04533ff215a8e3",
+    "sha256": "615e10e579444245c006b9fc28073e9fd1e5c3b68a0e87631cae97f6eb414bb0",
+    "licence": "GPL-3.0; full upstream text in nuvio-LICENSE.txt",
+    "changes": "Original symbol paths retained. Gradient segments replaced with a single white even-odd silhouette and white central play mark; transparent negative space retained. Square viewBox padding matches the previous bundled icon scale. No application code included."
+  },
+  {
+    "file": "moonlight-monochrome.svg",
+    "source": "https://github.com/moonlight-stream/moonlight-qt/blob/ac296864ace96f51ad75f78b90644bdbca76c332/app/res/moonlight.svg",
+    "revision": "ac296864ace96f51ad75f78b90644bdbca76c332",
+    "source_sha256": "6fd0ee4fe5b4aad5abaa5d5c9acb9f7d1bda0abadfe9d1582115de9b4ba16aa2",
+    "sha256": "87276ba40a921fab590da817025831aa2ed7d6408f007c02727b83f2c31104a1",
+    "licence": "GPL-3.0; full official upstream text in moonlight-symbol-LICENSE.txt",
+    "changes": "Symbol only: grey backing circle removed, white lunar disc retained and original spoke path becomes a transparent cutout. No words. Square viewBox padding optically matches the other favourite marks. No application code included."
+  }
+]
