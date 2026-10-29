@@ -1,26 +1,23 @@
-# Compatibility and limits
+# TV compatibility
 
-| Area | Evidence |
+| TV | Status |
 | --- | --- |
-| Reference TV | Samsung **QA55Q60BAWXXY**, 2022 Q60B 55-inch |
-| Reference firmware | **T-NKLBUABC-1720.7**, Tizen **6.5**, TV Chromium **85.0.4183.93** |
-| Launcher core through 1.3.9 | Owner-installed, four app launches/Home returns, daily picture and saved preferences verified |
-| Wake responsiveness after shading cache | Owner reports immediate early arrows **respond promptly** after approximately 30 seconds in standby; no millisecond guarantee |
-| New 1.4.0 first-run picker / long press | Browser integration checks in Chromium 85 and current Chromium; physical-remote confirmation still pending |
-| Native Home/startup | Separately configured and restored/tested on the reference Q60B; not enabled by the public widget |
-| Other Samsung models / firmware | Not verified by this project; Tizen 6.5 alone does not prove compatibility |
-| HDMI switching | Public TVWindow/SystemInfo adapter and mocked integration tests; full physical HDMI/eARC/audio/CEC behaviour not comprehensively verified |
-| Developer text entry | Manual-ID entry is available; physical on-screen keyboard behaviour remains a separate device check |
-| Mains cold boot / long soak | No new mains cold-boot or multi-day guarantee for this public preview |
+| **2022 Samsung Q60B, Tizen 6.5** | Reference model used for development. |
+| Other Samsung Tizen TVs | Unconfirmed. Please [share your results](https://github.com/Dant5/clean-home-tizen/issues/new?template=compatibility.yml). |
+| TVs from other brands | Not supported. |
 
-The web runtime stays ES5-compatible and avoids Chromium features unavailable in version 85. Browser CPU throttling is a regression screen, not an emulation of the TV’s GPU or decoder. API visibility is not proof that a frame was visible or an early key responded.
+The reference model is QA55Q60BAWXXY, running T-NKLBUABC-1720.7. Matching Tizen versions alone does not guarantee compatibility.
 
-The dock holds up to nine apps. The list uses Samsung’s installed-app catalogue and consumer-app filtering, which can omit unusual hidden packages. Known services have manual-ID controls in Settings → Application IDs. Do not assume another owner’s app IDs or a similar package name. Modern Nuvio and Nuvio Legacy are distinct builds; ordinary catalogue entries can be chosen independently.
+## What to expect
 
-Developer Mode, certificate availability and installer support vary by TV/region. Keep the same author certificate when updating. Firmware changes may change undocumented native behaviour. This release does not disable Samsung updates, remove system packages, remap native keys or promise access to isolated application data.
+- The layout scales to your screen; a 55-inch or 4K TV is not required.
+- The dock holds up to nine apps. Some hidden sideloaded apps may need a manually verified ID in **Settings → Application IDs**.
+- App IDs can differ between TVs and between builds of the same app. Clean Home discovers yours rather than using another TV’s list.
+- Developer Mode and certificate availability depend on your TV and region. Use the same signing profile for updates.
+- The standard download does not change the Home button or power-on behaviour. The separate [native setup](NATIVE-HOME.md) is specific to the reference TV’s software.
 
-Please submit a compatibility report with the exact model, firmware, Tizen version, app version, installation method and what you actually observed. Exclude addresses, serials, DUIDs and private screenshots.
+The preview has not been verified on every model or with every input/remote feature. Detailed hardware coverage and outstanding checks are in the [developer test record](TEST-RESULTS.md).
 
-## Screen size and resolution
+## For developers
 
-Physical panel size does not select a separate layout. The original 1920×1080 stage fits the available viewport and preserves 16:9 proportions. Samsung’s [screen-resolution guidance](https://developer.samsung.com/smarttv/develop/guides/fundamentals/managing-screen-resolution.html) recommends this design size and describes platform scaling; its [current specification table](https://developer.samsung.com/smarttv/develop/specifications/general-specifications.html) lists 1920×1080 application resolution across TV models. A 4K panel can therefore use a 1080p app surface. Browser 720p/4K results establish layout fit, not installation or native API compatibility on an untested television.
+The runtime uses ES5-compatible JavaScript and targets Chromium 85. The original 1920×1080 stage scales proportionally to the viewport. A 4K panel can use a 1080p application surface; see [Samsung’s resolution guide](https://developer.samsung.com/smarttv/develop/guides/fundamentals/managing-screen-resolution.html). Browser layout checks do not establish native API compatibility on another TV.

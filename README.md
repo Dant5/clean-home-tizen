@@ -19,9 +19,7 @@ Based on [Clean Home by chaosmanage](https://github.com/chaosmanage/samsung-tv-l
 
 ## TV support
 
-The launcher has been used on a **2022 Samsung Q60B with Tizen 6.5**. Other models need testing. The new app chooser and hold-to-change controls pass browser tests; a physical-remote check is still pending.
-
-The layout adjusts to the screen; a 55-inch TV is not required. [Compatibility details](docs/COMPATIBILITY.md).
+Developed on a **2022 Samsung Q60B with Tizen 6.5**. Other models are unconfirmed. The layout adjusts to your screen size. [TV compatibility](docs/COMPATIBILITY.md).
 
 ## Install it
 
@@ -63,7 +61,7 @@ Add up to nine apps. Saved favourites stay in place when updating.
 
 ![Choose an app already installed on your TV](docs/images/app-picker.jpg)
 
-These are browser examples with a sample app list. Your TV supplies its own apps.
+Example screens. Your installed apps will appear in the list.
 
 </details>
 
@@ -77,6 +75,6 @@ A separate setup made both work on our test Q60B, **without root**. It is specif
 
 [Installation help and removal](INSTALL.md) · [Report a problem](https://github.com/Dant5/clean-home-tizen/issues) · [Privacy](PRIVACY.md)
 
-Thanks to **chaosmanage’s Clean Home** and **Nathan Clark’s CleanFrame** for the original design and code. [Full credits](docs/UPSTREAM.md) · [MIT licence](LICENSE) · [Third-party notices](THIRD_PARTY_NOTICES.md).
+[Full credits](docs/UPSTREAM.md) · [MIT licence](LICENSE) · [Third-party notices](THIRD_PARTY_NOTICES.md).
 
 For developers: [Build and test](CONTRIBUTING.md) · [Test results](docs/TEST-RESULTS.md) · [Release process](docs/RELEASING.md).

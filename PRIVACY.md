@@ -1,13 +1,10 @@
 # Privacy
 
-Preferences, selected app IDs, appearance, manual bindings and a bounded installed-app catalogue are stored locally in this app’s Tizen storage. The launcher uses the TV’s public application APIs to discover and open installed apps. It does not read their isolated accounts, playback configuration or pairing databases.
+Clean Home has no analytics, advertising trackers or user accounts. It does not use the camera or microphone.
 
-Bing daily pictures are on by default and optional: Settings → Background → Daily photo turns them off. Bing receives ordinary HTTPS requests for its archive and image URLs, using the market in `app/device-config.js` (initially `en-AU`). Bing/Microsoft may see the network’s public address. Only the selected URL/date is persisted by this app; the live picture and generated header material are held in memory/browser cache. Bundled wallpapers work offline.
+- **Saved on your TV:** shortcuts, settings, manually entered app IDs and a small installed-app list. Clean Home discovers and opens apps using Samsung’s public APIs. It cannot read their private accounts, settings or pairings.
+- **Daily photos:** on by default. Bing/Microsoft receives normal image requests and can see your public internet address. Turn them off in **Settings → Background → Daily photo**. Bundled photos work offline. The default Bing region is `en-AU`; only the chosen photo’s URL/date is saved in app storage.
+- **Weather:** off by default. Developers enabling it with a location in `app/device-config.js` send that location to Open-Meteo. Your location is not inferred.
+- **Diagnostics:** may show the TV model, software version and installed-app details. Review them before sharing. Do not post addresses, serial numbers, DUIDs, passwords, certificates or account screens.
 
-Weather is disabled. Enabling it with an explicit location in `app/device-config.js` sends that location to Open-Meteo. No location is inferred from your network.
-
-There is no telemetry server, analytics identifier, account system, camera capture or microphone recording. There is no Home Assistant requirement or background Home watcher. The normal widget does not expose a network-control endpoint. Temporary Web Inspector access, if deliberately enabled by a developer, should remain on a trusted LAN and be closed after testing.
-
-Diagnostics can show model/firmware, user agent and installed-app metadata. Review/redact information before sharing. Do not post DUIDs, serial numbers, addresses, tokens, signing profiles, private recovery snapshots or account screens. Third-party streaming apps and installation tools have their own privacy policies.
-
-Public-source and release checks reject literal device/network addresses, hardware identifiers, local user paths and signing material. Test fixtures use loopback or reserved documentation addresses and never contact a TV. Image checks flag location, owner and camera-identifier metadata. These checks supplement manual review and secret scanning; they cannot identify every possible kind of private content.
+Installation tools and the apps you open have their own privacy policies.

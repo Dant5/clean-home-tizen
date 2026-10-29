@@ -20,7 +20,7 @@ On headless Linux, `npx playwright install --with-deps chromium` installs the br
 
 ## Build and validate
 
-`npm run package` creates `dist/CleanHome-Q60B-unsigned.wgt`. It includes public fonts and notices without a device profile or signing keys. Consumer TVs require local signing before installation. See the advanced section of [INSTALL.md](INSTALL.md) for the supported signing routes.
+`npm run package` creates `dist/CleanHome-Q60B-unsigned.wgt`. It includes public fonts and notices without a device profile or signing keys. Consumer TVs require local signing before installation. See [signing below](#sign-and-install-with-tizen-studio) for developer installation.
 
 ```sh
 npm test
@@ -44,4 +44,24 @@ Regenerate after changing its CSS, wallpaper catalogue or adaptive-ink inputs; a
 
 Keep the original appearance and licences. Test both a fresh empty configuration and an upgrade with saved favourites. Do not hard-code personal app IDs, addresses, DUIDs or certificate profiles. A public release must use generic discovery and the unsigned public-font package. Treat native Home/startup as separate, firmware-specific work with per-device originals and a verified inverse path; never relax the guards to get a test to pass.
 
-Bug reports should include a reproducible sequence, expected/actual result, model, firmware, Tizen/app version and installation method. Use the issue forms and label whether the result was visually observed, reported by an API or only simulated. No support-time guarantee is offered.
+Bug reports should include a reproducible sequence, expected/actual result, model, firmware, Tizen/app version and installation method. Use the issue forms and label whether the result was visually observed, reported by an API or only simulated.
+
+## Sign and install with Tizen Studio
+
+The package is `D5Q60BHome`; application ID is `D5Q60BHome.CleanHome`. Check that neither belongs to another installed application before installing.
+
+Install Samsung TV Extensions and Samsung Certificate Extension in Tizen Studio. Create your own author/distributor profile in Certificate Manager, covering the TV’s DUID. See [Samsung’s certificate guide](https://developer.samsung.com/smarttv/develop/getting-started/setting-up-sdk/creating-certificates.html). Keep the same author profile for updates; never use another developer’s identity.
+
+Sign the built widget with your profile:
+
+```sh
+tizen package -t wgt -s YOUR_PROFILE -o dist/sdk-signed -- dist/CleanHome-Q60B-unsigned.wgt
+```
+
+Install the signed result with the SDK device tools. The standalone signer also accepts `scripts/package.py --cert-dir /outside/repository/certs` containing `author.p12`, `distributor.p12` and `password.txt`. Keep credentials outside Git with owner-only permissions. Public release builds accept no certificates or personal profiles.
+
+## Privacy checks
+
+Run `npm run check:public` and `sh scripts/check-secrets.sh` before pushing or preparing a release. The guards reject device/network addresses, local user paths, identifiers and signing material; image checks detect location, owner and camera metadata. Test fixtures use loopback or reserved documentation addresses. These checks supplement manual review and cannot detect every kind of private content.
+
+Keep Web Inspector sessions on a trusted network and close them after testing.

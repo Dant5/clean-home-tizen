@@ -1,6 +1,6 @@
 # Security reports
 
-Use GitHub’s private **Report a vulnerability** feature on the repository’s Security tab when available. If it is unavailable, open an issue asking for a private contact channel without posting exploit details or secrets. No response-time guarantee is offered for this hobby project.
+Use GitHub’s private **Report a vulnerability** feature on the repository’s Security tab when available. If it is unavailable, open an issue asking for a private contact channel without posting exploit details or secrets.
 
 Never attach signing keys, certificate passwords, Samsung account credentials, TV serial/DUID information, private recovery state or account screenshots. Ordinary bugs and compatibility results belong in the issue forms.
 

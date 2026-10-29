@@ -1,17 +1,17 @@
 # Changelog
 
-## 1.4.0 public preview
+## 1.4.0 preview
 
-- Fresh installations start with one + tile and no preselected applications. Selecting an installed app fills that position and leaves another + until the nine-app limit.
-- Hold Select on an existing Home tile to open its replacement picker. Short Select launches on release. Cancel, navigation, blur and suspend cannot complete a stale hold.
-- Existing saved favourites, appearance and bindings remain authoritative; established configurations do not gain an extra + tile.
-- Preserves the original photo/glass/clock design and the tested 1.3.9 shading cache.
-- Adds generic unsigned release packaging, checksums, installation/recovery guidance, compatibility reporting and tests in Chromium 85/current Chromium.
+- Choose your own apps: a fresh install starts with **+**. Add up to nine shortcuts.
+- Hold **Select** to replace a shortcut.
+- Existing favourites and settings are kept on update.
+- Keeps the original Clean Home photo, glass app bar and clock.
+- Adds an unsigned download, installation guide and compatibility reporting.
 
-The new first-run and long-press controls have browser coverage; physical-remote confirmation for those new controls is pending. Only the reference Q60B has launcher-core hardware evidence. No native Home/startup change is installed by the download.
+[TV compatibility](docs/COMPATIBILITY.md) · [Developer test results](docs/TEST-RESULTS.md)
 
-## 1.3.9 reference-device milestone
+## 1.3.9
 
-Pre-rendered original shading reduced repeated startup gradient drawing on the Q60B. Two debug traces showed approximately 81–88% less aggregate raster-worker work. The owner subsequently reported prompt early-arrow response after a normal standby/wake. Existing app data and launcher preferences were preserved. This is not a universal startup-time guarantee.
+- Improves startup responsiveness by preparing the background shading in advance.
 
-Earlier design and implementation history belongs to Clean Home and CleanFrame; see the upstream credits and retained licences.
+Based on Clean Home and CleanFrame. See [credits](docs/UPSTREAM.md).
