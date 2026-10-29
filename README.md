@@ -1,66 +1,82 @@
-# Clean Home for Samsung Tizen
+# Clean Home for Samsung TVs
 
-A quiet home screen for Samsung TVs: photographic backgrounds, a clock, a glass dock and the apps **you** choose. Based on [Clean Home](https://github.com/chaosmanage/samsung-tv-launcher) and Nathan Clark’s CleanFrame, with the existing visual design retained.
+A simple screen for opening your TV apps, with a photo, a clock and a glass app bar. You choose which apps appear.
 
-[![Tests](https://github.com/Dant5/clean-home-tizen/actions/workflows/ci.yml/badge.svg)](https://github.com/Dant5/clean-home-tizen/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+**No root needed. Keep your apps. Keep Samsung Home.**
 
-**Public preview — Tizen 6.5 / Q60B tested.** The launcher core has been used on a 2022 Samsung Q60B. The new first-run picker and long-press controls pass browser tests, including Chromium 85; they are not yet independently confirmed with a physical TV remote. Other models and firmware need community testing. See [compatibility and known limits](docs/COMPATIBILITY.md).
+Based on [Clean Home by chaosmanage](https://github.com/chaosmanage/samsung-tv-launcher), built on Nathan Clark’s CleanFrame. The original look is preserved.
 
-![Example Clean Home layout](docs/images/home-example.jpg)
+![Clean Home with an example selection of apps](docs/images/home-example.jpg)
 
-*Example arrangement. A fresh installation starts with one “+” tile, without preselected favourites.*
+*A new installation starts with one “+” button. You add your own apps.*
 
-## Getting started
+## Your apps and remote
 
-1. Download the **unsigned `.wgt`** from [Releases](https://github.com/Dant5/clean-home-tizen/releases), and compare its SHA-256 with `SHA256SUMS`.
-2. Follow [installation](INSTALL.md) to enable Developer Mode and let Apps2Samsung sign/install it with **your own** Samsung profile. Alternatively, use your own Tizen Studio certificate profile.
-3. Open Clean Home from the TV’s Apps list. Select **+**, choose an installed app, and repeat. Up to nine apps fit the existing scrolling dock.
+- **No root or jailbreak:** install Clean Home as a TV app.
+- **Working Home button:** a standard install leaves the remote’s Home button opening Samsung Home. There is also a Samsung Home shortcut inside Clean Home.
+- **Existing apps stay in place:** adding a shortcut does not reinstall the app or clear its accounts, settings or pairings.
+- **Normal remote controls:** arrows to move, centre **OK/Enter** button to choose.
 
-A short press of the centre/Select button opens an app. Hold Select for about **two-thirds of a second** to replace that app; release, then choose its replacement. Back cancels a picker without changing anything. Settings → Apps on Home provides reordering and removal. Existing saved favourites are preserved on upgrade and receive no extra “+” tile.
+## TV support
 
-![A fresh installation starts with one add tile](docs/images/first-run.jpg)
+The launcher has been used on a **2022 Samsung Q60B with Tizen 6.5**. Other models need testing. The new app chooser and hold-to-change controls pass browser tests; a physical-remote check is still pending.
+
+The layout adjusts to the screen; a 55-inch TV is not required. [Compatibility details](docs/COMPATIBILITY.md).
+
+## Install it
+
+**The public download is still being prepared.** Follow these steps once it is available.
+
+You need a computer on the TV’s home network and a Samsung account. No coding is required.
+
+1. **Download Clean Home:** open [Releases](https://github.com/Dant5/clean-home-tizen/releases) → **Assets** and choose the file ending in **`-unsigned.wgt`**. This is the TV app; skip the source-code ZIP files.
+2. **Get Apps2Samsung:** download and open the installer from its [official releases](https://github.com/Apps2Samsung/Apps2Samsung/releases).
+3. **Find your computer’s local IP address.** [Show me where](INSTALL.md#2-find-your-computers-address).
+4. **On the TV:** open **Apps**, enter **1 2 3 4 5**, turn Developer Mode **On**, and enter the **computer’s** address as **Host PC IP**. Restart as prompted. Some models need **Apps → App Settings** first. Developer Mode is not root.
+5. **In Apps2Samsung:** select your TV and wait for it to be ready. Choose **Install a file…** and select the Clean Home `.wgt`.
+6. **Follow the Samsung sign-in and certificate prompts.** The installer prepares the app for your TV. Button names may vary by installer version.
+7. **Open Clean Home** from the TV’s Apps screen. Choose **+**, then an installed app.
+
+[Full step-by-step guide and common fixes →](INSTALL.md)
+
+## Use it
+
+“Select” means your remote’s centre **OK/Enter** button.
+
+| To… | Do this |
+| --- | --- |
+| Add an app | Choose **+**, then the app. Another + remains. |
+| Open an app | Press **Select** briefly on its tile. |
+| Replace a shortcut | Hold **Select** for about one second, release, then choose another app. |
+| Cancel | Press **Back**. |
+| Reorder or remove shortcuts | **Settings → Apps on Home**. This keeps the apps installed. |
+| See other apps | **All apps**, at the top right. |
+| Change the photo | **Settings → Background**. Daily photos are optional. |
+| Open TV settings or inputs | **Settings → Samsung**. |
+
+Add up to nine apps. Saved favourites stay in place when updating.
 
 <details>
-<summary>See the app picker</summary>
+<summary>See the first screen and app chooser</summary>
 
-![Choose from the installed apps on your own TV](docs/images/app-picker.jpg)
+![A new installation has one plus button labelled Add app](docs/images/first-run.jpg)
+
+![Choose an app already installed on your TV](docs/images/app-picker.jpg)
+
+These are browser examples with a sample app list. Your TV supplies its own apps.
 
 </details>
 
-The original 16:9 design scales to the TV’s application viewport, keeping the same proportions at 720p, 1080p and 4K. Non-16:9 preview windows use letterboxing. Physical panel size does not require a separate layout. Firmware and app-launch support still vary by model.
+## Home button and startup
 
-This is an independent launcher app. Installing the download does **not** remap the physical Home button or guarantee power-on startup. Native Home/startup has worked on the reference Q60B through a separate, firmware-specific developer configuration; it is advanced research, not a portable one-click feature. [Read that boundary first](docs/NATIVE-HOME.md).
+**Installing this download does not make Clean Home open automatically at power-on or when you press Home.** A standard install keeps the usual Samsung Home behaviour; open Clean Home from Apps.
 
-The original Samsung Home, Settings and HDMI/input selector remain accessible. Existing applications, accounts and Moonlight pairings are not reinstalled or cleared. There is no root requirement, debloater or always-running Home watcher in the widget.
+A separate setup made both work on our test Q60B, **without root**. It is specific to that TV software and **is not included in this download**. [Advanced details](docs/NATIVE-HOME.md).
 
-## Preview and build
+## Help and credits
 
-Requirements: Node 22+, Python 3.10+ with venv/pip support. On Debian/Ubuntu, install `python3-venv` if the venv command reports missing ensurepip.
+[Installation help and removal](INSTALL.md) · [Report a problem](https://github.com/Dant5/clean-home-tizen/issues) · [Privacy](PRIVACY.md)
 
-```sh
-npm ci
-python3 -m venv .local/venv
-.local/venv/bin/python -m pip install -r requirements-build.txt
-npx playwright install chromium
-npm run dev:public
-```
+Thanks to **chaosmanage’s Clean Home** and **Nathan Clark’s CleanFrame** for the original design and code. [Full credits](docs/UPSTREAM.md) · [MIT licence](LICENSE) · [Third-party notices](THIRD_PARTY_NOTICES.md).
 
-Open the localhost URL printed by the preview. Arrows, Enter and Escape correspond to the remote. A desktop browser cannot discover a television’s apps; installed-app choices require the TV, while tests supply a mock inventory.
-
-```sh
-npm run check
-npm run check:device
-npm run check:onboarding
-npm run check:python
-npm run package
-```
-
-The result is `dist/CleanHome-Q60B-unsigned.wgt`. It includes public fonts and licences, without device IDs, signing keys or a personal app profile. An unsigned widget needs local signing before a consumer TV will install it. [Development and full tests](CONTRIBUTING.md) · [release process](docs/RELEASING.md).
-
-## Support and privacy
-
-Use the bug or compatibility-report forms in [Issues](https://github.com/Dant5/clean-home-tizen/issues). Include model, firmware and app version; omit serial numbers, DUIDs, addresses, certificates, tokens and account screens. See [privacy](PRIVACY.md), [security reports](SECURITY.md) and [removal/recovery](INSTALL.md#removal-and-recovery).
-
-Bing daily pictures are optional and can be turned off. Fifteen credited wallpapers work offline. Weather is off by default. No analytics, camera or microphone feed is included.
-
-Original code is MIT. Fonts, photographs and service marks retain their own terms. Keep [LICENSE](LICENSE), [third-party notices](THIRD_PARTY_NOTICES.md) and the adjacent asset licences. [Upstream credits](docs/UPSTREAM.md).
+For developers: [Build and test](CONTRIBUTING.md) · [Test results](docs/TEST-RESULTS.md) · [Release process](docs/RELEASING.md).
