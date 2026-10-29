@@ -30,3 +30,7 @@ The launcher core through 1.3.9 was installed and visually used on the reference
 The new 1.4.0 + tile and short/long Select behaviour are browser-tested. A physical-remote first-run/hold test remains pending. Other TVs, their firmware, complete HDMI/eARC/CEC behaviour, on-screen keyboard variants, mains cold starts and multi-day operation are unverified. See [compatibility](COMPATIBILITY.md).
 
 Documentation images are offline browser renders with a mock app inventory and fixed clock; they are not photographs of another owner's television. Release assets are unsigned and contain public fonts. Signing/installing requires each owner's own Samsung profile. Hosted CI status and final artifact checksums are recorded separately by the repository Actions run and release manifest.
+
+## Hosted CI status
+
+The first private GitHub Actions run did **not start either job**. GitHub reported an account payment/spending-limit restriction before any checkout/test step. This is not a passing CI run or an application test failure. The local results above are complete; hosted verification remains blocked until the account/repository can run Actions. No billing settings were changed. Keep the preview draft unpublished until the desired hosted and physical-remote checks are resolved.

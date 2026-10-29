@@ -20,3 +20,7 @@ The dock holds up to nine apps. The list uses Samsung’s installed-app catalogu
 Developer Mode, certificate availability and installer support vary by TV/region. Keep the same author certificate when updating. Firmware changes may change undocumented native behaviour. This release does not disable Samsung updates, remove system packages, remap native keys or promise access to isolated application data.
 
 Please submit a compatibility report with the exact model, firmware, Tizen version, app version, installation method and what you actually observed. Exclude addresses, serials, DUIDs and private screenshots.
+
+## Screen size and resolution
+
+Physical panel size does not select a separate layout. The original 1920×1080 stage fits the available viewport and preserves 16:9 proportions. Samsung’s [screen-resolution guidance](https://developer.samsung.com/smarttv/develop/guides/fundamentals/managing-screen-resolution.html) recommends this design size and describes platform scaling; its [current specification table](https://developer.samsung.com/smarttv/develop/specifications/general-specifications.html) lists 1920×1080 application resolution across TV models. A 4K panel can therefore use a 1080p app surface. Browser 720p/4K results establish layout fit, not installation or native API compatibility on an untested television.

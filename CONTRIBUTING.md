@@ -10,7 +10,7 @@ npm run check:package
 npm run check:public
 ```
 
-`npm test` covers ES5/resource checks, device adapter, original UI, Q60B integration, photo recovery, early input, first-run selection and background comparisons. Python tests cover packaging/signing and supporting parsers using fake certificates/devices. The built-widget check examines the actual unsigned download. Tests run against a current browser and Chromium 85 in CI. Neither proves behaviour on an untested TV.
+`npm test` covers ES5/resource checks, device adapter, original UI, Q60B integration, photo recovery, early input, first-run selection and background comparisons. Python tests cover packaging/signing and supporting parsers using fake certificates/devices. The built-widget check examines the actual unsigned download. CI is configured for a current browser and Chromium 85. See the [validation record](docs/TEST-RESULTS.md) for actual local results and any hosted-run limitation. Neither proves behaviour on an untested TV.
 
 For a locally installed historical engine, set `CLEANHOME_CHROMIUM=/path/to/chrome`. `scripts/install-test-browser.py` downloads/checks the pinned Linux test snapshot used in CI. Use it for isolated local test pages, not general browsing. Its exact version is reported in test output.
 
