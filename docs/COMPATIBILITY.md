@@ -1,5 +1,7 @@
 # TV compatibility
 
+This build requires **Tizen 6.5 or newer**.
+
 | TV | Status |
 | --- | --- |
 | **2022 Samsung Q60B, Tizen 6.5** | Reference model used for development. |

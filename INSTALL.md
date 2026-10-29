@@ -8,7 +8,7 @@
 
 You need:
 
-- A Samsung TV. Developed on the **2022 Q60B with Tizen 6.5**; [other models are unconfirmed](docs/COMPATIBILITY.md).
+- A Samsung TV with **Tizen 6.5 or newer**. Developed on the **2022 Q60B**; [other models are unconfirmed](docs/COMPATIBILITY.md).
 - A computer on the same home network as the TV.
 - A Samsung account for the installer’s certificate setup. A certificate lets the TV accept the app.
 
