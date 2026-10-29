@@ -31,10 +31,14 @@ Documentation images are offline browser renders with a mock app inventory and f
 
 ## Hosted CI status
 
-Hosted validation has not completed for this preview. The local results above are complete; no successful hosted run is claimed. Keep the preview draft unpublished until the required hosted and physical-remote checks are complete.
+Both hosted browser jobs passed in [GitHub Actions](https://github.com/Dant5/clean-home-tizen/actions/runs/40967413587). Outstanding hardware checks are listed above; this release is a preview.
 
 ## Publication privacy checks
 
 Source, fetched Git branches/PR versions, release assets and image metadata were reviewed. No signing credentials or personal device addresses were found. Automated guards cover network/device identifiers, credential formats and image metadata; they supplement manual review and full-history secret scanning. Original credits are retained.
 
 Documentation and privacy-check changes leave the unsigned widget byte-identical to the validated 1.4.0 build.
+
+## Build dependency audit
+
+The build requirements are pinned to cryptography 50.0.2, pytest 9.2.0, lxml 6.1.3 and Pillow 13.0.0. The updated environment passes all 63 Python tests. npm audit and pip-audit report no known vulnerabilities in the audited dependencies. These tools are not shipped in the TV widget.

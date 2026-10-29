@@ -1,10 +1,14 @@
 name: Test and build
 on:
   push:
+    branches: [main]
   pull_request:
   workflow_dispatch:
 permissions:
   contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   test:
     name: Chromium ${{ matrix.engine }}
@@ -47,6 +51,7 @@ jobs:
           npm test
           npm run package
           npm run check:package
+          npm run check:performance
       - name: Check public source
         run: npm run check:public
       - name: Prepare unsigned generic release assets

@@ -23,7 +23,7 @@ Developed on a **2022 Samsung Q60B with Tizen 6.5**. Other models are unconfirme
 
 ## Install it
 
-**The public download is still being prepared.** Follow these steps once it is available.
+**[Download the preview](https://github.com/Dant5/clean-home-tizen/releases/tag/v1.4.0-preview.1)** · [Step-by-step installation](INSTALL.md)
 
 You need a computer on the TV’s home network and a Samsung account. No coding is required.
 

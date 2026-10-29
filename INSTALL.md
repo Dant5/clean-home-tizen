@@ -2,7 +2,7 @@
 
 **No root required.** Your existing apps stay installed, and the remote’s Home button keeps opening Samsung Home.
 
-**The public download is not available yet.** Use these steps once the `.wgt` appears in [Releases](https://github.com/Dant5/clean-home-tizen/releases).
+**[Download Clean Home](https://github.com/Dant5/clean-home-tizen/releases/tag/v1.4.0-preview.1)** and follow the steps below.
 
 ## Before you start
 
@@ -17,6 +17,14 @@ You need:
 1. Open [Clean Home Releases](https://github.com/Dant5/clean-home-tizen/releases) → **Assets**.
 2. Download the file ending in **`-unsigned.wgt`**. This is the TV app; skip the source-code ZIP files. The installer will prepare it for your TV.
 3. Download **Apps2Samsung** for your computer from its [official releases](https://github.com/Apps2Samsung/Apps2Samsung/releases), then open it. Choose a version with **Install a file…** support.
+
+| Computer | Apps2Samsung download |
+| --- | --- |
+| Windows | The desktop **`.msi`** installer. |
+| Mac | **`macos-arm64.dmg`** for Apple silicon, or **`macos-x64.dmg`** for Intel. |
+| Linux | The desktop **`.AppImage`**, `.deb` or `.rpm` for your system. |
+
+The files marked **`cli`** are for command-line use; they are not needed here.
 
 <details>
 <summary>Optional: check your download</summary>
@@ -87,7 +95,7 @@ A separate rootless Home-button/startup setup worked on the reference Q60B. It i
 
 | Problem | Try this |
 | --- | --- |
-| No `.wgt` in Releases | The download is not published yet. The source-code ZIP is not the TV app. |
+| Cannot find the app download | Open the preview release, expand **Assets**, then choose **`-unsigned.wgt`**. The source-code ZIP is not the TV app. |
 | TV is missing | Turn it on, check both devices use the same home network, then rescan. You can also enter the TV’s address from its Network Status/IP Settings in the installer. |
 | “Developer Mode is off” or TV is not ready | Repeat step 3. **Host PC IP uses the computer’s address.** Selecting the TV in the installer uses the TV’s address. |
 | VPN warning or wrong network | Use the home-network address. See the installer’s network help if a VPN affects discovery. |
