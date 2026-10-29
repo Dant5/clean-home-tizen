@@ -19,11 +19,11 @@ Based on [Clean Home by chaosmanage](https://github.com/chaosmanage/samsung-tv-l
 
 ## TV support
 
-Developed on a **2022 Samsung Q60B with Tizen 6.5**. Other models are unconfirmed. The layout adjusts to your screen size. [TV compatibility](docs/COMPATIBILITY.md).
+Requires **Tizen 6.5 or newer**. Developed on a **2022 Samsung Q60B**; other models are unconfirmed. The layout adjusts to your screen size. [TV compatibility](docs/COMPATIBILITY.md).
 
 ## Install it
 
-**The public download is still being prepared.** Follow these steps once it is available.
+**[Download the preview](https://github.com/Dant5/clean-home-tizen/releases/tag/v1.4.0-preview.1)** · [Step-by-step installation](INSTALL.md)
 
 You need a computer on the TV’s home network and a Samsung account. No coding is required.
 
