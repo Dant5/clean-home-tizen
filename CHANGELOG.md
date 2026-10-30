@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.4.1 preview
+
+- Adds a Tizen 5.0 minimum and compatibility work for older and newer TVs.
+- Keeps the original spacing on older TV browsers.
+- Gives older browsers an abortable daily-photo request.
+- Adds checks for the browser generations used by Tizen 5.0 through 10.0.
+
 ## 1.4.0 preview
 
 - Choose your own apps: a fresh install starts with **+**. Add up to nine shortcuts.

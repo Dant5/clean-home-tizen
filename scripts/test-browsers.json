@@ -1,0 +1,50 @@
+{
+  "63": {
+    "url": "https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/508578/chrome-linux.zip",
+    "source": "https://chromiumdash.appspot.com/fetch_milestones?mstone=63&platform=linux",
+    "sha256": "da0bbeb0e28b4bc1a92af44f62c996deebcac7ee933d7e7c75582e4d889586b2",
+    "version": "Chromium 63.0.3239.0"
+  },
+  "69": {
+    "url": "https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/564778/chrome-linux.zip",
+    "sha256": "1a4d1734798ae79b23a8cf61fb6e3b807c2d14d8ccbc38758c35dda142f9427e",
+    "source": "https://github.com/puppeteer/puppeteer/blob/v1.5.0/package.json"
+  },
+  "76": {
+    "url": "https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/662092/chrome-linux.zip",
+    "sha256": "d00627485d535cef6ce720dc1c81a8f36118cc3f99011543505192c9123ff004",
+    "source": "https://github.com/puppeteer/puppeteer/blob/v1.17.0/package.json"
+  },
+  "85": {
+    "url": "https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/782078/chrome-linux.zip",
+    "sha256": "3013c06ee25c60c952e4b63938271d7380c3f5c7b889fec67fa28da58e93e5de",
+    "version": "Chromium 85.0.4182.0",
+    "source": "https://github.com/puppeteer/puppeteer/blob/v5.2.1/src/revisions.ts"
+  },
+  "94": {
+    "url": "https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/911494/chrome-linux.zip",
+    "source": "https://chromiumdash.appspot.com/fetch_milestones?mstone=94&platform=linux",
+    "sha256": "25264b328b50589ecae6ed7d87575a34cd9b92ac71b9bc843bacab9562736a02",
+    "version": "Chromium 94.0.4606.0"
+  },
+  "108": {
+    "url": "https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/1056772/chrome-linux.zip",
+    "source": "https://github.com/puppeteer/puppeteer/blob/v19.2.0/packages/puppeteer-core/src/revisions.ts",
+    "sha256": "16a28b8a231b470b84df3a34ec4c133a87e2963f7d836772a2e9cebf4cc5ba0a",
+    "version": "Chromium 108.0.5351.0"
+  },
+  "120": {
+    "url": "https://storage.googleapis.com/chrome-for-testing-public/120.0.6099.109/linux64/chrome-linux64.zip",
+    "directory": "chrome-linux64",
+    "source": "https://pptr.dev/supported-browsers",
+    "sha256": "bcb22c5242aabf184c6fadd86ee58b3ae35739177edac9de3938ed33791d4ddf",
+    "version": "Google Chrome for Testing 120.0.6099.109"
+  },
+  "130": {
+    "url": "https://storage.googleapis.com/chrome-for-testing-public/130.0.6723.116/linux64/chrome-linux64.zip",
+    "directory": "chrome-linux64",
+    "source": "https://pptr.dev/supported-browsers",
+    "sha256": "3e71b99204dc191a8692048526a4ad41803b8b9035ea4ef14eb9b1d37331e1f1",
+    "version": "Google Chrome for Testing 130.0.6723.116"
+  }
+}

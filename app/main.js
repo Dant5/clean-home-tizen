@@ -1540,10 +1540,30 @@
     try { localStorage.setItem('cleanhome.bing', JSON.stringify({ url: BING.url, today: BING.today, pick: BING.pick, date: BING.date })); } catch (e) {}
   }
   function bingJson(mkt, idx, n, cb) {
-    if (typeof fetch !== 'function') { cb(null); return; }
+    var url = 'https://www.bing.com/HPImageArchive.aspx?format=js&idx=' + idx + '&n=' + n + '&mkt=' + encodeURIComponent(mkt);
     var controller = typeof AbortController === 'function' ? new AbortController() : null;
+    /* Chromium 63 has fetch but no AbortController. Use a cancellable request there. */
+    if (!controller && typeof XMLHttpRequest === 'function') {
+      var xhr = new XMLHttpRequest(), ended = false;
+      var deadline = setTimeout(function () { complete(null, true); }, 10000);
+      function complete(value, abort) {
+        if (ended) return; ended = true; clearTimeout(deadline);
+        xhr.onload = xhr.onerror = xhr.ontimeout = xhr.onabort = null;
+        if (abort) { try { xhr.abort(); } catch (eAbort) {} }
+        cb(value && Array.isArray(value.images) ? value.images.slice(0, 8) : null);
+      }
+      try {
+        xhr.open('GET', url, true); xhr.timeout = 10000;
+        xhr.onload = function () { var value = null; try { if (xhr.status >= 200 && xhr.status < 300) value = JSON.parse(xhr.responseText); } catch (eParse) {} complete(value, false); };
+        xhr.onerror = xhr.ontimeout = function () { complete(null, true); };
+        xhr.onabort = function () { complete(null, false); };
+        xhr.send();
+      } catch (eRequest) { complete(null, true); }
+      return;
+    }
+    if (typeof fetch !== 'function') { cb(null); return; }
     var done = false, timer = setTimeout(function () { if (!done) { done = true; if (controller) controller.abort(); cb(null); } }, 10000);
-    fetch('https://www.bing.com/HPImageArchive.aspx?format=js&idx=' + idx + '&n=' + n + '&mkt=' + encodeURIComponent(mkt), controller ? { signal: controller.signal } : undefined)
+    fetch(url, controller ? { signal: controller.signal } : undefined)
       .then(function (r) { if (!r.ok) throw new Error('HTTP'); return r.json(); })
       .then(function (j) { if (done) return; done = true; clearTimeout(timer); cb(j && Array.isArray(j.images) ? j.images.slice(0, 8) : null); })
       ['catch'](function () { if (!done) { done = true; clearTimeout(timer); cb(null); } });
@@ -2028,7 +2048,7 @@
             + (item.description ? '<span class="setting-description">' + esc(item.description) + '</span>' : '') + '</span>';
           if (item.toggle) body += '<span class="setting-tick" aria-hidden="true">' + (item.applied ? icon('check') : '') + '</span>';
           else if (!item.axis) body += icon('right', 'setting-forward');
-          return command(item, body, (item.description ? 'has-description' : '') + (item.toggle ? ' is-toggle' : '') + (item.applied ? ' is-applied' : ''));
+          return command(item, body, (item.description ? 'has-description' : '') + (!item.axis && !item.toggle ? ' has-forward' : '') + (item.toggle ? ' is-toggle' : '') + (item.applied ? ' is-applied' : ''));
         }).join('') + '</div>'
         + (section.reason ? '<p class="setting-reason">' + esc(section.reason) + '</p>' : '') + '</section>';
     }).join(''));

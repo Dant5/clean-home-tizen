@@ -1,10 +1,10 @@
 # Clean Home Tizen public source
 
-Preserve the Clean Home/CleanFrame design, original MIT notices and third-party licences. Runtime JavaScript must parse as ES5 and work with Chromium 85. Keep the exact application/package identity when updating an existing installation.
+Preserve the Clean Home/CleanFrame design, original MIT notices and third-party licences. Runtime JavaScript must parse as ES5 and work from Chromium 63 onward (Tizen 5.0 minimum). Keep the Q60B native helpers restricted to their original firmware; the wider web-widget target does not extend native Home compatibility. Keep the exact application/package identity when updating an existing installation.
 
 Fresh installations start with a single + tile and no favourite assumptions. Choosing an app appends it and leaves one + until capacity. Holding Select replaces the selected tile; short Select launches only on release. Preserve saved favourites, appearance and manual bindings on upgrade. Treat picker cancellation, save failure, repeat keys, blur and suspend as important regression cases.
 
-Run npm test and packaged-widget checks after relevant changes, using current Chromium and Chromium 85. The tests use a mock Tizen boundary and never require a TV. Regenerate/check cached shading when its inputs change. Report which engine, artifact and actual hardware were tested; do not infer visual success from a launch callback.
+Run npm test and packaged-widget checks after relevant changes, using current Chromium and Chromium 85. The tests use a mock Tizen boundary and never require a TV. Run the packaged compatibility checks for pinned engines 63, 69, 76, 85, 94, 108, 120 and 130. Regenerate/check cached shading and the older-engine spacing stylesheet when their inputs change. Report which engine, artifact and actual hardware were tested; do not infer visual success from a launch callback.
 
 The normal widget must not root, remove/disable packages, reset Smart Hub, change firmware/update policy, modify protected services, install a watcher or overwrite other app data. Native helper sources are separate advanced research; inspect their exact scope and baseline/rollback rules before any change. A firmware guard is not model compatibility proof. Do not connect to, install on or modify a television without its owner's task-specific authorisation.
 

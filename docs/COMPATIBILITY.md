@@ -1,11 +1,12 @@
 # TV compatibility
 
-This build requires **Tizen 6.5 or newer**.
+This build requires **Tizen 5.0 or newer**.
 
 | TV | Status |
 | --- | --- |
 | **2022 Samsung Q60B, Tizen 6.5** | Reference model used for development. |
-| Other Samsung Tizen TVs | Unconfirmed. Please [share your results](https://github.com/Dant5/clean-home-tizen/issues/new?template=compatibility.yml). |
+| Tizen 5.0, 5.5, 6.0, 7.0, 8.0, 9.0 and 10.0 | Preview targets; please [share your results](https://github.com/Dant5/clean-home-tizen/issues/new?template=compatibility.yml). |
+| Tizen 4.0 and earlier | Outside this build’s compatibility target. |
 | TVs from other brands | Not supported. |
 
 The reference model is QA55Q60BAWXXY, running T-NKLBUABC-1720.7. Matching Tizen versions alone does not guarantee compatibility.
@@ -22,4 +23,6 @@ The preview has not been verified on every model or with every input/remote feat
 
 ## For developers
 
-The runtime uses ES5-compatible JavaScript and targets Chromium 85. The original 1920×1080 stage scales proportionally to the viewport. A 4K panel can use a 1080p application surface; see [Samsung’s resolution guide](https://developer.samsung.com/smarttv/develop/guides/fundamentals/managing-screen-resolution.html). Browser layout checks do not establish native API compatibility on another TV.
+The runtime uses ES5-compatible JavaScript and targets Chromium 63 and newer. The original 1920×1080 stage scales proportionally to the viewport. A 4K panel can use a 1080p application surface; see [Samsung’s resolution guide](https://developer.samsung.com/smarttv/develop/guides/fundamentals/managing-screen-resolution.html). Browser layout checks do not establish native API compatibility on another TV.
+
+Samsung maps Tizen 5.0 / 5.5 / 6.0 / 6.5 / 7.0 / 8.0 / 9.0 / 10.0 to Chromium 63 / 69 / 76 / 85 / 94 / 108 / 120 / 130 respectively. See [Samsung’s engine specifications](https://developer.samsung.com/smarttv/develop/specifications/web-engine-specifications.html). The APIs used for application discovery and input switching predate the 5.0 minimum; see [Application](https://developer.samsung.com/smarttv/develop/api-references/tizen-web-device-api-references/application-api.html) and [TVWindow](https://developer.samsung.com/smarttv/develop/api-references/tizen-web-device-api-references/tvwindow-api.html).

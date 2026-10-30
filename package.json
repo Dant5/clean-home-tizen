@@ -1,8 +1,8 @@
 {
   "name": "clean-home-tizen",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "private": true,
-  "description": "Clean Home for Samsung Tizen 6.5, tested on Q60B; choose your own apps.",
+  "description": "Clean Home for Samsung Tizen 5.0 and newer; choose your own apps.",
   "scripts": {
     "dev": "python3 scripts/preview.py",
     "check": "node scripts/check-es5.mjs && python3 scripts/check.py",
@@ -14,7 +14,7 @@
     "check:q60b": "node scripts/check-q60b.mjs",
     "check:device": "node --test tests/device.test.cjs",
     "check:signer": ".local/venv/bin/python -m pytest -q tests/test_signer.py",
-    "test": "npm run check && npm run check:device && npm run check:browser && npm run check:q60b && npm run check:bing && npm run check:reliability && npm run check:onboarding && npm run check:startup-input && npm run check:backgrounds && npm run check:responsive && npm run check:python",
+    "test": "npm run check && npm run check:device && npm run check:browser && npm run check:q60b && npm run check:bing && npm run check:reliability && npm run check:onboarding && npm run check:startup-input && npm run check:backgrounds && npm run check:responsive && npm run check:python && npm run check:legacy-network",
     "check:reliability": "node scripts/check-reliability.mjs",
     "check:bing": "node scripts/_bing-next.mjs",
     "check:performance": "node scripts/check-performance.mjs",
@@ -25,7 +25,9 @@
     "check:startup-input": "node scripts/check-startup-input.mjs",
     "check:onboarding": "node scripts/check-onboarding.mjs",
     "release:prepare": ".local/venv/bin/python scripts/prepare-release.py",
-    "check:responsive": "node scripts/check-responsive.mjs"
+    "check:responsive": "node scripts/check-responsive.mjs",
+    "check:compatibility": "node scripts/check-compatibility.mjs",
+    "check:legacy-network": "node scripts/check-legacy-network.mjs"
   },
   "devDependencies": {
     "acorn": "8.15.0",

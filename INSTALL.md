@@ -2,13 +2,13 @@
 
 **No root required.** Your existing apps stay installed, and the remote’s Home button keeps opening Samsung Home.
 
-**[Download Clean Home](https://github.com/Dant5/clean-home-tizen/releases/tag/v1.4.0-preview.1)** and follow the steps below.
+**[Download Clean Home](https://github.com/Dant5/clean-home-tizen/releases/tag/v1.4.1-preview.1)** and follow the steps below.
 
 ## Before you start
 
 You need:
 
-- A Samsung TV with **Tizen 6.5 or newer**. Developed on the **2022 Q60B**; [other models are unconfirmed](docs/COMPATIBILITY.md).
+- A Samsung TV with **Tizen 5.0 or newer**. Developed on the **2022 Q60B**; [other models are unconfirmed](docs/COMPATIBILITY.md).
 - A computer on the same home network as the TV.
 - A Samsung account for the installer’s certificate setup. A certificate lets the TV accept the app.
 
@@ -33,9 +33,9 @@ Download `SHA256SUMS` from the same release. Check the app file using the comman
 
 | Computer | Command |
 | --- | --- |
-| Windows PowerShell | `Get-FileHash .\CleanHome-Tizen-1.4.0-unsigned.wgt -Algorithm SHA256` |
-| Mac Terminal | `shasum -a 256 CleanHome-Tizen-1.4.0-unsigned.wgt` |
-| Linux Terminal | `sha256sum CleanHome-Tizen-1.4.0-unsigned.wgt` |
+| Windows PowerShell | `Get-FileHash .\CleanHome-Tizen-1.4.1-unsigned.wgt -Algorithm SHA256` |
+| Mac Terminal | `shasum -a 256 CleanHome-Tizen-1.4.1-unsigned.wgt` |
+| Linux Terminal | `sha256sum CleanHome-Tizen-1.4.1-unsigned.wgt` |
 
 Compare the result with the file’s entry in `SHA256SUMS`. If they differ, download again before installing.
 

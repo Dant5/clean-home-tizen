@@ -1,3 +1,13 @@
+# 1.4.1 compatibility update
+
+The generic widget targets **Tizen 5.0 and newer**, using the same package/application identity. The Q60B remains the only physical reference TV; no other model has been installed or tested on hardware. The native Home/startup helper guards are unchanged and are not covered by the broader web-widget target.
+
+Local packaged-widget checks pass **40 per engine** in Chromium 63, 69, 76, 85, 94, 108, 120 and 130. Checks reuse the onboarding fixture and cover first run, add/replace, short/long Select, launch IDs, reload persistence, font loading, all settings groups, the app editor and 18 appearance combinations. Modern engines compare fallback geometry with native flex spacing. Screenshots from Chromium 63 and 85 were inspected locally.
+
+Eight new photo-network checks cover real XHR success, malformed data and cancellation when AbortController is unavailable. The updated Python suite passes **64 tests**, including generated-spacing freshness. The full 1.4.1 regression suites pass in current Chromium and Chromium 85, including all eight actual-widget checks and 43 performance checks per engine. The original baseline results below are retained. Hosted validation is tracked in the release checks.
+
+Engine mappings and API availability were reviewed against [Samsung’s engine specifications](https://developer.samsung.com/smarttv/develop/specifications/web-engine-specifications.html), [Application API](https://developer.samsung.com/smarttv/develop/api-references/tizen-web-device-api-references/application-api.html) and [TVWindow API](https://developer.samsung.com/smarttv/develop/api-references/tizen-web-device-api-references/tvwindow-api.html). Pinned test archive URLs, SHA-256 digests and source references are in `scripts/test-browsers.json`. Desktop engines and fake Tizen APIs do not prove installation, certificate acceptance, real app inventories, HDMI/audio or timing on another television.
+
 # Preview validation
 
 Release candidate: **1.4.0**, prepared 29 October 2026. The 1.4.0 preview adds the first-run picker to the 1.3.9 reference-device implementation.
