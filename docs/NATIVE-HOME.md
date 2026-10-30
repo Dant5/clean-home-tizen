@@ -1,6 +1,6 @@
 # Make Clean Home your Home screen
 
-**Home and power-on can open Clean Home without root.** A separate, optional computer tool changes the TV’s Home and startup preferences. It saves the originals and includes Undo. Samsung Home stays accessible inside Clean Home.
+**Home and power-on can open Clean Home without root.** This is step 5 of the [main installation guide](INSTALL.md#5-make-it-your-home-screen). The Home tool is included in the Clean Home Setup bundle, saves the original preferences and includes Undo. Samsung Home stays accessible inside Clean Home.
 
 ## Supported TV
 
@@ -19,8 +19,8 @@ An OS version alone does not establish native compatibility. Please do not remov
 
 ## Set it up
 
-1. **Windows:** download **CleanHome-Home-Setup-Windows-experimental.zip** from the same [release](https://github.com/Dant5/clean-home-tizen/releases) as the TV app. Extract it, then open **CleanHome-Home-Setup.exe**. Python is included; no installation or administrator account is needed.
-2. **Linux:** use **CleanHome-Home-Setup-experimental.zip** instead, extract it and run **START-LINUX.sh** with Python 3.11 or newer. The same source package can also be run on Windows using **START-WINDOWS.cmd** if Python is installed. No extra Python packages or Tizen Studio are required. The tool opens a local browser page.
+1. **Windows:** in the extracted **CleanHome-Setup-Windows-preview.zip**, open **home-setup/CleanHome-Home-Setup.exe**. Python is included; no installation or administrator account is needed. If the TV app is already installed, the smaller **CleanHome-Home-Setup-Windows-experimental.zip** contains the same tool.
+2. **Linux:** in **CleanHome-Setup-Python-preview.zip**, run **home-setup/START-LINUX.sh** with Python 3.11 or newer. Already installed? The smaller **CleanHome-Home-Setup-experimental.zip** contains the same tool. Python users on Windows can use **START-WINDOWS.cmd**. No extra Python packages or Tizen Studio are required. The tool opens a local browser page.
 3. Enter the **TV’s** local address, found in **Settings → General → Network → Network Status → IP Settings**. Choose **Check TV**. An unsupported TV stops here.
 4. Read the confirmation, tick the box and choose **Use Clean Home**. The tool saves and verifies the original preferences before making a change. Wait for its confirmation.
 5. Press Home on the physical remote. It should open Clean Home. Open Samsung Home from Clean Home’s top row to check the original interface is available. Turn the TV off normally, wait 30 seconds, then switch on and check startup.

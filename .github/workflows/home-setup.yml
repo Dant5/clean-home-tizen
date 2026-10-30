@@ -1,4 +1,4 @@
-name: Optional Home setup
+name: Home setup bundles
 on:
   push:
     branches: [main]
@@ -28,7 +28,7 @@ jobs:
       - name: Host and transaction checks (no TV)
         run: |
           python -m pip install pytest==8.4.2 pyinstaller==6.16.0
-          python -m pytest -q tests/test_home_setup.py
+          python -m pytest -q tests/test_home_setup.py tests/test_setup_bundle.py
           dotnet run --project tools/home-control/PolicyTests.csproj -c Release -p:UseSharedCompilation=false
           python scripts/build-home-setup.py
       - name: Build Windows executable
@@ -42,11 +42,14 @@ jobs:
           & ./dist/companion/CleanHome-Home-Setup-Windows-experimental.exe --check-package
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python scripts/package-windows-setup.py dist/companion/CleanHome-Home-Setup-Windows-experimental.exe
+      - name: Package app and Home setup together
+        run: python scripts/prepare-release.py
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: home-setup-${{ runner.os }}
           path: |
             dist/CleanHome-Home-Setup-experimental.zip
             dist/companion/*.zip
+            dist/release/CleanHome-Setup-*.zip
           if-no-files-found: error
           retention-days: 7

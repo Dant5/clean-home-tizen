@@ -29,7 +29,7 @@ def main():
         shutil.copy2(ROOT / name, output / Path(name).name)
     shutil.copy2(ROOT / "tools/home-setup/START-WINDOWS.cmd", output / "START-WINDOWS.cmd")
     (output / "START-WINDOWS.cmd").write_text('@echo off\ncd /d "%~dp0"\npython tools\\home-setup\\setup.py\nif errorlevel 1 pause\n')
-    (output / "START-LINUX.sh").write_text('#!/bin/sh\ncd "$(dirname "$0")" || exit 1\nexec python3 tools/home-setup/setup.py\n')
+    (output / "START-LINUX.sh").write_bytes(b'#!/bin/sh\ncd "$(dirname "$0")" || exit 1\nexec python3 tools/home-setup/setup.py\n')
     os.chmod(output / "START-LINUX.sh", 0o755)
     payload = output / "tools/home-setup/payload"
     payload.mkdir()
