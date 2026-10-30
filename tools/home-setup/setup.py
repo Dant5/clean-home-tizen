@@ -9,7 +9,8 @@ import sys
 import threading
 import webbrowser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from core import Companion, Store, read_payload, DeviceSessionError
+from core import Companion, Store, read_payload
+from vendor.aerotizen.sdb import SdbError
 
 
 class ProcessLock:
@@ -81,7 +82,7 @@ def create_server(companion):
                 return
             try:
                 self.respond(companion.perform(request["host"], request["action"]))
-            except (ValueError, OSError, RuntimeError, DeviceSessionError) as error:
+            except (ValueError, OSError, RuntimeError, SdbError) as error:
                 # Never expose native output, DUIDs, packets or stack traces.
                 safe = str(error) if isinstance(error, ValueError) else "The TV did not confirm the operation. Keep the recovery folder and use Check TV, then Undo if needed. Close Apps2Samsung and check Developer Mode's Host PC address."
                 self.respond({"error": safe}, 400)

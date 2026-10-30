@@ -228,7 +228,11 @@ def test_sdk_callback_roundtrip_requires_confirmed_cleanup(clean):
 def test_local_wizard_requires_token_origin_and_explicit_confirmation():
     class FakeCompanion:
         calls = []
-        def perform(self, host, action): self.calls.append((host, action)); return {'success': True}
+        error = None
+        def perform(self, host, action):
+            self.calls.append((host, action))
+            if self.error: raise self.error
+            return {'success': True}
     fake = FakeCompanion()
     server = wizard.create_server(fake)
     thread = threading.Thread(target=server.serve_forever, daemon=True)
@@ -247,4 +251,17 @@ def test_local_wizard_requires_token_origin_and_explicit_confirmation():
         request = urllib.request.Request(url+'/action', data=json.dumps({'host': 'TV_FIXTURE', 'action': 'inspect', 'confirmed': False}).encode(), headers={'Content-Type':'application/json','X-Clean-Home':token})
         assert json.load(urllib.request.urlopen(request))['success']
         assert fake.calls == [('TV_FIXTURE','inspect')]
+        # Base SDB errors include refused handshakes/transfers and must not leak
+        # native output or leave the operation lock held after returning JSON.
+        from vendor.aerotizen.sdb import SdbError
+        for error_type in (SdbError, core.DeviceSessionError):
+            fake.error = error_type('PRIVATE_NATIVE_OUTPUT')
+            with pytest.raises(urllib.error.HTTPError) as caught:
+                urllib.request.urlopen(request)
+            assert caught.value.code == 400
+            message = json.load(caught.value)['error']
+            assert 'PRIVATE_NATIVE_OUTPUT' not in message
+            assert 'Keep the recovery folder' in message and 'Host PC address' in message
+        fake.error = None
+        assert json.load(urllib.request.urlopen(request))['success']
     finally: server.shutdown(); server.server_close(); thread.join(2)
