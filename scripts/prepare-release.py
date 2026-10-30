@@ -58,6 +58,27 @@ def source_names():
     return sorted(result)
 
 
+def validate_companion(path):
+    with zipfile.ZipFile(path) as archive:
+        names=archive.namelist()
+        if len(names)!=len(set(names)) or archive.testzip():
+            raise ValueError('Invalid companion archive')
+        if sum(info.file_size for info in archive.infolist())>128*1024*1024:
+            raise ValueError('Companion archive too large')
+        for info in archive.infolist():
+            name=info.filename
+            member=Path(name)
+            if member.is_absolute() or '..' in member.parts or '\\' in name or (info.external_attr>>16)&0o170000==0o120000:
+                raise ValueError('Unsafe companion path: '+name)
+            if member.suffix.lower() in {'.wgt','.p12','.pfx','.pem','.key','.csr','.crt','.cer','.der','.jks','.keystore'} or member.name.lower() in {'originalhome.json','original-home.json','profiles.xml','password.txt','session.json'} or '.original.json' in name or '.status.json' in name:
+                raise ValueError('Private companion member: '+name)
+            if member.suffix.lower() in {'.py','.json','.txt','.html','.cmd','.sh'}:
+                if content_findings('tools/'+name,archive.read(name).decode('utf-8')):
+                    raise ValueError('Private data pattern in companion: '+name)
+        if not any(Path(name).name in {'LICENSE','LICENSE.txt'} for name in names):
+            raise ValueError('Companion licence missing')
+
+
 def main():
     version = json.loads((ROOT / 'package.json').read_text())['version']
     subprocess.run([sys.executable, 'scripts/package.py'], cwd=ROOT, check=True)
@@ -78,10 +99,17 @@ def main():
     dirty = bool(subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT))
     def describe(p):
         return {'name': p.name, 'bytes': p.stat().st_size, 'sha256': hashlib.sha256(p.read_bytes()).hexdigest()}
-    manifest = {'version': version, 'source_commit': commit, 'working_tree_dirty': dirty, 'signed': False, 'tv_contacted': False, 'personal_profile': False, 'assets': [describe(target), describe(source)], 'compatibility': 'Tizen 5.0+ target; browser checks span Chromium 63-130. Reference hardware: Q60B / Tizen 6.5; other TVs unverified.'}
+    assets=[target,source]
+    for extra in [ROOT/'dist/CleanHome-Home-Setup-experimental.zip',ROOT/'dist/companion/CleanHome-Home-Setup-Windows-experimental.zip']:
+        if extra.is_file():
+            validate_companion(extra)
+            destination=folder/extra.name
+            destination.write_bytes(extra.read_bytes())
+            assets.append(destination)
+    manifest = {'version': version, 'source_commit': commit, 'working_tree_dirty': dirty, 'signed': False, 'tv_contacted': False, 'personal_profile': False, 'assets': [describe(p) for p in assets], 'compatibility': 'Tizen 5.0+ target; browser checks span Chromium 63-130. Reference hardware: Q60B / Tizen 6.5; other TVs unverified.', 'native_setup': 'Optional experimental companion: QA55Q60BAWXXY / T-NKLBUABC-1720.7 only. New combined installer/Undo require physical-TV validation; underlying native mechanism has reference-device evidence.'}
     record = folder / 'release-manifest.json'
     record.write_text(json.dumps(manifest, indent=2) + '\n')
-    (folder / 'SHA256SUMS').write_text(''.join(describe(p)['sha256'] + '  ' + p.name + '\n' for p in [target, source, record]))
+    (folder / 'SHA256SUMS').write_text(''.join(describe(p)['sha256'] + '  ' + p.name + '\n' for p in assets+[record]))
     print('Unsigned generic release assets: ' + str(folder.relative_to(ROOT)))
     if dirty:
         print('Working tree is dirty: commit reviewed changes and regenerate before uploading.')

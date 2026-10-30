@@ -1,0 +1,10 @@
+{
+  "repository": "https://github.com/helalaou/AeroTizen",
+  "commit": "64574228cee973095af590cd9ff387467e84d3b7",
+  "path": "src/aerotizen/sdk.py",
+  "sha256": "f91c23fe2de7c288e7b328965ff231f42d6f90e518b77f779fae33febfa6efb5",
+  "changes": [
+    "Use local bounded transport exception; root providers are not included.",
+    "Apply an absolute callback deadline as well as per-read timeouts."
+  ]
+}

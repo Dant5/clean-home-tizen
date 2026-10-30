@@ -7,8 +7,8 @@ body:
   - type: textarea
     id: diagnostics
     attributes:
-      label: TV details
-      description: The QR code fills this in. For a manual report, enter your model, firmware, Tizen and Clean Home versions. Unknown details are fine.
+      label: TV details or report receipt
+      description: Already used Send on the TV? Paste its receipt. The optional phone code fills in details; otherwise enter your model and software versions. Unknown details are fine.
       render: json
     validations:
       required: true

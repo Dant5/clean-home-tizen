@@ -1,0 +1,6 @@
+{
+  "project": "Clean Home TV feedback",
+  "endpoint": "https://clean-home-feedback.perkymule6.chatgpt.site/api/reports",
+  "scope": "Authored intake route, validation and migration only; no private database, provider credentials or hosting identity configuration.",
+  "license": "MIT"
+}

@@ -1151,17 +1151,25 @@
   }
   function showDiagnostics() {
     push({ id: 'tvreport', report: FrameReport.collect({ catalogLoaded: catalog.loaded, catalogError: !!catalog.error,
-      storageOk: storageOk, photoReady: !!(IMG.photo.complete && IMG.photo.naturalWidth) }), outcome: '', f: { b: 0 } });
+      storageOk: storageOk, photoReady: !!(IMG.photo.complete && IMG.photo.naturalWidth) }), outcome: '', phone: !FrameReport.canSend(), sendState: '', f: { b: 0 } });
     render();
   }
   V.tvreport = {
     sheet: true,
-    norm: function (t) { t.f.b = clamp(t.f.b, 0, 2); },
+    norm: function (t) { t.f.b = clamp(t.f.b, 0, t.phone ? 2 : 3); },
     key: function (t, k) {
       if (k === 'left' || k === 'up') t.f.b--;
       else if (k === 'right' || k === 'down') t.f.b++;
-      else if (k === 'back' || (k === 'ok' && t.f.b === 2)) pop();
-      else if (k === 'ok') t.outcome = t.f.b === 0 ? 'works' : 'problem';
+      else if (k === 'back' || (k === 'ok' && t.f.b === (t.phone ? 2 : 3))) { if (t.cancelSend) t.cancelSend(); pop(); }
+      else if (k === 'ok' && !t.phone && t.f.b === 2) { if (t.cancelSend) t.cancelSend(); t.phone = true; t.outcome = ''; t.f.b = 0; }
+      else if (k === 'ok' && t.phone) t.outcome = t.f.b === 0 ? 'works' : 'problem';
+      else if (k === 'ok' && t.sendState !== 'sending' && t.sendState !== 'sent') {
+        t.outcome = t.f.b === 0 ? 'works' : 'problem'; t.sendState = 'sending';
+        t.cancelSend = FrameReport.send(t.report, t.outcome, function (error, receipt) {
+          if (top() !== t || t.phone) return;
+          t.sendState = error ? 'failed' : 'sent'; t.sendMessage = error || 'Thank you. Your report was sent.\nReceipt: ' + receipt; render();
+        });
+      }
     },
     point: function (t, z, i) { t.f.b = i; this.key(t, 'ok'); }
   };
@@ -2598,19 +2606,22 @@
   QA.actions = function () { var view = isSettingsDetail(top()) ? appearanceEl : sheetEl.hidden ? homeEl : sheetEl; return Array.prototype.filter.call(view.querySelectorAll('[data-action]'), renderedAction).map(function (el) { return el.getAttribute('data-action'); }); };
 
   FRAMES.tvreport = function () {
-    return '<div class="tv-report"><h2>Share TV report</h2><p class="tv-report-intro">Choose an option, then scan the code with your phone. Review your report and submit it on GitHub.</p>'
+    return '<div class="tv-report"><h2>Share TV report</h2><p class="tv-report-intro" data-slot="intro"></p>'
       + '<pre class="tv-report-data" data-slot="data"></pre><div class="tv-report-qr"><canvas data-slot="qr" hidden aria-label="QR code to a prefilled GitHub report"></canvas><p class="tv-report-status" data-slot="status" role="status"></p></div>'
-      + '<div class="tv-report-actions" data-slot="actions"></div><p class="tv-report-note">Nothing is sent by the TV. Reports are public and need a GitHub account.<br>No accounts, app list, addresses, serial numbers or signing details are included.</p></div>';
+      + '<div class="tv-report-actions" data-slot="actions"></div><p class="tv-report-note" data-slot="note"></p></div>';
   };
   FILLS.tvreport = function (t, slots) {
     var r = t.report;
+    slots.intro.textContent = t.phone ? 'Choose an option, then scan the code with your phone. Review your report and submit it on GitHub.' : 'Review these details, then choose Send. No phone or account needed.';
+    slots.note.textContent = t.phone ? 'Nothing is sent by the TV. Phone reports are public and need a GitHub account.\nNo accounts, app list, addresses, serial numbers or signing details are included.' : 'Sent privately to the Clean Home maintainer only when you choose Send.\nNo accounts, app list, addresses, serial numbers or signing details are included.';
     slots.data.textContent = 'Clean Home ' + r.cleanHome + ' | ' + r.environment + '\nModel: ' + r.model + '\nFirmware: ' + r.firmware + '\nTizen: ' + r.tizen + ' | Chromium: ' + r.chromium
       + '\nApp surface: ' + r.viewport + '\nSpacing: ' + r.spacing + '\nApp discovery: ' + r.appDiscovery + '\nSaved settings: ' + r.savedSettings + '\nPhoto: ' + r.photo + '\nUnhandled errors: ' + r.errors + ' | Rejections: ' + r.rejections
       + '\nTV errors: ' + r.tvErrors + ' | ' + r.lastTVError
       + '\nResult: ' + (t.outcome ? t.outcome === 'works' ? 'Works on my TV' : 'There is a problem' : 'Choose below');
-    setHTML(slots.actions, ['Works on my TV', 'Report a problem', 'Back'].map(function (label, i) {
+    setHTML(slots.actions, (t.phone ? ['Works on my TV', 'Report a problem', 'Back'] : ['Send: works', 'Send: problem', 'Use phone', 'Back']).map(function (label, i) {
       return '<button type="button" tabindex="-1" class="btn' + (i === t.f.b ? ' is-focus' : '') + '" data-z="report" data-i="' + i + '" data-action="report.' + i + '">' + label + '</button>';
     }).join(''));
+    if (!t.phone) { slots.qr.hidden = true; slots.status.textContent = t.sendState === 'sending' ? 'Sending\u2026' : t.sendMessage || 'Your report stays private. Compatibility findings may help update the public TV support chart.'; return; }
     if (!t.outcome) { slots.status.textContent = 'Choose Works or Report a problem below.'; return; }
     if (t.qrOutcome === t.outcome) return;
     t.qrOutcome = t.outcome;

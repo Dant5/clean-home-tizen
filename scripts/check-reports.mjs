@@ -27,6 +27,7 @@ async function open({unknown = false, failQR = false} = {}) {
   }, unknown);
   await page.goto(preview.baseURL);
   await page.waitForFunction(() => ShoreQA.ready() && ShoreQA.state().catalog.loaded);
+  await page.evaluate(() => { CleanHomeConfig.reportEndpoint = ''; }); // Exercise optional phone fallback.
   return page;
 }
 const act = async (page, action) => {

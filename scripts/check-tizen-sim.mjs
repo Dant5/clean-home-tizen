@@ -1,0 +1,40 @@
+// Attach to a local tizen-sim Session. This never contacts a television.
+import assert from 'node:assert/strict';
+import {readFileSync,readdirSync,mkdirSync,writeFileSync} from 'node:fs';
+import {join,resolve} from 'node:path';
+import {createHash} from 'node:crypto';
+const home=process.env.TIZEN_SIM_HOME;
+assert(home,'Set TIZEN_SIM_HOME to the local simulator data directory.');
+const directory=join(home,'state/sessions');
+const candidates=readdirSync(directory).map(name=>JSON.parse(readFileSync(join(directory,name,'session.json'),'utf8'))).filter(s=>s.app_id==='D5Q60BHome.CleanHome');
+assert.equal(candidates.length,1,'Use an isolated simulator home with exactly one Clean Home Session.');
+const session=candidates[0],endpoint=new URL(session.endpoint);
+assert.equal(endpoint.hostname,'127.0.0.1');assert.equal(endpoint.protocol,'http:');
+const checks=[];
+async function request(path,data){const r=await fetch(endpoint+path,{method:data?'POST':'GET',headers:{Authorization:'Bearer '+session.token,'Content-Type':'application/json'},body:data?JSON.stringify(data):undefined,signal:AbortSignal.timeout(10000)});assert(r.ok,'Simulator control request failed: '+path);const body=await r.text();return body?JSON.parse(body):null;}
+const evaluate=async expression=>{const value=await request('evaluate',{expression:'JSON.stringify('+expression+')'});return JSON.parse(value);};
+const key=async name=>{await request('key',{key:name});await new Promise(r=>setTimeout(r,120));};
+const check=(label,value)=>{assert(value,label);checks.push(label);};
+await request('reload',{});await new Promise(r=>setTimeout(r,1800));
+check('The widget opens with real simulator platform shims',await evaluate('ShoreQA.ready()&&!!window.tizen&&!!window.webapis'));
+check('App discovery completes with no adapter error',await evaluate('ShoreQA.state().catalog.loaded&&!ShoreQA.state().catalog.error'));
+check('The simulator exposes only this app, which is excluded from favourites',await evaluate('ShoreQA.state().catalog.ids.length===0'));
+check('Fresh Home has one focused plus tile',await evaluate('document.querySelectorAll(".dock .tile").length===1&&ShoreQA.where().focusCount===1'));
+await key('Enter');check('Simulator Select opens the app chooser',await evaluate('ShoreQA.state().view==="apps"'));
+await key('Back');check('Simulator Back returns to Home',await evaluate('ShoreQA.state().view==="home"'));
+await evaluate('(CleanHomeConfig.reportEndpoint="",ShoreQA.scene("settings"),true)'); // Never send test metadata to the live receiver.
+await evaluate('(ShoreQA.activate("settings.group.samsung"),true)');
+await evaluate('(ShoreQA.activate("samsung.diagnostics"),true)');
+check('Report opens under the simulator privilege boundary',await evaluate('ShoreQA.state().view==="tvreport"'));
+const report=await evaluate('FrameReport.collect({catalogLoaded:true,storageOk:true})');
+check('Reported OS agrees with this Version Profile',report.tizen.startsWith(session.profile));
+check('Report has model and firmware from simulator ProductInfo',report.model!=='Not reported'&&report.firmware!=='Not reported');
+check('No raw errors were raised by platform-backed startup',report.errors===0&&report.rejections===0&&report.tvErrors===0);
+await evaluate('(ShoreQA.activate("report.1"),true)');await new Promise(r=>setTimeout(r,500));
+check('On-demand report QR renders in the platform simulator',await evaluate('!document.querySelector(".tv-report-qr canvas").hidden&&document.querySelector(".tv-report-qr canvas").width>=300'));
+await key('Back');check('Back restores Samsung settings and a single focus target',await evaluate('ShoreQA.where().settingsGroup==="samsung"&&ShoreQA.where().focusCount===1'));
+const folder=resolve('.local/qa/tizen-sim-'+session.profile);mkdirSync(folder,{recursive:true});
+const screenshot=await fetch(endpoint+'screenshot',{headers:{Authorization:'Bearer '+session.token},signal:AbortSignal.timeout(10000)});assert(screenshot.ok);writeFileSync(join(folder,'settings.png'),Buffer.from(await screenshot.arrayBuffer()));
+const result={scope:'Unsigned widget in tizen-sim 0.3.1, real versioned engine and platform shims; no physical TV or native Home verification',profile:session.profile,widgetSha256:createHash('sha256').update(readFileSync(session.source.Package)).digest('hex'),report,checks};
+writeFileSync(join(folder,'report.json'),JSON.stringify(result,null,2)+'\n');
+console.log('tizen-sim '+session.profile+': '+checks.length+' checks passed; no physical TV contacted.');

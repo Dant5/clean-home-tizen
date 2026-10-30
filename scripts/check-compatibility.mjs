@@ -71,7 +71,7 @@ try{
  for(const layout of ['dock','list'])for(const controls of ['icons','both','text'])for(const apps of ['icons','both','text']){await evaluate('ShoreQA.scene("home");ShoreQA.look('+JSON.stringify({layout,controls,apps})+')');await until(()=>evaluate('ShoreQA.ready()'),'appearance');await spacing(layout+' '+controls+' '+apps);}
  await evaluate('ShoreQA.scene("home");ShoreQA.look({layout:"list"})');await until(()=>evaluate('ShoreQA.ready()'),'list');await spacing('List Home');
  check('One visible remote focus target',await evaluate('ShoreQA.where().focusCount===1'));
- await evaluate('ShoreQA.scene("settings")');await action('settings.group.samsung');await action('samsung.diagnostics');
+ await evaluate('CleanHomeConfig.reportEndpoint="";ShoreQA.scene("settings")');await action('settings.group.samsung');await action('samsung.diagnostics');
  check('TV report opens without sharing',await evaluate('ShoreQA.state().view==="tvreport"&&document.querySelector(".tv-report-qr canvas").hidden'));
  await action('report.1');await until(()=>evaluate('!document.querySelector(".tv-report-qr canvas").hidden'),'locally generated report code');
  check('TV report QR renders on this engine',await evaluate('document.querySelector(".tv-report-qr canvas").width>=300'));

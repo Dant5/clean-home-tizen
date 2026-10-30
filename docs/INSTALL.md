@@ -1,6 +1,6 @@
 # Install and use Clean Home
 
-**No root required.** Your existing apps stay installed, and the remote’s Home button keeps opening Samsung Home.
+**No root required.** Your existing apps stay installed. The optional [Home Setup tool](NATIVE-HOME.md) can make Home and power-on open Clean Home on the verified Q60B software; a normal install keeps Samsung Home in charge.
 
 **[Download Clean Home](https://github.com/Dant5/clean-home-tizen/releases/tag/v1.4.2-preview.1)** and follow the steps below.
 
@@ -89,7 +89,7 @@ Use **Settings → Apps on Home** to reorder or remove shortcuts. To move one, s
 
 A standard install opens from **Apps**. It does **not** change what happens when you press Home or turn on the TV.
 
-A separate rootless Home-button/startup setup worked on the reference Q60B. It is not included in this download. [Advanced details](NATIVE-HOME.md).
+The optional [Home Setup tool](NATIVE-HOME.md) can make Home and power-on open Clean Home on the verified Q60B software. It is a separate experimental download with saved originals and Undo; a TV-app installation alone keeps Samsung Home in charge.
 
 ## Connection and installation help
 
