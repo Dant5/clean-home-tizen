@@ -33,7 +33,7 @@
     "check:tizen-sim": "node scripts/check-tizen-sim.mjs"
   },
   "devDependencies": {
-    "acorn": "8.15.0",
+    "acorn": "8.19.0",
     "jsqr": "1.4.0",
     "playwright": "1.64.1"
   },
