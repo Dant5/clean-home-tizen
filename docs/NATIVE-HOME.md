@@ -19,8 +19,8 @@ An OS version alone does not establish native compatibility. Please do not remov
 
 ## Set it up
 
-1. Download **CleanHome-Home-Setup-experimental.zip** from the same [release](https://github.com/Dant5/clean-home-tizen/releases) as the TV app. Extract it to a normal folder.
-2. This source-based companion needs **Python 3.11 or newer** from [python.org](https://www.python.org/downloads/). No extra Python packages or Tizen Studio are required. On Windows, double-click **START-WINDOWS.cmd**. On Linux, run **START-LINUX.sh**. A setup page opens in your computer’s browser. If Python is missing or an error appears, use the help below; do not change TV settings manually.
+1. **Windows:** download **CleanHome-Home-Setup-Windows-experimental.zip** from the same [release](https://github.com/Dant5/clean-home-tizen/releases) as the TV app. Extract it, then open **CleanHome-Home-Setup.exe**. Python is included; no installation or administrator account is needed.
+2. **Linux:** use **CleanHome-Home-Setup-experimental.zip** instead, extract it and run **START-LINUX.sh** with Python 3.11 or newer. The same source package can also be run on Windows using **START-WINDOWS.cmd** if Python is installed. No extra Python packages or Tizen Studio are required. The tool opens a local browser page.
 3. Enter the **TV’s** local address, found in **Settings → General → Network → Network Status → IP Settings**. Choose **Check TV**. An unsupported TV stops here.
 4. Read the confirmation, tick the box and choose **Use Clean Home**. The tool saves and verifies the original preferences before making a change. Wait for its confirmation.
 5. Press Home on the physical remote. It should open Clean Home. Open Samsung Home from Clean Home’s top row to check the original interface is available. Turn the TV off normally, wait 30 seconds, then switch on and check startup.
@@ -37,6 +37,8 @@ Close the setup terminal when finished. No PC, online service, Home Assistant au
 4. You may now uninstall Clean Home through Apps. Removing the TV app alone does **not** restore external Home preferences.
 
 If setup is interrupted, keep the TV and computer on. Open the tool again and use **Check TV**, then **Undo**. The tool records uncertain operations and does not automatically retry a change. If Undo cannot confirm success, stop and report the visible error; keep the recovery folder. If the original computer is gone, recover that folder before attempting native changes. A sample configuration cannot replace your TV’s originals.
+
+A TV software update may need an updated setup/Undo profile. Keep Clean Home installed until restoration is confirmed. If the developer connection fails, check Host PC IP, close Apps2Samsung and check whether the computer's firewall is allowing the tool on your private home network. Router port forwarding is not needed.
 
 ## What changes
 
