@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.4.2 preview
+
+- Adds a visual compatibility chart, separating browser checks from real-TV evidence.
+- Adds **Settings → Samsung → Share TV report** for success and problem reports.
+- Prepares a QR code locally with basic TV details; scan, review and submit on your phone.
+- Keeps accounts, app lists, addresses, unique device identifiers and raw logs out of shared reports.
+
 ## 1.4.1 preview
 
 - Adds a Tizen 5.0 minimum and compatibility work for older and newer TVs.
@@ -15,10 +22,10 @@
 - Keeps the original Clean Home photo, glass app bar and clock.
 - Adds an unsigned download, installation guide and compatibility reporting.
 
-[TV compatibility](docs/COMPATIBILITY.md) · [Developer test results](docs/TEST-RESULTS.md)
+[TV compatibility](COMPATIBILITY.md) · [Developer test results](TEST-RESULTS.md)
 
 ## 1.3.9
 
 - Improves startup responsiveness by preparing the background shading in advance.
 
-Based on Clean Home and CleanFrame. See [credits](docs/UPSTREAM.md).
+Based on Clean Home and CleanFrame. See [credits](UPSTREAM.md).

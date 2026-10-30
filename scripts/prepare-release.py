@@ -10,7 +10,7 @@ from font_assets import ROOT, archive_member
 from privacy_rules import content_findings
 
 ALLOWED_ROOTS = {'app', 'docs', 'scripts', 'tests', 'tools', 'vendor', '.github'}
-ALLOWED_FILES = {'README.md', 'INSTALL.md', 'AGENTS.md', 'CHANGELOG.md', 'CONTRIBUTING.md', 'SECURITY.md', 'PRIVACY.md', 'LICENSE', 'THIRD_PARTY_NOTICES.md', 'package.json', 'package-lock.json', 'requirements-build.txt', '.gitignore'}
+ALLOWED_FILES = {'README.md', 'AGENTS.md', 'LICENSE', 'package.json', 'package-lock.json', '.gitignore'}
 
 
 def validate_widget(path):

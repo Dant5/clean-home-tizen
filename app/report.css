@@ -1,0 +1,13 @@
+/* Separate help sheet; leaves the original Home design and shading untouched. */
+.stage.at-tvreport .sheet { background: #0f1416; --mute: #c5d0db; --solid: #f4f4f1; --solid-ink: #171b21; }
+.at-tvreport .sheet-bg, .at-tvreport .sheet-veil { display: none; }
+.tv-report { position: absolute; left: 112px; top: 70px; right: 112px; bottom: 70px; color: #fff; }
+.tv-report h2 { font-size: 48px; line-height: 1.4; margin: 0 0 16px; }
+.tv-report-intro { font-size: 26px; margin: 0; max-width: 1500px; }
+.tv-report-data { position: absolute; left: 0; top: 160px; width: 900px; height: 570px; margin: 0; font: 23px/1.45 monospace; white-space: pre-wrap; overflow-wrap: break-word; }
+.tv-report-qr { position: absolute; right: 0; top: 160px; width: 640px; text-align: center; }
+.tv-report-qr canvas { max-width: 600px; max-height: 600px; image-rendering: pixelated; }
+.tv-report-status { font-size: 24px; margin: 10px 0; }
+.tv-report-actions { position: absolute; left: 0; bottom: 64px; }
+.tv-report-actions .btn + .btn { margin-left: 16px; }
+.tv-report-note { position: absolute; left: 0; bottom: 0; margin: 0; font-size: 23px; line-height: 1.4; max-width: 1650px; }

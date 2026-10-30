@@ -9,7 +9,7 @@ Requirements: Node 22+ and Python 3.10+ with venv/pip support. These commands us
 ```sh
 npm ci
 python3 -m venv .local/venv
-.local/venv/bin/python -m pip install -r requirements-build.txt
+.local/venv/bin/python -m pip install -r scripts/requirements-build.txt
 npx playwright install chromium
 npm run dev:public
 ```
@@ -30,7 +30,7 @@ npm run check:package
 npm run check:public
 ```
 
-`npm test` covers ES5/resource checks, device adapter, original UI, Q60B integration, photo recovery, early input, first-run selection and background comparisons. Python tests cover packaging/signing and supporting parsers using fake certificates/devices. The built-widget check examines the actual unsigned download. CI is configured for a current browser and Chromium 85. See the [validation record](docs/TEST-RESULTS.md) for actual local results and any hosted-run limitation. Neither proves behaviour on an untested TV.
+`npm test` covers ES5/resource checks, device adapter, original UI, Q60B integration, photo recovery, early input, first-run selection and background comparisons. Python tests cover packaging/signing and supporting parsers using fake certificates/devices. The built-widget check examines the actual unsigned download. CI is configured for a current browser and Chromium 85. See the [validation record](../docs/TEST-RESULTS.md) for actual local results and any hosted-run limitation. Neither proves behaviour on an untested TV.
 
 For a locally installed historical engine, set `CLEANHOME_CHROMIUM=/path/to/chrome`. `scripts/install-test-browser.py` downloads/checks the pinned Linux test snapshot used in CI. Use it for isolated local test pages, not general browsing. Its exact version is reported in test output.
 
@@ -45,6 +45,8 @@ Regenerate after changing its CSS, wallpaper catalogue or adaptive-ink inputs; a
 Keep the original appearance and licences. Test both a fresh empty configuration and an upgrade with saved favourites. Do not hard-code personal app IDs, addresses, DUIDs or certificate profiles. A public release must use generic discovery and the unsigned public-font package. Treat native Home/startup as separate, firmware-specific work with per-device originals and a verified inverse path; never relax the guards to get a test to pass.
 
 Bug reports should include a reproducible sequence, expected/actual result, model, firmware, Tizen/app version and installation method. Use the issue forms and label whether the result was visually observed, reported by an API or only simulated.
+
+The in-app **Share TV report** sheet prepares a GitHub draft locally. `npm run check:reports` tests its allowlisted fields, real remote events, failure/cancellation and independent QR decoding of rendered screenshots at 1080p/720p. `npm run check:package` repeats the UI checks against the actual widget. The QR encoder loads only when requested; never add automatic uploads or raw logs. [Report fields and maintaining the compatibility chart](../docs/TV-REPORTS.md).
 
 ## Sign and install with Tizen Studio
 

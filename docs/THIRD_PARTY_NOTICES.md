@@ -24,15 +24,17 @@ Brand marks identify services. Their owners retain trademark rights; this projec
 
 ## Photographs and derived materials
 
-The fifteen photo pages were individually checked on 20 October 2026. Each displayed its credited author and free use under the [Unsplash License](https://unsplash.com/license). The [asset source register](docs/asset-sources.md) links every page. Runtime paths are in `app/assets/wallpapers/SOURCES.json`.
+The fifteen photo pages were individually checked on 20 October 2026. Each displayed its credited author and free use under the [Unsplash License](https://unsplash.com/license). The [asset source register](asset-sources.md) links every page. Runtime paths are in `app/assets/wallpapers/SOURCES.json`.
 
 Photographers retain their rights. Wallpapers, thumbnails, panel backgrounds and material fields derive from the credited photographs and retain their terms. The Unsplash licence permits copying, modification and distribution subject to its restrictions, including on selling unmodified images and building a competing image service.
 
 ## Development dependencies and exports
 
+The on-demand QR encoder is [qrcode-generator by Kazuhiko Arase](https://github.com/kazuhikoarase/qrcode-generator), MIT, vendored from commit `83b7e8fe3fddd3b0368dbafd6ce56995bd25e3c8` (`js/dist/qrcode.js`, SHA-256 `79ec86f82856005b1c887905cfccfcfbec3821ca61c7fd5a952faa5f778f791c`). Its complete licence is in `app/assets/licenses/qrcode-generator-MIT.txt`. Codes are generated locally without a QR service. The test-only jsQR decoder retains its Apache-2.0 licence in the development dependency; it is not bundled in the widget.
+
 Development dependencies retain the licences in their npm packages. They are not copied into the TV JavaScript runtime.
 
-`npm run export:public` excludes private fonts and includes this notice and the root MIT licence. Preserve the included font and icon licence texts. Review [public release preparation](docs/public-release.md) before publishing a repository or download.
+`npm run export:public` excludes private fonts and includes this notice and the root MIT licence. Preserve the included font and icon licence texts. Review [public release preparation](public-release.md) before publishing a repository or download.
 
 ## Q60B adaptation and standalone signer
 
