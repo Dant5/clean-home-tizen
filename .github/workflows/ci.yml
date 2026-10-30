@@ -61,6 +61,7 @@ jobs:
         if: matrix.engine == 'current'
         with:
           name: unsigned-preview
+          retention-days: 7
           path: dist/release/
           if-no-files-found: error
   compatibility:
