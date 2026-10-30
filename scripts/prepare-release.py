@@ -106,7 +106,7 @@ def build_setup_bundle(widget, companion, folder, platform, version):
     files.update({'START-HERE.html': guide.encode('utf-8'), widget_name: widget.read_bytes(),
                   'home-preview.jpg': (ROOT / 'docs/images/home-example.jpg').read_bytes(),
                   'LICENSE': (ROOT / 'LICENSE').read_bytes(),
-                  'README.txt': b'Clean Home Setup (community preview)\n\nExtract the whole ZIP, then open START-HERE.html.\nFollow Install the TV app, then Make it your Home screen.\nHome replacement accepts QA55Q60BAWXXY / T-NKLBUABC-1720.7 only.\nKeep the recovery folder and Undo before removing the TV app.\nYour own Samsung sign-in/certificates are handled by Apps2Samsung.\n'})
+                  'README.txt': b'Clean Home Setup (community preview)\n\nExtract the whole ZIP, then open START-HERE.html.\nFollow Install the TV app, then Make it your Home screen.\nHome replacement accepts QA55Q60BAWXXY / T-NKLBUABC-1720.7 only.\nOther Samsung models: use Check TV, then Send compatibility report.\nKeep the recovery folder and Undo before removing the TV app.\nYour own Samsung sign-in/certificates are handled by Apps2Samsung.\n'})
     files['SETUP-CHECKSUMS.txt'] = ''.join(hashlib.sha256(data).hexdigest() + '  ' + name + '\n' for name, data in sorted(files.items())).encode()
     output = folder / ('CleanHome-Setup-' + platform + '-preview.zip')
     with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
@@ -146,7 +146,7 @@ def main():
             assets.append(destination)
             platform = 'Windows' if 'Windows' in extra.name else 'Python'
             assets.append(build_setup_bundle(widget, extra, folder, platform, version))
-    manifest = {'version': version, 'source_commit': commit, 'working_tree_dirty': dirty, 'signed': False, 'tv_contacted': False, 'personal_profile': False, 'assets': [describe(p) for p in assets], 'compatibility': 'Tizen 5.0+ target; browser checks span Chromium 63-130. Reference hardware: Q60B / Tizen 6.5; other TVs unverified.', 'native_setup': 'Guided Home setup: QA55Q60BAWXXY / T-NKLBUABC-1720.7 only. New combined installer/Undo require physical-TV validation; underlying native mechanism has reference-device evidence.'}
+    manifest = {'version': version, 'source_commit': commit, 'working_tree_dirty': dirty, 'signed': False, 'tv_contacted': False, 'personal_profile': False, 'assets': [describe(p) for p in assets], 'compatibility': 'Tizen 5.0+ target; browser checks span Chromium 63-130. Reference hardware: Q60B / Tizen 6.5; other TVs unverified.', 'native_setup': 'Home writes: QA55Q60BAWXXY / T-NKLBUABC-1720.7 only. Settings-read-only compatibility diagnostics and opt-in reports are available for other identified Samsung TVs. New guided installer/Undo and cross-model probes need physical-TV validation; underlying native Home mechanism has reference-device evidence.'}
     record = folder / 'release-manifest.json'
     record.write_text(json.dumps(manifest, indent=2) + '\n')
     (folder / 'SHA256SUMS').write_text(''.join(describe(p)['sha256'] + '  ' + p.name + '\n' for p in assets+[record]))

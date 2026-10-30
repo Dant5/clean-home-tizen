@@ -48,7 +48,32 @@ internal static class HomeInspection {
             finally { free(pointer); }
         } finally { bundle_free(bundle); }
     }
+    private static string Group(string value) {
+        return value == "com.samsung.tv.csfs" ? "Samsung" : value == Target ? "CleanHome" : "Other";
+    }
+    private static object Compatibility() {
+        string architecture = RuntimeInformation.ProcessArchitecture == Architecture.Arm ? "ARM32" : RuntimeInformation.ProcessArchitecture == Architecture.Arm64 ? "ARM64" : "Other";
+        string firmware = "Not reported";
+        try {
+            var line = File.ReadLines("/etc/prd_info.ini").FirstOrDefault(v => v.StartsWith("Version=", StringComparison.Ordinal));
+            if (line != null) {var value = line.Substring(8).TrimEnd(';');if (Regex.IsMatch(value, @"^T-[A-Za-z][A-Za-z0-9_.-]{0,61}$")) firmware = value;}
+        } catch {}
+        return new {readOnly = true, architecture, firmware, checks = CompatibilityChecks.Run(getuid(), architecture, name => {
+            if (name == "homeOperation") return Group(ReadHome());
+            int index = Array.IndexOf(new[]{"homePreference","startupPreference","bootingPreference","firstScreen"}, name);
+            if (index >= 0) return Group(ReadString(Keys[index]));
+            if (name == "appBoot") return util_is_appbooting_supported_webapp_byappid(Target) == 1 ? "Available" : "Unavailable";
+            string key = name == "autoStart" ? "db/menu/smart_hub/ontvsetting/auto_start" : "db/menu/app_booting";
+            if (vconf_get_int(key, out int value) != 0) throw new InvalidOperationException();
+            return value == 0 ? "Off" : value == 1 ? "On" : "Unknown";
+        })};
+    }
     public static int Main(string[] args) {
+        if (args.Length == 1 && args[0] == "--compatibility") {
+            // This separate mode has no firmware-specific setters or raw settings output.
+            Console.WriteLine(JsonSerializer.Serialize(Compatibility()));
+            return 0;
+        }
         if (args.Length == 1 && args[0] == "--describe") {
             Console.WriteLine(JsonSerializer.Serialize(new {
                 readOnly = true, target = Target, expectedArchitecture = "ARM32",

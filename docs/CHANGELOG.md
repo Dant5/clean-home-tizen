@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.4.3 preview
+
+- Lets other Samsung models run setup diagnostics and send a compatibility report instead of being rejected at the model check.
+- Checks connection, native runtime, account/architecture and each Home/startup getter independently, with fixed failure codes and skipped stages.
+- Adds review, one-button send, local save, duplicate suppression and setup/Undo outcome reporting. No raw settings, app IDs, addresses or device identifiers are uploaded.
+- Keeps Home writes restricted to reviewed profiles, with the original-setting backup and Undo unchanged.
+
 ## 1.4.2 preview 2
 
 - Makes Home-button replacement and automatic startup part of the main setup guide.

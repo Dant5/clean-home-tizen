@@ -1,6 +1,6 @@
 # Clean Home Tizen public source
 
-Preserve the Clean Home/CleanFrame design, original MIT notices and third-party licences. Runtime JavaScript must parse as ES5 and work from Chromium 63 onward (Tizen 5.0 minimum). Keep the Q60B native helpers restricted to their original firmware; the wider web-widget target does not extend native Home compatibility. Keep the exact application/package identity when updating an existing installation.
+Preserve the Clean Home/CleanFrame design, original MIT notices and third-party licences. Runtime JavaScript must parse as ES5 and work from Chromium 63 onward (Tizen 5.0 minimum). Keep Q60B Home writes and original queries restricted to their original firmware. The separately selected getter-only compatibility mode may inspect other identified Samsung TVs without changing settings; it must never stage the write helper, run as root or report raw values. The wider web-widget target does not extend native Home compatibility. Keep the exact application/package identity when updating an existing installation.
 
 Fresh installations start with a single + tile and no favourite assumptions. Choosing an app appends it and leaves one + until capacity. Holding Select replaces the selected tile; short Select launches only on release. Preserve saved favourites, appearance and manual bindings on upgrade. Treat picker cancellation, save failure, repeat keys, blur and suspend as important regression cases.
 

@@ -10,3 +10,7 @@ Clean Home has no analytics, advertising trackers or user accounts. It does not 
 - **Optional Home Setup:** originals stay in your computer's private user-data folder, bound to a hash of the TV's developer identity. The setup tool uses the local network and never uploads those originals or accesses your signing certificates. They are not app-data backups.
 
 Installation tools and the apps you open have their own privacy policies.
+
+### Computer setup diagnostics
+
+Check TV can inspect unlisted Samsung models using a fixed temporary getter-only helper. Temporary staging/cleanup is checked; failure to confirm cleanup is reported. It does not change Home/settings during diagnostics. Report review and explicit Send are separate from running checks. The allowlisted report includes capability/error categories, model/software and setup outcome, with no addresses, device identifiers, accounts, app inventory, raw logs or saved originals. Reports use the same private maintainer inbox and retention/rate limits as TV reports. Save report creates a local JSON copy; nothing is uploaded automatically.

@@ -2,9 +2,9 @@
 
 **Install Clean Home, then make Home and power-on open it.** No root. Your apps stay installed and Samsung Home stays accessible. The setup bundle includes the TV app, Home tool and an offline guide.
 
-**[Get Clean Home Setup](https://github.com/Dant5/clean-home-tizen/releases/tag/v1.4.2-preview.2)**
+**[Get Clean Home Setup](https://github.com/Dant5/clean-home-tizen/releases/tag/v1.4.3-preview.1)**
 
-Home replacement is experimental and currently accepts **QA55Q60BAWXXY / T-NKLBUABC-1720.7 only**. Other TVs can install the app and open it from Apps; skip the Home replacement step.
+Home replacement is experimental and currently accepts **QA55Q60BAWXXY / T-NKLBUABC-1720.7 only**. Other Samsung models can install the app and run **Check TV** to send compatibility results; their Home settings are left alone.
 
 ## Before you start
 
@@ -16,7 +16,7 @@ You need:
 
 ## 1. Download Clean Home Setup
 
-1. Open [Clean Home Downloads](https://github.com/Dant5/clean-home-tizen/releases/tag/v1.4.2-preview.2) → **Assets**.
+1. Open [Clean Home Downloads](https://github.com/Dant5/clean-home-tizen/releases/tag/v1.4.3-preview.1) → **Assets**.
 2. Choose your bundle below, extract the whole ZIP, then open **START-HERE.html**. The TV app and Home tool are already inside.
 3. Download and open [Apps2Samsung](https://github.com/Apps2Samsung/Apps2Samsung/releases). It handles Samsung sign-in and signing; choose its desktop app with **Install a file…** support.
 
@@ -70,13 +70,13 @@ You should see a photograph, clock and **+** tile. An existing installation keep
 
 1. Close Apps2Samsung. Keep the TV on and use the same computer listed as Host PC IP in Developer Mode.
 2. In the extracted bundle, open **home-setup/CleanHome-Home-Setup.exe** on Windows, or **home-setup/START-LINUX.sh** on Linux with Python 3.11 or newer.
-3. Enter the **TV’s** address from its **Network Status → IP Settings** screen. Choose **Check TV**.
+3. Enter the **TV’s** address from its **Network Status → IP Settings** screen. Choose **Check TV**. This works on other Samsung models too and runs independent capability checks using temporary diagnostic files. Home/settings are not changed by the checks.
 4. If supported, read the confirmation, tick the box and choose **Use Clean Home**. Original Home/startup preferences are saved and verified before a change.
 5. Press **Home** on the physical remote, then try a normal off/on cycle. Clean Home should appear. Choose its **Samsung Home** button to check the original screen is available.
 
 Keep the recovery folder shown by the tool. **Use Undo before uninstalling Clean Home.** You can close the tool afterwards; no computer needs to stay running. [Home support, recovery and Undo](NATIVE-HOME.md).
 
-An unsupported model/software is refused. You can still use the TV app from Apps; leave this step out.
+For an unlisted model/software, review **Compatibility results** and choose **Send compatibility report**. A missing getter or failed connection is included without hiding later checks. **Save report** keeps a local copy. Home writes remain blocked until a compatible setup profile is reviewed; you can still use the TV app from Apps.
 
 ## 6. Add and open your apps
 

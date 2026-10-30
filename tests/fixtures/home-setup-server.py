@@ -7,6 +7,7 @@ import time
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'tools/home-setup'))
+from reports import new_report
 spec = importlib.util.spec_from_file_location('home_setup_page', ROOT / 'tools/home-setup/setup.py')
 page = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(page)
@@ -24,6 +25,21 @@ class FakeCompanion:
         return {'success':True,'message':'Clean Home setup verified.' if self.active else 'Original Samsung Home restored.'}
 
 
-server = page.create_server(FakeCompanion())
+class FakeDiagnostics:
+    def run(self, host):
+        report = new_report()
+        report['model'] = 'EXAMPLE_TV'
+        report['profile'] = 'known' if host == 'TV_FIXTURE' else 'needs-review'
+        report['checks']['metadata'] = ['pass','OK','None']
+        report['checks']['homeOperation'] = ['unavailable','MISSING_SYMBOL','None'] if host != 'TV_FIXTURE' else ['pass','OK','Samsung']
+        if host != 'TV_FIXTURE': report['checks']['homeSetup'] = ['skipped','PROFILE_NEEDED','None']
+        return report
+
+
+def fake_sender(report):
+    time.sleep(.12)
+    return 'CH-00000000-0000-0000-0000-000000000000'
+
+server = page.create_server(FakeCompanion(), FakeDiagnostics(), fake_sender)
 print('http://127.0.0.1:'+str(server.server_port), flush=True)
 server.serve_forever()

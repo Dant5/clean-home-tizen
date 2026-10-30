@@ -65,7 +65,7 @@ try {
   await page.keyboard.press('Enter');
   const url = await decode(page), parsed = new URL(url), data = JSON.parse(parsed.searchParams.get('diagnostics'));
   check('Independent decoder reads a prefilled GitHub issue URL', parsed.origin === 'https://github.com' && parsed.pathname === '/Dant5/clean-home-tizen/issues/new' && parsed.searchParams.get('template') === 'tv-report.yml');
-  check('Report includes actual model, firmware, OS and app versions', data.model === 'QE55Q70CATXXU' && data.firmware === 'T-TEST-1234.5' && data.tizen === '6.5' && data.cleanHome === '1.4.2');
+  check('Report includes actual model, firmware, OS and app versions', data.model === 'QE55Q70CATXXU' && data.firmware === 'T-TEST-1234.5' && data.tizen === '6.5' && data.cleanHome === '1.4.3');
   check('Report carries the selected success outcome', data.result === 'Works on my TV');
   check('No app list, unique identifier or account information in QR', !/AppOne|never-share|Alpha|account|applications|userAgent|Duid/i.test(JSON.stringify(data)) && await page.evaluate(() => __sensitiveCalls === 0));
   check('QR includes a four-module white quiet zone', await page.evaluate(() => {const c = document.querySelector('canvas'), ctx = c.getContext('2d'); return [0, c.width - 1].every(x => [0, c.height - 1].every(y => ctx.getImageData(x, y, 1, 1).data[0] === 255));}));

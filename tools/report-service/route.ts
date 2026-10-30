@@ -1,5 +1,5 @@
 import {env} from "cloudflare:workers";
-import {validateReport} from "./report-schema.mjs";
+import {validateReport,validateSetupReport} from "./report-schema.mjs";
 
 const cors = {"Access-Control-Allow-Origin":"*","Access-Control-Allow-Methods":"POST, OPTIONS","Access-Control-Allow-Headers":"Content-Type","Cache-Control":"no-store"};
 const reply = (data: object, status=200) => Response.json(data,{status,headers:cors});
@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     body=new TextDecoder("utf-8",{fatal:true}).decode(bytes);
   } catch {try {await reader?.cancel();}catch {}return reply({error:"Invalid report"},400);}
   let report;
-  try {report=validateReport(JSON.parse(body));} catch {return reply({error:"Invalid report"},400);}
+  try {const value=JSON.parse(body);report=validateReport(value)||validateSetupReport(value);} catch {return reply({error:"Invalid report"},400);}
   if (!report) return reply({error:"Invalid report"},400);
   if (!database) return reply({error:"Reporting unavailable"},503);
   const id="CH-"+crypto.randomUUID(),now=Date.now(),dayStart=Math.floor(now/86400000)*86400000;

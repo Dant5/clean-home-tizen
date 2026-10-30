@@ -11,3 +11,5 @@ The D1 table contains only a random per-report receipt, received timestamp and a
 For self-hosting, use a Cloudflare Worker-compatible environment with a `DB` D1 binding. Apply `schema.sql` as a migration, mount the exported GET/OPTIONS/POST handler at `/api/reports`, and serve the public privacy explanation. The hosted version uses Vinext route handling. Keep database access private. A custom receiver also needs a matching endpoint and exact network origin in the TV app's manifest; the distributed client deliberately accepts only the project's configured receiver.
 
 The public intake is not proof that a report came from a real TV. Mark synthetic test records by model `CLEAN_HOME_TEST`; exclude them from compatibility findings. Review exact model, firmware, app version and observed behaviour before updating the support chart. [Report fields and privacy](../../docs/TV-REPORTS.md).
+
+Setup report schema 2 adds fixed capability-stage results to the same private inbox. Schema 1 TV reports remain compatible. Neither schema permits raw messages, app inventories, recovery originals or unique device/network identifiers.

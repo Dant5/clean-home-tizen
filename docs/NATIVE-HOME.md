@@ -7,7 +7,7 @@
 | TV and software | Home and power-on |
 | --- | --- |
 | **QA55Q60BAWXXY / T-NKLBUABC-1720.7**, ARM32, developer SDK UID 901 | Underlying method verified on our TV. New guided tool is **experimental** and needs its own physical-TV rehearsal. |
-| Other models or software | Tool refuses to change settings. The normal Clean Home TV app remains available. |
+| Other models or software | Check TV and Send compatibility report are available; Home/settings changes remain blocked pending a reviewed profile. |
 
 An OS version alone does not establish native compatibility. Please do not remove the firmware guard to try another TV. [Send a TV report](TV-REPORTS.md) so we can prioritise more models.
 
@@ -21,13 +21,23 @@ An OS version alone does not establish native compatibility. Please do not remov
 
 1. **Windows:** in the extracted **CleanHome-Setup-Windows-preview.zip**, open **home-setup/CleanHome-Home-Setup.exe**. Python is included; no installation or administrator account is needed. If the TV app is already installed, the smaller **CleanHome-Home-Setup-Windows-experimental.zip** contains the same tool.
 2. **Linux:** in **CleanHome-Setup-Python-preview.zip**, run **home-setup/START-LINUX.sh** with Python 3.11 or newer. Already installed? The smaller **CleanHome-Home-Setup-experimental.zip** contains the same tool. Python users on Windows can use **START-WINDOWS.cmd**. No extra Python packages or Tizen Studio are required. The tool opens a local browser page.
-3. Enter the **TV’s** local address, found in **Settings → General → Network → Network Status → IP Settings**. Choose **Check TV**. An unsupported TV stops here.
+3. Enter the **TV’s** local address, found in **Settings → General → Network → Network Status → IP Settings**. Choose **Check TV**. Unlisted models continue to the compatibility results; they are not rejected before diagnostics.
 4. Read the confirmation, tick the box and choose **Use Clean Home**. The tool saves and verifies the original preferences before making a change. Wait for its confirmation.
 5. Press Home on the physical remote. It should open Clean Home. Open Samsung Home from Clean Home’s top row to check the original interface is available. Turn the TV off normally, wait 30 seconds, then switch on and check startup.
 
 Keep the **recovery folder** shown by the tool, including when moving computers. On Windows it is in your user’s local application data under **CleanHome/recovery**; on Linux under **~/.local/share/CleanHome/recovery**. These files belong to that TV. They are not backups of your apps or accounts. Do not upload them in a public issue.
 
 Close the setup terminal when finished. No PC, online service, Home Assistant automation or always-running watcher is needed for normal Home/startup behaviour.
+
+## Help add your model
+
+Choose **Check TV** on any Samsung model. The tool checks TV identification, Developer Mode, platform metadata, temporary helper execution, account/architecture and each Home/startup getter independently. Getter failures do not hide later independent results; dependent checks are marked **skipped**, not passed.
+
+A fixed getter-only helper may be staged temporarily and cleaned up. This does not change Home, startup, applications, picture or sound settings. It refuses root and unsupported architectures. Other non-root account classes can try getters, which report their permission failures independently; Home writes still require the reviewed SDK account and profile. It does not try unverified Home writes or cycle through setter methods.
+
+Review **Compatibility results**, then choose **Send compatibility report**. No phone or account is needed. **Save report** makes a local JSON copy. Reports include model/software and fixed capability/error categories; no address, DUID, serial, app inventory, original settings or raw output. After an attempted supported setup/Undo, its confirmed/unknown outcome is included too.
+
+Successful reads help develop a profile; they do not prove that setters or rollback work on that firmware. A new Home profile still needs bounded validation and a real-TV rehearsal before general release. [Report details](TV-REPORTS.md).
 
 ## Undo or uninstall
 

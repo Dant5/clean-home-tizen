@@ -5,6 +5,7 @@
   "sha256": "f91c23fe2de7c288e7b328965ff231f42d6f90e518b77f779fae33febfa6efb5",
   "changes": [
     "Use local bounded transport exception; root providers are not included.",
-    "Apply an absolute callback deadline as well as per-read timeouts."
+    "Apply an absolute callback deadline as well as per-read timeouts.",
+    "Separate fixed getter-only compatibility execution from UID-901 Home writes; refuse root and restrict diagnostic staging to inspection assembly files."
   ]
 }
