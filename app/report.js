@@ -14,6 +14,11 @@
     return typeof value === 'string' && /^T-[A-Za-z0-9_.-]{1,62}$/.test(value) ? value : 'Not reported';
   }
   function number(value, max) { return typeof value === 'number' && isFinite(value) && value >= 0 && value <= max ? Math.round(value) : 0; }
+  function platformVersion(value) {
+    if (typeof value !== 'string' || value.length > 96) return '';
+    var match = /^(\d{1,2}\.\d{1,2}(?:\.\d{1,2})?)(?:\.[A-Za-z0-9_-]{1,32})*$/.exec(value);
+    return match ? match[1] : '';
+  }
   function recordTVError(error, title) {
     var names = ['SecurityError', 'NotFoundError', 'InvalidValuesError', 'InvalidStateError', 'NotSupportedError', 'UnknownError', 'TypeMismatchError', 'TimeoutError'];
     var name = error && names.indexOf(error.name) >= 0 ? error.name : title === 'The TV did not respond. Please try again.' ? 'TimeoutError' : 'TVError';
@@ -25,9 +30,10 @@
     var p = window.webapis && window.webapis.productinfo, sys = window.tizen && window.tizen.systeminfo;
     var ua = String(navigator.userAgent || ''), tizenVersion = '', chrome = /(?:Chrome|Chromium)\/(\d{1,3})\./.exec(ua), match;
     try { if (sys && typeof sys.getCapability === 'function') tizenVersion = sys.getCapability('http://tizen.org/feature/platform.version'); } catch (e) {}
-    if (typeof tizenVersion !== 'string' || !/^\d{1,2}\.\d{1,2}(?:\.\d{1,2})?$/.test(tizenVersion)) {
-      match = /\bTizen[ /](\d{1,2}\.\d{1,2})(?:[; )]|$)/i.exec(ua);
-      tizenVersion = match ? match[1] : 'Not reported';
+    tizenVersion = platformVersion(tizenVersion);
+    if (!tizenVersion) {
+      match = /\bTizen[ /]([0-9][A-Za-z0-9._-]{1,95})(?:[; )]|$)/i.exec(ua);
+      tizenVersion = match && platformVersion(match[1]) || 'Not reported';
     }
     var version = document.querySelector('meta[name="clean-home-version"]');
     var appVersion = version && version.getAttribute('content');
