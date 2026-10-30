@@ -8,7 +8,7 @@ body:
     id: diagnostics
     attributes:
       label: TV details or report receipt
-      description: Already used Send on the TV? Paste its receipt. The optional phone code fills in details; otherwise enter your model and software versions. Unknown details are fine.
+      description: Already used Send on the TV or in the computer setup tool? Paste its receipt. The optional phone code fills in details; otherwise enter your model and software versions. Unknown details are fine.
       render: json
     validations:
       required: true
@@ -40,4 +40,4 @@ body:
     id: native
     attributes:
       label: Separate Home or startup changes (if any)
-      description: An ordinary Clean Home install does not change the remote Home button or startup screen. Say if you separately changed either.
+      description: Did you use the Home Setup tool? Include its report receipt if available, and say whether physical Home and power-on worked.

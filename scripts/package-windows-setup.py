@@ -23,7 +23,7 @@ def main():
         'licenses/AeroTizen-MIT.txt': (ROOT / 'vendor/aerotizen/LICENSE').read_bytes(),
         'licenses/Python.txt': python_license.read_bytes(),
         'licenses/PyInstaller.txt': Path(installer.locate_file(candidates[0])).read_bytes(),
-        'README.txt': b'Clean Home optional Home setup (experimental)\r\n\r\nExtract this folder, then open CleanHome-Home-Setup.exe.\r\nPython is included. No installation or administrator account is needed.\r\nFirst install/open the TV widget using your own Samsung certificates.\r\nUse Check TV, confirmation and Use Clean Home. Keep the recovery folder.\r\nAlways Undo before uninstalling the TV widget.\r\nOnly QA55Q60BAWXXY / T-NKLBUABC-1720.7 is accepted.\r\nThe underlying method worked on that TV; this new companion is experimental.\r\nhttps://github.com/Dant5/clean-home-tizen/blob/main/docs/NATIVE-HOME.md\r\n'
+        'README.txt': b'Clean Home optional Home setup (experimental)\r\n\r\nExtract this folder, then open CleanHome-Home-Setup.exe.\r\nPython is included. No installation or administrator account is needed.\r\nFirst install/open the TV widget using your own Samsung certificates.\r\nUse Check TV, confirmation and Use Clean Home. Keep the recovery folder.\r\nAlways Undo before uninstalling the TV widget.\r\nHome writes accept QA55Q60BAWXXY / T-NKLBUABC-1720.7 only.\r\nOther Samsung models can use Check TV and Send compatibility report.\r\nThe underlying method worked on that TV; this new companion is experimental.\r\nhttps://github.com/Dant5/clean-home-tizen/blob/main/docs/NATIVE-HOME.md\r\n'
     }
     output = ROOT / 'dist/companion/CleanHome-Home-Setup-Windows-experimental.zip'
     with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED) as archive:

@@ -4,7 +4,7 @@ These are the authored intake handler, validation schema and database migration 
 
 The hosted service accepts anonymous, explicit TV submissions. It has **no public report-reading endpoint**. The maintainer reviews records through the hosting provider's authenticated database tools. A receipt identifies a submission; it does not grant public read access. Reports are not automatically posted to GitHub or forwarded to an AI chat.
 
-`GET /api/reports` returns service health only. `OPTIONS` permits credential-free cross-origin POSTs from packaged TV apps. `POST` accepts the exact 17 documented fields, rejects extra fields and bounds the body, versions, text and error counts. It never stores request headers, internet addresses, identifiers, app inventories, screenshots or raw messages. SQL uses bound parameters. There is no shared client secret in the TV app.
+`GET /api/reports` returns service health only. `OPTIONS` permits credential-free cross-origin POSTs from packaged TV apps. `POST` accepts the documented TV-report or setup-report schema, rejects extra fields and bounds the body, versions, text and error counts. It never stores request headers, internet addresses, identifiers, app inventories, screenshots or raw messages. SQL uses bound parameters. There is no shared client secret in the TV app.
 
 The D1 table contains only a random per-report receipt, received timestamp and allowlisted JSON. Incoming submissions remove records older than 90 days. Atomic global limits allow 30 per minute and 500 per day; these are preview service limits, not a verified count of unique televisions. There is no per-TV tracking or automatic retry. No fixed deletion time is guaranteed when there are no incoming submissions.
 
