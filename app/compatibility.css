@@ -1,0 +1,86 @@
+/* Generated from style.css by build-compatibility-css.py. Only used when flex gap is absent. */
+.no-flex-gap .caption{gap:0!important}
+.no-flex-gap .caption> * + *{margin-left:0;margin-top:6px;margin-right:0}
+.no-flex-gap .warn{gap:0!important}
+.no-flex-gap .warn> * + *{margin-left:12px;margin-top:0;margin-right:0}
+.no-flex-gap .utils{gap:0!important}
+.no-flex-gap .utils> * + *{margin-left:8px;margin-top:0;margin-right:0}
+.no-flex-gap .u{gap:0!important}
+.no-flex-gap .u> * + *{margin-left:12px;margin-top:0;margin-right:0}
+.no-flex-gap .quiet-utils{gap:0!important}
+.no-flex-gap .quiet-utils> * + *{margin-left:20px;margin-top:0;margin-right:0}
+.no-flex-gap .quiet-utils .u{gap:0!important}
+.no-flex-gap .quiet-utils .u> * + *{margin-left:10px;margin-top:0;margin-right:0}
+.no-flex-gap .quiet-utils.is-icons{gap:0!important}
+.no-flex-gap .quiet-utils.is-icons> * + *{margin-left:16px;margin-top:0;margin-right:0}
+.no-flex-gap .dock-empty{gap:0!important}
+.no-flex-gap .dock-empty> * + *{margin-left:0;margin-top:20px;margin-right:0}
+.no-flex-gap .s-head{gap:0!important}
+.no-flex-gap .s-head> * + *{margin-left:12px;margin-top:0;margin-right:0}
+.no-flex-gap .btn{gap:0!important}
+.no-flex-gap .btn> * + *{margin-left:12px;margin-top:0;margin-right:0}
+.no-flex-gap .gt .state{gap:0!important}
+.no-flex-gap .gt .state> * + *{margin-left:8px;margin-top:0;margin-right:0}
+.no-flex-gap .er-name .panel-content{gap:0!important}
+.no-flex-gap .er-name .panel-content> * + *{margin-left:20px;margin-top:0;margin-right:0}
+.no-flex-gap .eo .panel-content{gap:0!important}
+.no-flex-gap .eo .panel-content> * + *{margin-left:20px;margin-top:0;margin-right:0}
+.no-flex-gap .settings-group{gap:0!important}
+.no-flex-gap .settings-group> * + *{margin-left:32px;margin-top:0;margin-right:0}
+.no-flex-gap .settings-group-copy{gap:0!important}
+.no-flex-gap .settings-group-copy> * + *{margin-left:0;margin-top:4px;margin-right:0}
+.no-flex-gap .settings-overview-hint{gap:0!important}
+.no-flex-gap .settings-overview-hint> * + *{margin-left:16px;margin-top:0;margin-right:0}
+.no-flex-gap .er{gap:0!important}
+.no-flex-gap .er> * + *{margin-left:8px;margin-top:0;margin-right:0}
+.no-flex-gap .er-name{gap:0!important}
+.no-flex-gap .er-name> * + *{margin-left:20px;margin-top:0;margin-right:0}
+.no-flex-gap .eo{gap:0!important}
+.no-flex-gap .eo> * + *{margin-left:20px;margin-top:0;margin-right:0}
+.no-flex-gap .ed-order-break{gap:0!important}
+.no-flex-gap .ed-order-break> * + *{margin-left:16px;margin-top:0;margin-right:0}
+.no-flex-gap .msg-acts{gap:0!important}
+.no-flex-gap .msg-acts> * + *{margin-left:12px;margin-top:0;margin-right:0}
+.no-flex-gap .l-list .quiet-utils{gap:0!important}
+.no-flex-gap .l-list .quiet-utils> * + *{margin-left:0;margin-top:0;margin-right:0}
+.no-flex-gap .u-content{gap:0!important}
+.no-flex-gap .u-content> * + *{margin-left:12px;margin-top:0;margin-right:0}
+.no-flex-gap .quiet-utils .u-content{gap:0!important}
+.no-flex-gap .quiet-utils .u-content> * + *{margin-left:10px;margin-top:0;margin-right:0}
+.no-flex-gap .l-list .quiet-utils .u-content{gap:0!important}
+.no-flex-gap .l-list .quiet-utils .u-content> * + *{margin-left:0;margin-top:0;margin-right:17.9px}
+.no-flex-gap .l-list .quiet-utils .u[data-action="util.settings"] .u-content{gap:0!important}
+.no-flex-gap .l-list .quiet-utils .u[data-action="util.settings"] .u-content> * + *{margin-left:0;margin-top:0;margin-right:18.9px}
+.no-flex-gap .l-list .quiet-utils.is-both .u{gap:0!important}
+.no-flex-gap .l-list .quiet-utils.is-both .u> * + *{margin-left:14px;margin-top:0;margin-right:0}
+.no-flex-gap .setting-options{gap:0!important}
+.no-flex-gap .setting-options> * + *{margin-left:0;margin-top:4px;margin-right:0}
+.no-flex-gap .setting-choice{gap:0!important}
+.no-flex-gap .setting-choice> * + *{margin-left:16px;margin-top:0;margin-right:0}
+.no-flex-gap .setting-copy{gap:0!important}
+.no-flex-gap .setting-copy> * + *{margin-left:0;margin-top:4px;margin-right:0}
+.no-flex-gap .is-horizontal .setting-options{gap:0!important}
+.no-flex-gap .is-horizontal .setting-options> * + *{margin-left:12px;margin-top:0;margin-right:0}
+.no-flex-gap .is-horizontal .setting-choice{gap:0!important}
+.no-flex-gap .is-horizontal .setting-choice> * + *{margin-left:16px;margin-top:0;margin-right:0}
+.no-flex-gap .setting-choice.setting-back{gap:0!important}
+.no-flex-gap .setting-choice.setting-back> * + *{margin-left:8px;margin-top:0;margin-right:0}
+.no-flex-gap .appearance-desc{gap:0!important}
+.no-flex-gap .appearance-desc> * + *{margin-left:16px;margin-top:0;margin-right:0}
+.no-flex-gap .wallpaper-preview-name{gap:0!important}
+.no-flex-gap .wallpaper-preview-name> * + *{margin-left:24px;margin-top:0;margin-right:0}
+.no-flex-gap .quiet-utils.is-text{gap:0!important}
+.no-flex-gap .quiet-utils.is-text> * + *{margin-left:28px;margin-top:0;margin-right:0}
+.no-flex-gap .l-list .quiet-utils.is-text{gap:0!important}
+.no-flex-gap .l-list .quiet-utils.is-text> * + *{margin-left:0;margin-top:0;margin-right:0}
+.no-flex-gap .l-list .quiet-utils.is-text .u-content{gap:0!important}
+.no-flex-gap .l-list .quiet-utils.is-text .u-content> * + *{margin-left:0;margin-top:0;margin-right:0}
+.no-flex-gap .caption .weather{gap:0!important}
+.no-flex-gap .caption .weather> * + *{margin-left:12px;margin-top:0;margin-right:0}
+.no-flex-gap .quiet-utils.is-text .u-content>.u-label{margin-left:0!important;margin-right:0!important}
+.no-flex-gap .setting-name,.no-flex-gap .setting-description,.no-flex-gap .setting-reason{overflow-wrap:break-word;word-wrap:break-word}
+.no-flex-gap .er-text,.no-flex-gap .eo-text{margin-right:20px!important}
+.no-flex-gap .setting-choice.has-forward .setting-copy{margin-right:16px}
+.no-flex-gap .er-move,.no-flex-gap .eo-verb,.no-flex-gap .setting-forward{margin-left:auto!important}
+.no-flex-gap .caption .weather{row-gap:0!important}
+.no-flex-gap .caption .wx-place{margin-left:0;margin-top:4px}

@@ -7,6 +7,7 @@ import re
 from pathlib import Path
 import sys
 import zipfile
+import xml.etree.ElementTree as XML
 from font_assets import ROOT, write_widget_archive, archive_member
 
 
@@ -53,7 +54,8 @@ def main():
     with zipfile.ZipFile(target) as package:
         assert package.testzip() is None
         assert len(package.namelist()) == len(set(package.namelist()))
-    report = {'file': target.name, 'bytes': target.stat().st_size, 'sha256': hashlib.sha256(target.read_bytes()).hexdigest(), 'signed': bool(args.cert_dir), 'application_id': 'D5Q60BHome.CleanHome', 'minimum_tizen': '6.5', 'tv_contacted': False, 'verified_favourite_ids': bindings}
+        identity = XML.fromstring(package.read('config.xml')).find('{http://tizen.org/ns/widgets}application')
+    report = {'file': target.name, 'bytes': target.stat().st_size, 'sha256': hashlib.sha256(target.read_bytes()).hexdigest(), 'signed': bool(args.cert_dir), 'application_id': identity.get('id'), 'minimum_tizen': identity.get('required_version'), 'tv_contacted': False, 'verified_favourite_ids': bindings}
     (out / (target.stem + '.json')).write_text(json.dumps(report, indent=2) + '\n')
     (out / (target.name + '.sha256')).write_text(report['sha256'] + '  ' + target.name + '\n')
     print(json.dumps(report, indent=2))

@@ -78,7 +78,7 @@ def main():
     dirty = bool(subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT))
     def describe(p):
         return {'name': p.name, 'bytes': p.stat().st_size, 'sha256': hashlib.sha256(p.read_bytes()).hexdigest()}
-    manifest = {'version': version, 'source_commit': commit, 'working_tree_dirty': dirty, 'signed': False, 'tv_contacted': False, 'personal_profile': False, 'assets': [describe(target), describe(source)], 'compatibility': 'Core tested on Q60B / Tizen 6.5. First-run picker browser-tested; other hardware unverified.'}
+    manifest = {'version': version, 'source_commit': commit, 'working_tree_dirty': dirty, 'signed': False, 'tv_contacted': False, 'personal_profile': False, 'assets': [describe(target), describe(source)], 'compatibility': 'Tizen 5.0+ target; browser checks span Chromium 63-130. Reference hardware: Q60B / Tizen 6.5; other TVs unverified.'}
     record = folder / 'release-manifest.json'
     record.write_text(json.dumps(manifest, indent=2) + '\n')
     (folder / 'SHA256SUMS').write_text(''.join(describe(p)['sha256'] + '  ' + p.name + '\n' for p in [target, source, record]))

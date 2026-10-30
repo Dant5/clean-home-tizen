@@ -9,7 +9,8 @@ app = root / 'app'
 ns = {'w': 'http://www.w3.org/ns/widgets', 't': 'http://tizen.org/ns/widgets'}
 manifest = XML.parse(app / 'config.xml').getroot()
 identity = manifest.find('t:application', ns)
-assert identity.attrib == {'id': 'D5Q60BHome.CleanHome', 'package': 'D5Q60BHome', 'required_version': '6.5'}
+assert identity.attrib == {'id': 'D5Q60BHome.CleanHome', 'package': 'D5Q60BHome', 'required_version': '5.0'}
+assert manifest.find("t:metadata[@key='http://samsung.com/tv/metadata/devel.api.version']", ns).get('value') == identity.get('required_version')
 assert manifest.get('version') == json.loads((root / 'package.json').read_text())['version']
 assert manifest.find('t:setting', ns).get('background-support') == 'disable'
 assert manifest.find("t:metadata[@key='http://samsung.com/tv/metadata/multitasking.support']", ns).get('value') == 'true'

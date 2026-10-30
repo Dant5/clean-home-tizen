@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<widget xmlns="http://www.w3.org/ns/widgets" xmlns:tizen="http://tizen.org/ns/widgets" id="https://github.com/Dant5/clean-home-tizen" version="1.4.0" viewmodes="maximized">
-  <tizen:application id="D5Q60BHome.CleanHome" package="D5Q60BHome" required_version="6.5"/>
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:tizen="http://tizen.org/ns/widgets" id="https://github.com/Dant5/clean-home-tizen" version="1.4.1" viewmodes="maximized">
+  <tizen:application id="D5Q60BHome.CleanHome" package="D5Q60BHome" required_version="5.0"/>
   <content src="index.html"/>
   <name>Clean Home</name>
   <description>Clean Home for Samsung Tizen: photographic backgrounds and your own installed apps.</description>
@@ -25,6 +25,7 @@
   <tizen:privilege name="http://tizen.org/privilege/fullscreen"/>
   <tizen:privilege name="http://tizen.org/privilege/internet"/>
   <tizen:setting screen-orientation="landscape" context-menu="disable" background-support="disable" encryption="disable" install-location="auto" hwkey-event="enable"/>
+  <tizen:metadata key="http://samsung.com/tv/metadata/devel.api.version" value="5.0"/>
   <tizen:metadata key="http://tizen.org/metadata/app_ui_type/base_screen_resolution" value="extensive"/>
   <tizen:metadata key="http://samsung.com/tv/metadata/multitasking.support" value="true"/>
   <access origin="https://api.open-meteo.com" subdomains="true"/>

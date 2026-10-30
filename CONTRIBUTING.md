@@ -65,3 +65,11 @@ Install the signed result with the SDK device tools. The standalone signer also 
 Run `npm run check:public` and `sh scripts/check-secrets.sh` before pushing or preparing a release. The guards reject device/network addresses, local user paths, identifiers and signing material; image checks detect location, owner and camera metadata. Test fixtures use loopback or reserved documentation addresses. These checks supplement manual review and cannot detect every kind of private content.
 
 Keep Web Inspector sessions on a trusted network and close them after testing.
+
+## TV-generation compatibility
+
+`python3 scripts/install-test-browser.py --engine 63` installs an official, checksum-pinned Chromium snapshot in `.local/chromium63`. Engines 69, 76, 85, 94, 108, 120 and 130 are also pinned. Set `CLEANHOME_CHROMIUM` to its executable and run `npm run package && npm run check:compatibility`. Historical binaries are for these local pages only. Ubuntu test dependencies include libgtk-3-0, libxss1, libgconf-2-4, libxshmfence1, libgbm1 and libasound2.
+
+The compatibility runner reuses the packaged-widget preview and onboarding fixture. It uses basic page DevTools commands because old engines lack Playwright's browser-context download methods. It checks real DOM remote events, saved choices and geometry, while mocking the Tizen boundary and blocking remote network requests. Browser results do not establish Samsung certificate acceptance or hardware/API behaviour on an untested TV.
+
+`app/compatibility.css` contains margin equivalents for the original flex gaps. Regenerate it with `python3 scripts/build-compatibility-css.py` after changing gap rules in `style.css`. The one-time feature probe enables it only where actual flex gap is missing. Modern engines also test the fallback against their native geometry.

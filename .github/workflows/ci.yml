@@ -63,3 +63,38 @@ jobs:
           name: unsigned-preview
           path: dist/release/
           if-no-files-found: error
+  compatibility:
+    name: TV engine ${{ matrix.engine }}
+    runs-on: ubuntu-22.04
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        engine: ['63', '69', '76', '85', '94', '108', '120', '130']
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Install test dependencies
+        run: |
+          npm ci
+          python3 -m venv .local/venv
+          .local/venv/bin/python -m pip install -r requirements-build.txt
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-0 libxss1 libgconf-2-4 libxshmfence1 libgbm1 libasound2
+          python3 scripts/install-test-browser.py --engine ${{ matrix.engine }}
+      - name: Test the widget in this TV-generation engine
+        run: |
+          npm run package
+          export CLEANHOME_CHROMIUM="$PWD/.local/chromium${{ matrix.engine }}/chrome-linux/chrome"
+          if [ -d "$PWD/.local/chromium${{ matrix.engine }}/chrome-linux64" ]; then
+            export CLEANHOME_CHROMIUM="$PWD/.local/chromium${{ matrix.engine }}/chrome-linux64/chrome"
+          fi
+          npm run check:compatibility
