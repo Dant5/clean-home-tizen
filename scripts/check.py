@@ -12,6 +12,7 @@ identity = manifest.find('t:application', ns)
 assert identity.attrib == {'id': 'D5Q60BHome.CleanHome', 'package': 'D5Q60BHome', 'required_version': '5.0'}
 assert manifest.find("t:metadata[@key='http://samsung.com/tv/metadata/devel.api.version']", ns).get('value') == identity.get('required_version')
 assert manifest.get('version') == json.loads((root / 'package.json').read_text())['version']
+assert '<meta name="clean-home-version" content="' + manifest.get('version') + '">' in (app / 'index.html').read_text()
 assert manifest.find('t:setting', ns).get('background-support') == 'disable'
 assert manifest.find("t:metadata[@key='http://samsung.com/tv/metadata/multitasking.support']", ns).get('value') == 'true'
 assert not manifest.findall('t:background-category', ns)
@@ -39,6 +40,6 @@ for forbidden in ['vconf', 'SYS_BASES', 'sysExecOutput', 'useAsHome', 'maybeHand
 assert not re.search(r'(?<![A-Za-z-])inset\s*:', (app / 'style.css').read_text()), 'Chromium 85 does not support CSS inset'
 assert not re.search(r'(backdrop-filter|filter)\s*:\s*blur', (app / 'style.css').read_text())
 assert not (root / 'scripts/native-home').exists()
-for notice in ['LICENSE', 'THIRD_PARTY_NOTICES.md', 'vendor/aerotizen/LICENSE']:
+for notice in ['LICENSE', 'docs/THIRD_PARTY_NOTICES.md', 'vendor/aerotizen/LICENSE']:
     assert (root / notice).is_file()
 print('Q60B manifest, assets, notices and integration boundary passed.')

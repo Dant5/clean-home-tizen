@@ -1,0 +1,43 @@
+name: TV report
+description: Share a working TV or report a problem, with optional automatic details.
+body:
+  - type: markdown
+    attributes:
+      value: Thank you for testing! This report will be public. Do not include serial numbers, DUIDs, addresses, credentials or account screens. You can get automatic details from Clean Home → Settings → Samsung → Share TV report.
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: TV details
+      description: The QR code fills this in. For a manual report, enter your model, firmware, Tizen and Clean Home versions. Unknown details are fine.
+      render: json
+    validations:
+      required: true
+  - type: input
+    id: exact-model
+    attributes:
+      label: Exact TV model (if missing above)
+      description: Find it in TV Settings → Support → About This TV. Leave out the serial number.
+  - type: textarea
+    id: results
+    attributes:
+      label: What worked, or what went wrong?
+      description: Tell us what you actually tried. For a problem, say what you pressed and what appeared. Did reopening Clean Home help?
+      placeholder: Installed successfully; adding apps and opening them works. Arrows and Back work. I have not tried HDMI yet.
+    validations:
+      required: true
+  - type: dropdown
+    id: install
+    attributes:
+      label: Installed with
+      options:
+        - Apps2Samsung
+        - Tizen Studio
+        - Browser preview (not a TV test)
+        - Other / unsure
+    validations:
+      required: true
+  - type: textarea
+    id: native
+    attributes:
+      label: Separate Home or startup changes (if any)
+      description: An ordinary Clean Home install does not change the remote Home button or startup screen. Say if you separately changed either.

@@ -1,6 +1,6 @@
 {
   "name": "clean-home-tizen",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "private": true,
   "description": "Clean Home for Samsung Tizen 5.0 and newer; choose your own apps.",
   "scripts": {
@@ -14,12 +14,12 @@
     "check:q60b": "node scripts/check-q60b.mjs",
     "check:device": "node --test tests/device.test.cjs",
     "check:signer": ".local/venv/bin/python -m pytest -q tests/test_signer.py",
-    "test": "npm run check && npm run check:device && npm run check:browser && npm run check:q60b && npm run check:bing && npm run check:reliability && npm run check:onboarding && npm run check:startup-input && npm run check:backgrounds && npm run check:responsive && npm run check:python && npm run check:legacy-network",
+    "test": "npm run check && npm run check:device && npm run check:browser && npm run check:q60b && npm run check:bing && npm run check:reliability && npm run check:onboarding && npm run check:startup-input && npm run check:backgrounds && npm run check:responsive && npm run check:python && npm run check:legacy-network && npm run check:reports",
     "check:reliability": "node scripts/check-reliability.mjs",
     "check:bing": "node scripts/_bing-next.mjs",
     "check:performance": "node scripts/check-performance.mjs",
     "check:python": ".local/venv/bin/python -m pytest -q tests",
-    "check:package": "node scripts/check-package.mjs",
+    "check:package": "node scripts/check-package.mjs && node scripts/check-reports.mjs --widget",
     "check:backgrounds": "node scripts/check-backgrounds.mjs",
     "build:backgrounds": "node scripts/build-background-overlays.mjs",
     "check:startup-input": "node scripts/check-startup-input.mjs",
@@ -27,10 +27,12 @@
     "release:prepare": ".local/venv/bin/python scripts/prepare-release.py",
     "check:responsive": "node scripts/check-responsive.mjs",
     "check:compatibility": "node scripts/check-compatibility.mjs",
-    "check:legacy-network": "node scripts/check-legacy-network.mjs"
+    "check:legacy-network": "node scripts/check-legacy-network.mjs",
+    "check:reports": "node --test tests/reports.test.cjs && node scripts/check-reports.mjs"
   },
   "devDependencies": {
     "acorn": "8.15.0",
+    "jsqr": "1.4.0",
     "playwright": "1.64.1"
   },
   "license": "MIT"

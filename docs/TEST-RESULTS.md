@@ -1,3 +1,11 @@
+# 1.4.2 TV reports and compatibility chart
+
+Local source and actual-widget report checks pass **32 each** in current Chromium 156 and Chromium 85. An independent jsQR decoder reads the rendered QR screenshots at 1080p and 720p, including maximum-length accepted metadata and error codes. Checks cover success/problem choices, real adapter errors reduced to safe codes, missing or denied metadata, all background modes, remote Back, late cancellation, offline encoder failure, no report uploads/app launches and unchanged saved preferences. Seven Node tests exercise the privacy boundary and structured URL fields. The encoder loads on demand, outside the Home startup path.
+
+The actual unsigned widget passes **44 checks per engine** in pinned Chromium 63, 69, 76, 85, 94, 108, 120 and 130, including opening the report, rendering its local QR and returning to settings. Full existing UI/regression suites pass in current/85, with **43 performance checks each** and **67 Python tests**. Generated-chart, relocated-document links and version consistency checks pass. Source and reachable-history secret scans pass. The packaged check caught an excluded on-demand asset; the encoder now lives in the runtime asset folder and is exercised from the actual WGT. A newer Playwright visibility helper was replaced with standard DOM geometry in the test harness for Chromium 85.
+
+The chart's physical evidence is explicitly the Q60B reference installation through **1.3.9**, not the new 1.4.2 reporting feature. No TV, PC, camera, Home Assistant or native helper was contacted or changed for this update. Phone-camera scanning, GitHub authentication/submission and the new report screen on a physical TV remain unverified. Reports are prepared locally and require user review/submission; no test issues were sent to GitHub. Hosted full/matrix validation is required before publication. Existing hardware and earlier-release results below retain their scope.
+
 # 1.4.1 compatibility update
 
 The generic widget targets **Tizen 5.0 and newer**, using the same package/application identity. The Q60B remains the only physical reference TV; no other model has been installed or tested on hardware. The native Home/startup helper guards are unchanged and are not covered by the broader web-widget target.

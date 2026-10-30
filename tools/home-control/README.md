@@ -33,4 +33,4 @@ The device target is the TV's existing .NET Core 3.1; the build emits expected l
 
 The transport, baseline, addresses, certificates, execution receipts and recovery archives stay private. This repository does not provide a ready-to-run public installer for native reassignment. Restore the native baseline **before uninstalling Clean Home**. Samsung Home remains installed and can be launched explicitly through Clean Home's Samsung Home control.
 
-Native snapshot/readback ideas are adapted from AeroTizen by Hamza El Alaoui, MIT, reviewed at `c4b649b4fa22a43e19842f0f6d52acdfa69cc1d3`. Retain [its licence](../../vendor/aerotizen/LICENSE), the root licence and [third-party notices](../../THIRD_PARTY_NOTICES.md).
+Native snapshot/readback ideas are adapted from AeroTizen by Hamza El Alaoui, MIT, reviewed at `c4b649b4fa22a43e19842f0f6d52acdfa69cc1d3`. Retain [its licence](../../vendor/aerotizen/LICENSE), the root licence and [third-party notices](../../docs/THIRD_PARTY_NOTICES.md).

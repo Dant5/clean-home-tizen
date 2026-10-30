@@ -34,7 +34,7 @@ jobs:
         run: |
           npm ci
           python3 -m venv .local/venv
-          .local/venv/bin/python -m pip install -r requirements-build.txt
+          .local/venv/bin/python -m pip install -r scripts/requirements-build.txt
           npx playwright install --with-deps chromium
       - name: Install historical test engine
         if: matrix.engine == '85'
@@ -87,7 +87,7 @@ jobs:
         run: |
           npm ci
           python3 -m venv .local/venv
-          .local/venv/bin/python -m pip install -r requirements-build.txt
+          .local/venv/bin/python -m pip install -r scripts/requirements-build.txt
           sudo apt-get update
           sudo apt-get install -y libgtk-3-0 libxss1 libgconf-2-4 libxshmfence1 libgbm1 libasound2
           python3 scripts/install-test-browser.py --engine ${{ matrix.engine }}

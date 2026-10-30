@@ -30,7 +30,7 @@ def main():
         overlay = {'device-config.js': (base + '\nwindow.CleanHomeConfig.verifiedAppIds = ' + json.dumps(bindings, sort_keys=True) + ';\n').encode()}
     write_widget_archive(target, include_private=False, runtime_overlay=overlay)
     with zipfile.ZipFile(target, 'a', zipfile.ZIP_DEFLATED) as package:
-        for source, name in [('LICENSE', 'LICENSE'), ('THIRD_PARTY_NOTICES.md', 'THIRD_PARTY_NOTICES.md'), ('vendor/aerotizen/LICENSE', 'AeroTizen-LICENSE')]:
+        for source, name in [('LICENSE', 'LICENSE'), ('docs/THIRD_PARTY_NOTICES.md', 'THIRD_PARTY_NOTICES.md'), ('vendor/aerotizen/LICENSE', 'AeroTizen-LICENSE')]:
             package.writestr(archive_member(name), (ROOT / source).read_bytes())
     if args.cert_dir:
         folder = args.cert_dir.resolve()

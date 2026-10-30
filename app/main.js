@@ -1023,7 +1023,7 @@
       { action: 'samsung.home', label: 'Open Samsung Home', description: 'Open Samsung\u2019s Home screen now' },
       { action: 'samsung.settings', label: 'TV settings', description: 'Open Samsung settings' },
       { action: 'samsung.inputs', label: 'HDMI / inputs', description: 'Choose a TV input' },
-      { action: 'samsung.diagnostics', label: 'Diagnostics', description: 'Read-only device and application details' }
+      { action: 'samsung.diagnostics', label: 'Share TV report', description: 'Tell us what works, or report a problem' }
     ] }];
   }
   function detailRows(t) {
@@ -1150,11 +1150,21 @@
     }); });
   }
   function showDiagnostics() {
-    var d = FrameDevice.diagnostics();
-    console.info('Clean Home diagnostics', JSON.stringify(d));
-    devicePanel('Diagnostics', [{ label: (d.model || 'Model unavailable') + ' / ' + (d.firmware || 'Firmware unavailable') },
-      { label: d.userAgent }, { label: d.applications.length + ' application records; full report in Web Inspector console' }].concat(d.favourites.map(function (a) { return { label: a.name + ': ' + (a.appId || 'Unresolved') }; })));
+    push({ id: 'tvreport', report: FrameReport.collect({ catalogLoaded: catalog.loaded, catalogError: !!catalog.error,
+      storageOk: storageOk, photoReady: !!(IMG.photo.complete && IMG.photo.naturalWidth) }), outcome: '', f: { b: 0 } });
+    render();
   }
+  V.tvreport = {
+    sheet: true,
+    norm: function (t) { t.f.b = clamp(t.f.b, 0, 2); },
+    key: function (t, k) {
+      if (k === 'left' || k === 'up') t.f.b--;
+      else if (k === 'right' || k === 'down') t.f.b++;
+      else if (k === 'back' || (k === 'ok' && t.f.b === 2)) pop();
+      else if (k === 'ok') t.outcome = t.f.b === 0 ? 'works' : 'problem';
+    },
+    point: function (t, z, i) { t.f.b = i; this.key(t, 'ok'); }
+  };
   var bindingEntry = null;
   function editBinding(brand) {
     if (bindingEntry) bindingEntry.close();
@@ -2587,6 +2597,31 @@
   QA.activate = function (action) { return activate(action) ? QA.state() : null; };
   QA.actions = function () { var view = isSettingsDetail(top()) ? appearanceEl : sheetEl.hidden ? homeEl : sheetEl; return Array.prototype.filter.call(view.querySelectorAll('[data-action]'), renderedAction).map(function (el) { return el.getAttribute('data-action'); }); };
 
+  FRAMES.tvreport = function () {
+    return '<div class="tv-report"><h2>Share TV report</h2><p class="tv-report-intro">Choose an option, then scan the code with your phone. Review your report and submit it on GitHub.</p>'
+      + '<pre class="tv-report-data" data-slot="data"></pre><div class="tv-report-qr"><canvas data-slot="qr" hidden aria-label="QR code to a prefilled GitHub report"></canvas><p class="tv-report-status" data-slot="status" role="status"></p></div>'
+      + '<div class="tv-report-actions" data-slot="actions"></div><p class="tv-report-note">Nothing is sent by the TV. Reports are public and need a GitHub account.<br>No accounts, app list, addresses, serial numbers or signing details are included.</p></div>';
+  };
+  FILLS.tvreport = function (t, slots) {
+    var r = t.report;
+    slots.data.textContent = 'Clean Home ' + r.cleanHome + ' | ' + r.environment + '\nModel: ' + r.model + '\nFirmware: ' + r.firmware + '\nTizen: ' + r.tizen + ' | Chromium: ' + r.chromium
+      + '\nApp surface: ' + r.viewport + '\nSpacing: ' + r.spacing + '\nApp discovery: ' + r.appDiscovery + '\nSaved settings: ' + r.savedSettings + '\nPhoto: ' + r.photo + '\nUnhandled errors: ' + r.errors + ' | Rejections: ' + r.rejections
+      + '\nTV errors: ' + r.tvErrors + ' | ' + r.lastTVError
+      + '\nResult: ' + (t.outcome ? t.outcome === 'works' ? 'Works on my TV' : 'There is a problem' : 'Choose below');
+    setHTML(slots.actions, ['Works on my TV', 'Report a problem', 'Back'].map(function (label, i) {
+      return '<button type="button" tabindex="-1" class="btn' + (i === t.f.b ? ' is-focus' : '') + '" data-z="report" data-i="' + i + '" data-action="report.' + i + '">' + label + '</button>';
+    }).join(''));
+    if (!t.outcome) { slots.status.textContent = 'Choose Works or Report a problem below.'; return; }
+    if (t.qrOutcome === t.outcome) return;
+    t.qrOutcome = t.outcome;
+    var prepared = FrameReport.prepare(r, t.outcome), outcome = t.outcome, canvas = slots.qr;
+    slots.status.textContent = 'Preparing code\u2026'; canvas.hidden = true;
+    FrameReport.draw(canvas, prepared.url, function (ok) {
+      if (top() !== t || t.outcome !== outcome || !canvas.parentNode) return;
+      canvas.hidden = !ok;
+      slots.status.textContent = ok ? 'Scan, review, then submit.' : 'Code unavailable. Open github.com/Dant5/clean-home-tizen/issues on your phone and choose TV report.';
+    });
+  };
   FRAMES.devicepanel = function () { return '<div class="device-panel"><h2 data-slot="title"></h2><div data-slot="items"></div></div>'; };
   FILLS.devicepanel = function (t, slots) {
     slots.title.textContent = t.title;

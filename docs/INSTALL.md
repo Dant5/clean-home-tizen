@@ -2,13 +2,13 @@
 
 **No root required.** Your existing apps stay installed, and the remote’s Home button keeps opening Samsung Home.
 
-**[Download Clean Home](https://github.com/Dant5/clean-home-tizen/releases/tag/v1.4.1-preview.1)** and follow the steps below.
+**[Download Clean Home](https://github.com/Dant5/clean-home-tizen/releases/tag/v1.4.2-preview.1)** and follow the steps below.
 
 ## Before you start
 
 You need:
 
-- A Samsung TV with **Tizen 5.0 or newer**. Developed on the **2022 Q60B**; [other models are unconfirmed](docs/COMPATIBILITY.md).
+- A Samsung TV with **Tizen 5.0 or newer**. Developed on the **2022 Q60B**; [other models are unconfirmed](COMPATIBILITY.md).
 - A computer on the same home network as the TV.
 - A Samsung account for the installer’s certificate setup. A certificate lets the TV accept the app.
 
@@ -33,9 +33,9 @@ Download `SHA256SUMS` from the same release. Check the app file using the comman
 
 | Computer | Command |
 | --- | --- |
-| Windows PowerShell | `Get-FileHash .\CleanHome-Tizen-1.4.1-unsigned.wgt -Algorithm SHA256` |
-| Mac Terminal | `shasum -a 256 CleanHome-Tizen-1.4.1-unsigned.wgt` |
-| Linux Terminal | `sha256sum CleanHome-Tizen-1.4.1-unsigned.wgt` |
+| Windows PowerShell | `Get-FileHash .\CleanHome-Tizen-1.4.2-unsigned.wgt -Algorithm SHA256` |
+| Mac Terminal | `shasum -a 256 CleanHome-Tizen-1.4.2-unsigned.wgt` |
+| Linux Terminal | `sha256sum CleanHome-Tizen-1.4.2-unsigned.wgt` |
 
 Compare the result with the file’s entry in `SHA256SUMS`. If they differ, download again before installing.
 
@@ -79,7 +79,7 @@ You should see a photograph, clock and **+** tile. An existing installation keep
 3. Press **Select** briefly to open a shortcut.
 4. To replace it, **hold Select for about one second**, release, then choose another app. **Back** cancels.
 
-![A fresh installation starts with Add app](docs/images/first-run.jpg)
+![A fresh installation starts with Add app](images/first-run.jpg)
 
 Use **Settings → Apps on Home** to reorder or remove shortcuts. To move one, select its name, use the arrows, then Select to place it. Removing a shortcut leaves the app installed.
 
@@ -89,7 +89,7 @@ Use **Settings → Apps on Home** to reorder or remove shortcuts. To move one, s
 
 A standard install opens from **Apps**. It does **not** change what happens when you press Home or turn on the TV.
 
-A separate rootless Home-button/startup setup worked on the reference Q60B. It is not included in this download. [Advanced details](docs/NATIVE-HOME.md).
+A separate rootless Home-button/startup setup worked on the reference Q60B. It is not included in this download. [Advanced details](NATIVE-HOME.md).
 
 ## Connection and installation help
 
@@ -112,6 +112,6 @@ Still stuck? [Report a problem](https://github.com/Dant5/clean-home-tizen/issues
 
 **To remove:** open Samsung **Apps → app settings**, select **Clean Home**, then **Delete**. Menu names vary. Only Clean Home and its saved settings are removed.
 
-If you separately changed the Home-button/startup setup, [restore that setup first](docs/NATIVE-HOME.md), and check the physical Home button opens Samsung Home before deleting Clean Home.
+If you separately changed the Home-button/startup setup, [restore that setup first](NATIVE-HOME.md), and check the physical Home button opens Samsung Home before deleting Clean Home.
 
-Building or signing with Tizen Studio? See the [developer guide](CONTRIBUTING.md#sign-and-install-with-tizen-studio).
+Building or signing with Tizen Studio? See the [developer guide](../.github/CONTRIBUTING.md#sign-and-install-with-tizen-studio).

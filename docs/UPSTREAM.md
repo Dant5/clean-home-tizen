@@ -4,7 +4,7 @@ This is an independent adaptation of [chaosmanage’s Clean Home](https://github
 
 The Q60B integration adds discovered/manual application IDs, four-service branding, local recovery/error handling, Tizen 6.5 compatibility fixes and measured rendering improvements. The public preview starts without favourites and adds a progressive + picker and long-press replacement. It retains the same application identity so existing configurations can be preserved on a same-author upgrade.
 
-The public repository is a clean source snapshot. The private development history, device addresses, signing credentials, per-TV native baselines, diagnostic recordings and personal signed packages are not included. Original licences, notices, source revision records and asset credits are preserved. [Reviewed source revisions](upstream-sources.json) · [third-party notices](../THIRD_PARTY_NOTICES.md).
+The public repository is a clean source snapshot. The private development history, device addresses, signing credentials, per-TV native baselines, diagnostic recordings and personal signed packages are not included. Original licences, notices, source revision records and asset credits are preserved. [Reviewed source revisions](upstream-sources.json) · [third-party notices](THIRD_PARTY_NOTICES.md).
 
 AeroTizen’s MIT standalone signer and supporting transport/parser tests are retained under `vendor/aerotizen/`. Consumer-app filtering adapts arn0-tv’s MIT implementation. HDMI usage was reviewed against tidyTizen and Samsung’s public APIs. Native Home/controller sources are separate advanced research; no debloating or watcher is bundled.
 

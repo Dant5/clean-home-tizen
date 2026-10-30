@@ -19,7 +19,10 @@
   var HIDDEN = ['2022ePop01.SmartTV', 'w2VwCK465D.OTApp', 'WykOS4t4F0.cmsWebApp'];
   function api() { return window.tizen && window.tizen.application; }
   function valid(id) { return typeof id === 'string' && /^[A-Za-z0-9][A-Za-z0-9._-]{0,160}$/.test(id) && ['constructor', 'prototype', '__proto__'].indexOf(id) < 0; }
-  function failure(err, title) { return { message: title || 'The TV could not open this screen.', detail: err && (err.message || err.name) || 'Try again, or use the remote Home button.' }; }
+  function failure(err, title) {
+    if (window.FrameReport) window.FrameReport.recordTVError(err, title);
+    return { message: title || 'The TV could not open this screen.', detail: err && (err.message || err.name) || 'Try again, or use the remote Home button.' };
+  }
   function unavailable(done) { done(failure(null, 'Open Clean Home on the TV to use this control.')); }
   function bounded(done, timeout) {
     var ended = false, timer = setTimeout(function () { finish(failure(null, 'The TV did not respond. Please try again.')); }, timeout || window.CleanHomeConfig.timeoutMs || 8000);

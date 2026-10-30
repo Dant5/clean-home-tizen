@@ -21,21 +21,27 @@ Based on [Clean Home by chaosmanage](https://github.com/chaosmanage/samsung-tv-l
 
 Requires **Tizen 5.0 or newer**. Developed on a **2022 Samsung Q60B**; other models are unconfirmed. The layout adjusts to your screen size. [TV compatibility](docs/COMPATIBILITY.md).
 
+![Compatibility chart: Tizen 5.0–10.0 are browser-tested preview targets; only the Q60B on 6.5 has real-TV reference evidence](docs/images/compatibility.svg)
+
+**Feedback wanted!** Tried it on your TV? **Settings → Samsung → Share TV report** gives you a QR code for a ready-filled report. Scan, review and submit on your phone. [How it works](docs/TV-REPORTS.md).
+
 ## Install it
 
-**[Download the preview](https://github.com/Dant5/clean-home-tizen/releases/tag/v1.4.1-preview.1)** · [Step-by-step installation](INSTALL.md)
+**🛠️ Install difficulty: 3/10** *(our estimate)*. No coding. The first Samsung certificate setup is the fiddliest part.
 
-You need a computer on the TV’s home network and a Samsung account. No coding is required.
+**[Download the preview](https://github.com/Dant5/clean-home-tizen/releases/tag/v1.4.2-preview.1)** · [Step-by-step installation](docs/INSTALL.md)
+
+You need a computer on the TV’s home network and a Samsung account.
 
 1. **Download Clean Home:** open [Releases](https://github.com/Dant5/clean-home-tizen/releases) → **Assets** and choose the file ending in **`-unsigned.wgt`**. This is the TV app; skip the source-code ZIP files.
 2. **Get Apps2Samsung:** download and open the installer from its [official releases](https://github.com/Apps2Samsung/Apps2Samsung/releases).
-3. **Find your computer’s local IP address.** [Show me where](INSTALL.md#2-find-your-computers-address).
+3. **Find your computer’s local IP address.** [Show me where](docs/INSTALL.md#2-find-your-computers-address).
 4. **On the TV:** open **Apps**, enter **1 2 3 4 5**, turn Developer Mode **On**, and enter the **computer’s** address as **Host PC IP**. Restart as prompted. Some models need **Apps → App Settings** first. Developer Mode is not root.
 5. **In Apps2Samsung:** select your TV and wait for it to be ready. Choose **Install a file…** and select the Clean Home `.wgt`.
 6. **Follow the Samsung sign-in and certificate prompts.** The installer prepares the app for your TV. Button names may vary by installer version.
 7. **Open Clean Home** from the TV’s Apps screen. Choose **+**, then an installed app.
 
-[Full step-by-step guide and common fixes →](INSTALL.md)
+[Full step-by-step guide and common fixes →](docs/INSTALL.md)
 
 ## Use it
 
@@ -53,6 +59,15 @@ You need a computer on the TV’s home network and a Samsung account. No coding 
 | Open TV settings or inputs | **Settings → Samsung**. |
 
 Add up to nine apps. Saved favourites stay in place when updating.
+
+<details>
+<summary>Why are some app icons coloured?</summary>
+
+Many recognised apps use bundled monochrome logos. Other apps use their own installed icon, which may be coloured or have a background; a missing icon gets initials. We keep the same space and size for every icon. Making every logo match needs individual artwork, rather than a grey filter.
+
+For a uniform text-only look, choose **Settings → Layout → App display → Text**. More monochrome logos can be added as people report which apps they use.
+
+</details>
 
 <details>
 <summary>See the first screen and app chooser</summary>
@@ -73,8 +88,8 @@ A separate setup made both work on our test Q60B, **without root**. It is specif
 
 ## Help and credits
 
-[Installation help and removal](INSTALL.md) · [Report a problem](https://github.com/Dant5/clean-home-tizen/issues) · [Privacy](PRIVACY.md)
+[Installation help and removal](docs/INSTALL.md) · [Report a problem](https://github.com/Dant5/clean-home-tizen/issues) · [Privacy](docs/PRIVACY.md)
 
-[Full credits](docs/UPSTREAM.md) · [MIT licence](LICENSE) · [Third-party notices](THIRD_PARTY_NOTICES.md).
+[Full credits](docs/UPSTREAM.md) · [MIT licence](LICENSE) · [Third-party notices](docs/THIRD_PARTY_NOTICES.md).
 
-For developers: [Build and test](CONTRIBUTING.md) · [Test results](docs/TEST-RESULTS.md) · [Release process](docs/RELEASING.md).
+For developers: [Build and test](.github/CONTRIBUTING.md) · [Test results](docs/TEST-RESULTS.md) · [Release process](docs/RELEASING.md).

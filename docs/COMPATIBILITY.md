@@ -2,6 +2,10 @@
 
 This build requires **Tizen 5.0 or newer**.
 
+![Clean Home compatibility by Tizen version](images/compatibility.svg)
+
+**Preview target** means the app is designed for that version. **Browser check** means it passed in the corresponding desktop browser engine with simulated TV APIs. **Actual TV** identifies limited real hardware evidence; it does not verify every model running that OS. Model years are a guide because some TVs can receive OS upgrades.
+
 | TV | Status |
 | --- | --- |
 | **2022 Samsung Q60B, Tizen 6.5** | Reference model used for development. |
@@ -10,6 +14,10 @@ This build requires **Tizen 5.0 or newer**.
 | TVs from other brands | Not supported. |
 
 The reference model is QA55Q60BAWXXY, running T-NKLBUABC-1720.7. Matching Tizen versions alone does not guarantee compatibility.
+
+The reference TV runs Clean Home **1.3.9**. The newer public app chooser and TV-report flow have browser coverage; that exact public build has not been installed on the reference TV. No additional community models are confirmed yet.
+
+**Help fill in the chart:** in Clean Home 1.4.2+, open **Settings → Samsung → Share TV report**, choose Works or Report a problem, and scan the code. [Share your TV results](TV-REPORTS.md). Older builds or installation failures can use the same manual report form.
 
 ## What to expect
 
