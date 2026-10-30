@@ -13,7 +13,7 @@ An OS version alone does not establish native compatibility. Please do not remov
 
 ## Before you start
 
-1. [Install Clean Home](INSTALL.md) using your own Samsung certificates and open it once.
+1. To change Home, [install Clean Home](INSTALL.md) using your own Samsung certificates and open it once. **Check TV and reports work without the widget installed**, so an installation failure does not block diagnostics.
 2. Use the same computer whose address is entered as **Host PC IP** in the TV’s Developer Mode.
 3. Close Apps2Samsung so only this tool uses the developer connection. Keep the TV on.
 

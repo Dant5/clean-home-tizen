@@ -106,6 +106,8 @@ Use **Settings → Apps on Home** to reorder or remove shortcuts. To move one, s
 
 Still stuck? [Report a problem](https://github.com/Dant5/clean-home-tizen/issues) with your TV model, software version, Clean Home version and what happened. Leave out passwords, serial numbers, certificate files and account screens.
 
+If the TV app will not install, you can still open the bundled Home Setup tool and use **Check TV → Send compatibility report**. It can collect connection and compatibility results without the widget installed.
+
 ## Updates and removal
 
 **To update:** install the new Clean Home file using the same signing profile. This preserves saved shortcuts and settings. Keep a secure backup of that profile. An installer/certificate backup does not contain other apps’ private settings or pairings.
