@@ -8,7 +8,7 @@ A photo. A clock. Your favourite apps. A beautifully simple home screen.
 
 **No root. Your apps stay installed. Samsung Home stays available.**
 
-**[⬇ Get Clean Home Setup](https://github.com/Dant5/clean-home-tizen/releases/tag/v1.4.2-preview.2)** · [Install guide](docs/INSTALL.md) · [TV support](#tv-support)
+**[⬇ Get Clean Home Setup](https://github.com/Dant5/clean-home-tizen/releases/tag/v1.4.3-preview.1)** · [Install guide](docs/INSTALL.md) · [TV support](#tv-support)
 
 </div>
 
@@ -22,7 +22,7 @@ Set up **Home and power-on to open Clean Home**. No root, no running PC and no b
 
 **One download, one guide:** the TV app and Home Setup tool are bundled together. Install the app with Apps2Samsung, then choose **Use Clean Home** in the setup tool.
 
-**Home replacement is experimental and currently accepts QA55Q60BAWXXY / T-NKLBUABC-1720.7 only.** Other TVs can use Clean Home from Apps. [Home support and Undo](docs/NATIVE-HOME.md).
+**Home replacement is experimental and currently accepts QA55Q60BAWXXY / T-NKLBUABC-1720.7 only.** Other Samsung models can run **Check TV** and send compatibility results, even when Home replacement is not yet supported. [Home support and Undo](docs/NATIVE-HOME.md).
 
 ## What you get
 
@@ -37,16 +37,16 @@ Targets **Tizen 5.0 and newer**. Our real-TV reference is a **2022 Samsung Q60B*
 
 ![TV support: browser checks pass on Tizen 5.0–10.0; Q60B on 6.5 is the only real-TV reference](docs/images/compatibility.svg)
 
-**Feedback wanted!** Tried your TV? Open **Settings → Samsung → Share TV report**, review the details and press **Send**. No phone or account needed. [What gets shared](docs/TV-REPORTS.md).
+**Feedback wanted!** For Home setup, run **Check TV → Send compatibility report** on your computer. It reports which checks passed or failed, including on unlisted models. For the TV app, use **Settings → Samsung → Share TV report**. Review first, then Send; no phone or account needed. [What gets shared](docs/TV-REPORTS.md).
 
 ## Install it
 
 **🛠️ Difficulty: 3/10.** No coding. You need a computer on the TV’s home network and a Samsung account.
 
-1. **Get the setup bundle.** Open [Downloads](https://github.com/Dant5/clean-home-tizen/releases/tag/v1.4.2-preview.2), choose **CleanHome-Setup-Windows-preview.zip** (or **Python** for Linux), and extract it. Open **START-HERE.html**.
+1. **Get the setup bundle.** Open [Downloads](https://github.com/Dant5/clean-home-tizen/releases/tag/v1.4.3-preview.1), choose **CleanHome-Setup-Windows-preview.zip** (or **Python** for Linux), and extract it. Open **START-HERE.html**.
 2. **Install the TV app.** The guide walks through Developer Mode and [Apps2Samsung](https://github.com/Apps2Samsung/Apps2Samsung/releases). Use the included `.wgt` and your own Samsung sign-in.
-3. **Make it Home.** Open the included Home Setup tool → **Check TV** → **Use Clean Home**. It saves the originals and checks compatibility before changing anything.
-4. **Make it yours.** Choose **+**, then an app. Check the physical Home button and an off/on cycle. Close the setup tool when done.
+3. **Make it Home.** Open the included Home Setup tool → **Check TV**. On supported software, choose **Use Clean Home**. Otherwise, review the results and **Send compatibility report** to help add support.
+4. **Make it yours.** Choose **+**, then an app. If Home setup succeeded, check the physical Home button and an off/on cycle. Close the setup tool when done.
 
 Using a Mac, or just want the TV app? The same release includes the [standalone `.wgt`](docs/INSTALL.md#1-download-clean-home-setup). Home replacement currently has Windows and Linux setup builds.
 

@@ -6,5 +6,5 @@
     <UseAppHost>false</UseAppHost>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
-  <ItemGroup><Compile Include="HomeInspection.cs" /><Compile Include="StartupStrings.cs" /></ItemGroup>
+  <ItemGroup><Compile Include="HomeInspection.cs" /><Compile Include="StartupStrings.cs" /><Compile Include="CompatibilityChecks.cs" /></ItemGroup>
 </Project>

@@ -1,5 +1,5 @@
 {
-  "previewVersion": "1.4.2",
+  "previewVersion": "1.4.3",
   "engineSource": "https://developer.samsung.com/smarttv/develop/specifications/web-engine-specifications.html",
   "versions": [
     {"tizen": "5.0", "year": "2019", "chromium": 63},

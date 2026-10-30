@@ -23,6 +23,15 @@ If the app will not open, the QR code fails, or you are using an older Clean Hom
 
 Say which things you actually tried: installation, arrows/Select/Back, adding and opening apps, photo loading, HDMI, Samsung Home and TV settings. For a problem, describe what you pressed and what appeared. If possible, say whether reopening Clean Home helped. Do not reset Smart Hub or reinstall your favourite apps to investigate a launcher problem.
 
+## Home setup on an unlisted model
+
+On the computer running Clean Home Setup, choose **Check TV**. Unlisted Samsung models continue through the diagnostic checks. Review the summary or expand every result, then choose **Send compatibility report**. No account or phone is needed. **Save report** saves the same sanitized details locally.
+
+The report contains the setup version, model/software, reported Tizen/architecture, whether a reviewed Home profile exists, and fifteen fixed check outcomes. These cover connection, temporary-helper execution, account/architecture checks, individual Home/startup getters and the confirmed/unknown outcome of an attempted supported setup or Undo. App/Home identifiers and preference values are reduced to fixed categories. No address, DUID, serial number, app inventory, credentials, raw output or original recovery data is sent.
+
+A failed getter does not hide later independent results. A dependent test that could not run is **skipped**, not passed. The tool does not try unverified setters; a timeout does not prove that a prior write failed. It preserves originals and stops uncertain writes. Reports support development of additional profiles, followed by bounded real-TV testing; they do not automatically authorize a profile or patch a TV.
+
+
 ## Maintaining the chart
 
 The [compatibility chart](COMPATIBILITY.md) separates an intended OS target, a passing browser check and real-TV evidence. An API being present, a launch callback or a submitted “works” report does not automatically verify a TV.

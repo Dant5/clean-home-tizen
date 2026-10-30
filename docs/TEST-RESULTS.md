@@ -1,3 +1,13 @@
+# 1.4.3 — cross-model setup diagnostics
+
+Check TV now runs settings-read-only compatibility checks before applying the Home-write profile guard. An unlisted Samsung model can review, save and explicitly send its result. Independent native getters continue after missing-library, missing-symbol or access failures; dependent checks are marked skipped. Only the inspection assembly is staged in diagnostic mode, and root execution is refused. Home writes and original-value queries retain their exact model/firmware/UID guards.
+
+**134 Python tests pass** across the source, including report privacy, partial failures, unknown models, receipt validation, protected local downloads, explicit consent, duplicate suppression and supported setup success/failure reports. **57 native policy checks pass** using fake getter adapters. The setup browser flow passes in current Chromium 156 and Chromium 85, including an unlisted model and sending/saving its report. The full existing source suites pass in both engines. Widget runtime behaviour is unchanged; the version is now 1.4.3. Packaged-widget and hosted matrix results are recorded with the release checks.
+
+The report receiver passes **38 schema tests**, TypeScript checking and a local Worker/D1 test of both report formats, rejecting unexpected fields and accepting a subsequent valid report. Setup reports contain fixed outcomes plus model/software information; they exclude addresses, unique device identifiers, app inventories, raw native output, original setting values and recovery paths. The existing private database stores both report formats without a schema migration. The deployed receiver accepted clearly labelled synthetic setup reports and rejected unexpected fields. The host sender identifies itself as CleanHome-Setup; its live receipt path was checked.
+
+These are local and simulated checks. The new cross-model diagnostic probe and guided Home installer/Undo have not been rehearsed on physical TVs. Successful getters do not prove that setters or restoration work on an unlisted model. The owner's installed 1.3.9, native Home setup, TV, computers and Home Assistant were not contacted or changed. All earlier hardware evidence and release results below retain their original scope.
+
 # 1.4.2 preview 2 — complete setup bundles
 
 The main guide now includes the Home-button/power-on setup step. Complete Windows and Python ZIPs contain the unchanged unsigned widget, existing Home tool, offline four-step guide, preview picture, licences and per-file checksums. The app remains byte-identical to preview 1 (`09d85391fbc3542985cd11a625e24f273cb9782cd4edae21b34ce996fd6b389a`); Home logic, firmware/model guards, saved originals and Undo are unchanged.

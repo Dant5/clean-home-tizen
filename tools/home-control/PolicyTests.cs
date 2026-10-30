@@ -68,6 +68,11 @@ internal static class Tests {
   Run("Combined drift refuses all writes",()=>{var o=Original();var f=new Fake(o);var opt=new FakeOption{Value=0};bool refused=false;try{SetupPolicy.Execute(f,opt,o,1,"apply-all");}catch{refused=true;}Assert(refused && f.Writes==0 && opt.Writes==0);});
   Run("Undo refuses unrelated owner before changing Last App",()=>{var o=Original();var f=new Fake(o);f.State.Main="other.Home";var opt=new FakeOption{Value=0};bool refused=false;try{SetupPolicy.Execute(f,opt,o,1,"restore-all");}catch{refused=true;}Assert(refused && f.Writes==0 && opt.Writes==0);});
   Run("Combined recovery failure is explicit",()=>{var o=Original();var f=new Fake(o){FailAt=1,FailRollback=true};var opt=new FakeOption{Value=1};var r=SetupPolicy.Execute(f,opt,o,1,"apply-all");Assert(!r.Success && !r.RolledBack && r.Error.Contains("recovery incomplete"));});
+  Run("Compatibility probes continue after missing getter",()=>{int calls=0;var c=CompatibilityChecks.Run(901,"ARM64",name=>{calls++;if(name=="homeOperation")throw new EntryPointNotFoundException("PRIVATE");return "Other";});Assert(calls==8 && c["homeOperation"][1]=="MISSING_SYMBOL" && c["lastApp"][0]=="pass");});
+  Run("Compatibility refuses root",()=>{int calls=0;var c=CompatibilityChecks.Run(0,"ARM32",name=>{calls++;return "Other";});Assert(calls==0 && c["identity"][0]=="fail");});
+  Run("Compatibility permits getter checks for other nonroot accounts",()=>{int calls=0;var c=CompatibilityChecks.Run(1000,"ARM32",name=>{calls++;return "Other";});Assert(calls==8 && c["identity"][2]=="Other");});
+  Run("Compatibility refuses other architecture",()=>{int calls=0;var c=CompatibilityChecks.Run(901,"Other",name=>{calls++;return "Other";});Assert(calls==0 && c["architecture"][0]=="fail");});
+  Run("Compatibility never exposes arbitrary values or errors",()=>{var c=CompatibilityChecks.Run(901,"ARM32",name=>{if(name=="homeOperation")return "PRIVATE";throw new Exception("PRIVATE");});Assert(c["homeOperation"][1]=="UNEXPECTED_VALUE" && c["lastApp"][1]=="READ_FAILED");});
   Console.WriteLine("Native Home policy checks passed: "+passed);
  }
 }

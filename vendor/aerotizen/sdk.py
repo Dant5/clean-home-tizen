@@ -1,4 +1,5 @@
-"""Run a bounded managed helper as SDK UID 901 through the existing SDB session.
+"""Run bounded helpers through the existing SDB session; Home writes require UID 901.
+The opt-in compatibility mode accepts only the fixed getter probe and refuses root.
 
 This uses the published package-name command workaround, not a root provider.
 Only caller-supplied, checksum-verified helper data and one script are staged.
@@ -21,7 +22,7 @@ CLEANUP_MARKER = "AEROTIZEN_SDK_CLEANED"
 EXIT_PREFIX = "AEROTIZEN_SDK_EXIT="
 
 
-def build_script(files, entrypoint, args, callback, port, token):
+def build_script(files, entrypoint, args, callback, port, token, diagnostic=False):
     ipaddress.IPv4Address(callback)
     if not re.fullmatch(r"[a-f0-9]{12}", token) or not 1 <= port <= 65535:
         raise ValueError("Invalid SDK staging token or callback port")
@@ -31,7 +32,10 @@ def build_script(files, entrypoint, args, callback, port, token):
     claimed = stage[:-1] + "r"
     paths = {name: f"{DIRECTORY}/ah-{token}-{name}" for name in files}
     cleanup = "rm -f " + " ".join(shlex.quote(path) for path in [stage, claimed, *paths.values()])
-    checks = ["set -eu", 'test "$(id -u)" = 901']
+    if diagnostic and (entrypoint != "CleanHomeReadOnlyInspection.dll" or tuple(args) != ("--compatibility",) or set(files) != {"CleanHomeReadOnlyInspection" + suffix for suffix in (".dll", ".runtimeconfig.json", ".deps.json")}):
+        raise ValueError("Diagnostic execution accepts only the fixed getter-only probe")
+    identity = 'if test "$(id -u)" = 0; then echo CLEAN_HOME_ROOT_REFUSED; exit 77; fi' if diagnostic else 'test "$(id -u)" = 901'
+    checks = ["set -eu", identity]
     for name, path in paths.items():
         digest = hashlib.sha256(files[name]).hexdigest()
         checks.append(f"printf '%s  %s\\n' {digest} {shlex.quote(path)} | sha256sum -c - >/dev/null")
@@ -72,7 +76,7 @@ def parse_output(output):
     return result
 
 
-def run(session, files, entrypoint, args=()):
+def run(session, files, entrypoint, args=(), diagnostic=False):
     try:
         ipaddress.IPv4Address(session.host)
     except ValueError as exc:
@@ -87,7 +91,7 @@ def run(session, files, entrypoint, args=()):
         listener.listen(1)
         listener.settimeout(35)
         script, command, stage, paths = build_script(
-            files, entrypoint, args, callback, listener.getsockname()[1], secrets.token_hex(6)
+            files, entrypoint, args, callback, listener.getsockname()[1], secrets.token_hex(6), diagnostic=diagnostic
         )
         for name, path in paths.items():
             session.push(files[name], path)
