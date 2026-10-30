@@ -1,11 +1,13 @@
 """Create generic unsigned release assets from the reviewed Git source only."""
 import hashlib
+from html import escape
 import json
 from pathlib import Path
 import re
 import subprocess
 import sys
 import zipfile
+import xml.etree.ElementTree as XML
 from font_assets import ROOT, archive_member
 from privacy_rules import content_findings
 
@@ -79,6 +81,42 @@ def validate_companion(path):
             raise ValueError('Companion licence missing')
 
 
+def build_setup_bundle(widget, companion, folder, platform, version):
+    """One reviewed download: app, existing Home tool and an offline install guide."""
+    validate_widget(widget)
+    validate_companion(companion)
+    with zipfile.ZipFile(widget) as package:
+        manifest = XML.fromstring(package.read('config.xml'))
+        identity = manifest.find('{http://tizen.org/ns/widgets}application')
+        if identity is None or identity.get('id') != 'D5Q60BHome.CleanHome' or identity.get('package') != 'D5Q60BHome' or manifest.get('version') != version:
+            raise ValueError('Setup bundle requires the matching Clean Home widget')
+    if platform not in {'Windows', 'Python'} or not re.fullmatch(r'\d+\.\d+\.\d+', version):
+        raise ValueError('Invalid setup bundle platform/version')
+    widget_name = 'CleanHome-Tizen-' + version + '-unsigned.wgt'
+    start = 'CleanHome-Home-Setup.exe' if platform == 'Windows' else 'START-LINUX.sh'
+    with zipfile.ZipFile(companion) as archive:
+        if start not in archive.namelist():
+            raise ValueError('Setup bundle is missing its Home tool entry point')
+        files = {'home-setup/' + name: archive.read(name) for name in archive.namelist() if not name.endswith('/')}
+        executable = {'home-setup/' + item.filename for item in archive.infolist() if (item.external_attr >> 16) & 0o111}
+    guide = (ROOT / 'tools/setup-bundle/START-HERE.html').read_text(encoding='utf-8')
+    for key, value in {'__PLATFORM__': platform, '__WIDGET__': widget_name, '__START_TOOL__': 'home-setup/' + start,
+                       '__RUNTIME__': ' (Python is included)' if platform == 'Windows' else ' with Python 3.11 or newer; on Windows with Python, use START-WINDOWS.cmd instead'}.items():
+        guide = guide.replace(key, escape(value))
+    files.update({'START-HERE.html': guide.encode('utf-8'), widget_name: widget.read_bytes(),
+                  'home-preview.jpg': (ROOT / 'docs/images/home-example.jpg').read_bytes(),
+                  'LICENSE': (ROOT / 'LICENSE').read_bytes(),
+                  'README.txt': b'Clean Home Setup (community preview)\n\nExtract the whole ZIP, then open START-HERE.html.\nFollow Install the TV app, then Make it your Home screen.\nHome replacement accepts QA55Q60BAWXXY / T-NKLBUABC-1720.7 only.\nKeep the recovery folder and Undo before removing the TV app.\nYour own Samsung sign-in/certificates are handled by Apps2Samsung.\n'})
+    files['SETUP-CHECKSUMS.txt'] = ''.join(hashlib.sha256(data).hexdigest() + '  ' + name + '\n' for name, data in sorted(files.items())).encode()
+    output = folder / ('CleanHome-Setup-' + platform + '-preview.zip')
+    with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
+        for name, data in sorted(files.items()):
+            info = archive_member(name)
+            if name in executable: info.external_attr = 0o100755 << 16
+            archive.writestr(info, data)
+    return output
+
+
 def main():
     version = json.loads((ROOT / 'package.json').read_text())['version']
     subprocess.run([sys.executable, 'scripts/package.py'], cwd=ROOT, check=True)
@@ -106,7 +144,9 @@ def main():
             destination=folder/extra.name
             destination.write_bytes(extra.read_bytes())
             assets.append(destination)
-    manifest = {'version': version, 'source_commit': commit, 'working_tree_dirty': dirty, 'signed': False, 'tv_contacted': False, 'personal_profile': False, 'assets': [describe(p) for p in assets], 'compatibility': 'Tizen 5.0+ target; browser checks span Chromium 63-130. Reference hardware: Q60B / Tizen 6.5; other TVs unverified.', 'native_setup': 'Optional experimental companion: QA55Q60BAWXXY / T-NKLBUABC-1720.7 only. New combined installer/Undo require physical-TV validation; underlying native mechanism has reference-device evidence.'}
+            platform = 'Windows' if 'Windows' in extra.name else 'Python'
+            assets.append(build_setup_bundle(widget, extra, folder, platform, version))
+    manifest = {'version': version, 'source_commit': commit, 'working_tree_dirty': dirty, 'signed': False, 'tv_contacted': False, 'personal_profile': False, 'assets': [describe(p) for p in assets], 'compatibility': 'Tizen 5.0+ target; browser checks span Chromium 63-130. Reference hardware: Q60B / Tizen 6.5; other TVs unverified.', 'native_setup': 'Guided Home setup: QA55Q60BAWXXY / T-NKLBUABC-1720.7 only. New combined installer/Undo require physical-TV validation; underlying native mechanism has reference-device evidence.'}
     record = folder / 'release-manifest.json'
     record.write_text(json.dumps(manifest, indent=2) + '\n')
     (folder / 'SHA256SUMS').write_text(''.join(describe(p)['sha256'] + '  ' + p.name + '\n' for p in assets+[record]))

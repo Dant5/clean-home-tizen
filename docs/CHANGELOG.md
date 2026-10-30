@@ -1,6 +1,12 @@
 # Changelog
 
-## 1.4.2 preview
+## 1.4.2 preview 2
+
+- Makes Home-button replacement and automatic startup part of the main setup guide.
+- Bundles the unsigned TV app, existing Home tool, offline four-step guide and checksums in one download for Windows or Python/Linux.
+- Keeps the TV app and native helper behaviour unchanged from preview 1; the same compatibility guard, saved originals and Undo apply.
+
+## 1.4.2 preview 1
 
 - Adds a visual compatibility chart, separating browser checks from real-TV evidence.
 - Adds **Settings → Samsung → Share TV report** for success and problem reports.

@@ -1,8 +1,10 @@
 # Install and use Clean Home
 
-**No root required.** Your existing apps stay installed. The optional [Home Setup tool](NATIVE-HOME.md) can make Home and power-on open Clean Home on the verified Q60B software; a normal install keeps Samsung Home in charge.
+**Install Clean Home, then make Home and power-on open it.** No root. Your apps stay installed and Samsung Home stays accessible. The setup bundle includes the TV app, Home tool and an offline guide.
 
-**[Download Clean Home](https://github.com/Dant5/clean-home-tizen/releases/tag/v1.4.2-preview.1)** and follow the steps below.
+**[Get Clean Home Setup](https://github.com/Dant5/clean-home-tizen/releases/tag/v1.4.2-preview.2)**
+
+Home replacement is experimental and currently accepts **QA55Q60BAWXXY / T-NKLBUABC-1720.7 only**. Other TVs can install the app and open it from Apps; skip the Home replacement step.
 
 ## Before you start
 
@@ -12,32 +14,24 @@ You need:
 - A computer on the same home network as the TV.
 - A Samsung account for the installer’s certificate setup. A certificate lets the TV accept the app.
 
-## 1. Download Clean Home and the installer
+## 1. Download Clean Home Setup
 
-1. Open [Clean Home Releases](https://github.com/Dant5/clean-home-tizen/releases) → **Assets**.
-2. Download the file ending in **`-unsigned.wgt`**. This is the TV app; skip the source-code ZIP files. The installer will prepare it for your TV.
-3. Download **Apps2Samsung** for your computer from its [official releases](https://github.com/Apps2Samsung/Apps2Samsung/releases), then open it. Choose a version with **Install a file…** support.
+1. Open [Clean Home Downloads](https://github.com/Dant5/clean-home-tizen/releases/tag/v1.4.2-preview.2) → **Assets**.
+2. Choose your bundle below, extract the whole ZIP, then open **START-HERE.html**. The TV app and Home tool are already inside.
+3. Download and open [Apps2Samsung](https://github.com/Apps2Samsung/Apps2Samsung/releases). It handles Samsung sign-in and signing; choose its desktop app with **Install a file…** support.
 
-| Computer | Apps2Samsung download |
-| --- | --- |
-| Windows | The desktop **`.msi`** installer. |
-| Mac | **`macos-arm64.dmg`** for Apple silicon, or **`macos-x64.dmg`** for Intel. |
-| Linux | The desktop **`.AppImage`**, `.deb` or `.rpm` for your system. |
+| Computer | Clean Home download | Apps2Samsung download |
+| --- | --- | --- |
+| Windows | **CleanHome-Setup-Windows-preview.zip**; Python is included. | Desktop **`.msi`**. |
+| Linux | **CleanHome-Setup-Python-preview.zip**; needs Python 3.11 or newer. | Desktop **`.AppImage`**, `.deb` or `.rpm`. |
+| Mac | Standalone **`-unsigned.wgt`** for installing the TV app. The Home setup has not been tested on macOS. | **`macos-arm64.dmg`** for Apple silicon, **`macos-x64.dmg`** for Intel. |
 
-The files marked **`cli`** are for command-line use; they are not needed here.
+Already installed Clean Home? You can use the **Home-Setup** download alone. The source-code ZIP is for developers.
 
 <details>
 <summary>Optional: check your download</summary>
 
-Download `SHA256SUMS` from the same release. Check the app file using the command for your computer, replacing the filename if needed:
-
-| Computer | Command |
-| --- | --- |
-| Windows PowerShell | `Get-FileHash .\CleanHome-Tizen-1.4.2-unsigned.wgt -Algorithm SHA256` |
-| Mac Terminal | `shasum -a 256 CleanHome-Tizen-1.4.2-unsigned.wgt` |
-| Linux Terminal | `sha256sum CleanHome-Tizen-1.4.2-unsigned.wgt` |
-
-Compare the result with the file’s entry in `SHA256SUMS`. If they differ, download again before installing.
+The same release includes `SHA256SUMS`. Compare the checksum for your downloaded file using `Get-FileHash` in Windows PowerShell or `shasum -a 256` / `sha256sum` on Mac/Linux. If they differ, download again before installing.
 
 </details>
 
@@ -72,7 +66,19 @@ Developer Mode allows app installation; it does not root the TV. If the window d
 
 You should see a photograph, clock and **+** tile. An existing installation keeps its saved apps.
 
-## 5. Add and open your apps
+## 5. Make it your Home screen
+
+1. Close Apps2Samsung. Keep the TV on and use the same computer listed as Host PC IP in Developer Mode.
+2. In the extracted bundle, open **home-setup/CleanHome-Home-Setup.exe** on Windows, or **home-setup/START-LINUX.sh** on Linux with Python 3.11 or newer.
+3. Enter the **TV’s** address from its **Network Status → IP Settings** screen. Choose **Check TV**.
+4. If supported, read the confirmation, tick the box and choose **Use Clean Home**. Original Home/startup preferences are saved and verified before a change.
+5. Press **Home** on the physical remote, then try a normal off/on cycle. Clean Home should appear. Choose its **Samsung Home** button to check the original screen is available.
+
+Keep the recovery folder shown by the tool. **Use Undo before uninstalling Clean Home.** You can close the tool afterwards; no computer needs to stay running. [Home support, recovery and Undo](NATIVE-HOME.md).
+
+An unsupported model/software is refused. You can still use the TV app from Apps; leave this step out.
+
+## 6. Add and open your apps
 
 1. Select **+** using the remote’s centre **OK/Enter** button.
 2. Choose an installed app. Its shortcut appears, with another **+** for adding more. You can add up to **nine**.
@@ -85,17 +91,11 @@ Use **Settings → Apps on Home** to reorder or remove shortcuts. To move one, s
 
 **All apps** shows your other apps. **Settings → Background** changes the photo. **Settings → Samsung** opens TV settings and inputs.
 
-## Home button and power-on
-
-A standard install opens from **Apps**. It does **not** change what happens when you press Home or turn on the TV.
-
-The optional [Home Setup tool](NATIVE-HOME.md) can make Home and power-on open Clean Home on the verified Q60B software. It is a separate experimental download with saved originals and Undo; a TV-app installation alone keeps Samsung Home in charge.
-
 ## Connection and installation help
 
 | Problem | Try this |
 | --- | --- |
-| Cannot find the app download | Open the preview release, expand **Assets**, then choose **`-unsigned.wgt`**. The source-code ZIP is not the TV app. |
+| Cannot find the app download | Open the preview release and choose your **CleanHome-Setup** ZIP. Extract it and open **START-HERE.html**. The `.wgt` is included; it is also available separately. |
 | TV is missing | Turn it on, check both devices use the same home network, then rescan. You can also enter the TV’s address from its Network Status/IP Settings in the installer. |
 | “Developer Mode is off” or TV is not ready | Repeat step 3. **Host PC IP uses the computer’s address.** Selecting the TV in the installer uses the TV’s address. |
 | VPN warning or wrong network | Use the home-network address. See the installer’s network help if a VPN affects discovery. |
@@ -112,6 +112,6 @@ Still stuck? [Report a problem](https://github.com/Dant5/clean-home-tizen/issues
 
 **To remove:** open Samsung **Apps → app settings**, select **Clean Home**, then **Delete**. Menu names vary. Only Clean Home and its saved settings are removed.
 
-If you separately changed the Home-button/startup setup, [restore that setup first](NATIVE-HOME.md), and check the physical Home button opens Samsung Home before deleting Clean Home.
+If you completed the Home-button/startup step, [use Undo first](NATIVE-HOME.md), and check the physical Home button opens Samsung Home before deleting Clean Home.
 
 Building or signing with Tizen Studio? See the [developer guide](../.github/CONTRIBUTING.md#sign-and-install-with-tizen-studio).

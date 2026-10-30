@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src 'self'; base-uri 'none'; form-action 'none'">
+<title>Set up Clean Home</title>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:40px 20px;background:#101720;color:#edf3fa;font:17px/1.65 system-ui,sans-serif}main{max-width:740px;margin:auto}h1{font-size:clamp(32px,7vw,52px);line-height:1.1;margin:12px 0 20px}h2{font-size:24px;line-height:1.3;margin:0 0 12px}p{margin:10px 0}section{margin:20px 0;padding:24px;border:1px solid #344354;border-radius:18px;background:#182330}a{color:#acd6ff;text-underline-offset:3px}code{background:#0e1720;padding:2px 5px;border-radius:4px;overflow-wrap:anywhere}.note{color:#bdcbdc}.intro{font-size:20px}.step{color:#99cfff}.tag{font-size:13px;font-weight:700;letter-spacing:.12em}.preview{display:block;width:100%;height:auto;border-radius:16px;margin:24px 0}.support{border-left:3px solid #95caff;padding-left:16px}footer{margin:28px 0;color:#bdcbdc;font-size:15px}li{margin:8px 0}ul{padding-left:22px}@media(max-width:450px){body{padding:24px 16px}section{padding:18px}}
+</style>
+</head>
+<body><main>
+<p class="tag">CLEAN HOME SETUP · __PLATFORM__</p>
+<h1>Your Home button.<br>Your home screen.</h1>
+<p class="intro">Install Clean Home, then make it appear when you press Home or switch on your TV.</p>
+<p><strong>No root. Your apps stay installed. Samsung Home stays available.</strong></p>
+<img class="preview" src="home-preview.jpg" alt="Clean Home with a photo, clock and favourite apps">
+<p class="support"><strong>Experimental Home replacement:</strong> currently accepts <strong>QA55Q60BAWXXY / T-NKLBUABC-1720.7 only</strong>. Check the full model and software version in your TV’s About screen. Other TVs can use the app from Apps; skip step 3.</p>
+<section><h2><span class="step">1.</span> Get your TV ready</h2>
+<p>Use a computer on the same home network as your TV.</p>
+<p>On the TV, open <strong>Apps</strong> and enter <strong>1 2 3 4 5</strong>. Turn <strong>Developer Mode On</strong>, enter <strong>your computer’s local IP address</strong> as Host PC IP, and restart as prompted.</p>
+<p><a href="https://github.com/Dant5/clean-home-tizen/blob/main/docs/INSTALL.md#2-find-your-computers-address" target="_blank" rel="noreferrer">Find your computer’s address / setup help</a></p></section>
+<section><h2><span class="step">2.</span> Install the TV app</h2>
+<p>Open <a href="https://github.com/Apps2Samsung/Apps2Samsung/releases" target="_blank" rel="noreferrer"><strong>Apps2Samsung</strong></a>, select your TV, then choose <strong>Install a file…</strong>.</p>
+<p>Choose this file from the same folder as this guide:</p><p><code>__WIDGET__</code></p>
+<p>Follow the Samsung sign-in and certificate prompts using your own account. For an update, reuse your existing signing profile.</p>
+<p>Once installed, open <strong>Clean Home</strong> from the TV’s Apps screen.</p></section>
+<section><h2><span class="step">3.</span> Make it your Home screen</h2>
+<p>Close Apps2Samsung and keep the TV on. In the extracted setup folder, open <code>__START_TOOL__</code>__RUNTIME__.</p>
+<p>In the setup page, enter the <strong>TV’s IP address</strong> from its Network Status → IP Settings screen. Choose <strong>Check TV</strong>, read the confirmation and choose <strong>Use Clean Home</strong>.</p>
+<p>Original Home and startup preferences are saved before a change. An unsupported TV stops here.</p>
+<p><strong>Check it:</strong> press Home on the physical remote. Then turn the TV off normally and back on. Clean Home should appear. Its <strong>Samsung Home</strong> button still opens Samsung’s interface.</p>
+<p class="note">Keep the recovery folder shown by the tool. Use <strong>Undo setup</strong> before uninstalling Clean Home. <a href="https://github.com/Dant5/clean-home-tizen/blob/main/docs/NATIVE-HOME.md" target="_blank" rel="noreferrer">Help and Undo</a></p></section>
+<section><h2><span class="step">4.</span> Make it yours</h2>
+<p>Choose <strong>+</strong>, then an installed app. Use the remote’s arrows to move and centre button to select. Hold Select for about a second to change a shortcut.</p>
+<p>You can now close the setup tool. <strong>No PC needs to stay running.</strong></p></section>
+<footer>The TV app and Home tool are together in this download; Samsung signing still uses Apps2Samsung. No settings change happens just by opening this guide. <a href="https://github.com/Dant5/clean-home-tizen" target="_blank" rel="noreferrer">Project and credits</a></footer>
+</main></body></html>

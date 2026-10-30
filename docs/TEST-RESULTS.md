@@ -1,3 +1,11 @@
+# 1.4.2 preview 2 — complete setup bundles
+
+The main guide now includes the Home-button/power-on setup step. Complete Windows and Python ZIPs contain the unchanged unsigned widget, existing Home tool, offline four-step guide, preview picture, licences and per-file checksums. The app remains byte-identical to preview 1 (`09d85391fbc3542985cd11a625e24f273cb9782cd4edae21b34ce996fd6b389a`); Home logic, firmware/model guards, saved originals and Undo are unchanged.
+
+**111 Python tests pass**, including six new bundle checks covering byte preservation, checksums, application/package/version mismatch, signed owner widgets and incorrect host-tool entry points. Both actual packaged guides pass desktop/mobile browser checks for loaded imagery, four steps, platform-specific instructions, no overflow and no runtime errors. Public-source and reachable-history secret checks pass. Hosted Linux/Windows builds now also assemble the complete bundles; all required checks must pass before publication.
+
+This unifies the download and instructions; Samsung sign-in/signing still uses Apps2Samsung. The guided installer and Undo still require physical-TV rehearsal. No TV, existing app, owner computer or Home Assistant configuration was contacted or changed.
+
 # 1.4.2 direct reports and optional Home Setup
 
 The explicit-send report flow passes **31 checks each** from both source and the actual unsigned widget in current Chromium 156 and Chromium 85. Coverage includes review-before-send, real XHR, response validation, duplicate suppression, timeout/offline/server failures, cancellation, focus, preference preservation and phone fallback. Sixteen Node tests cover report privacy and send lifecycle. The phone path retains **32 checks per source/widget/engine** and independent screenshot decoding. Full regression suites pass in both engines, including **43 performance checks each**. The Python suite passes **105 tests**.
