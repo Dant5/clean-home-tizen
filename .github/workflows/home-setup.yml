@@ -35,7 +35,8 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          python -m PyInstaller --noconfirm --clean --onefile --name CleanHome-Home-Setup-Windows-experimental --paths . --paths tools/home-setup --add-data "tools/home-setup/index.html:." --add-data "dist/home-setup/tools/home-setup/payload:payload" --distpath dist/companion --workpath .local/pyinstaller --specpath .local/pyinstaller tools/home-setup/setup.py
+          python -m PyInstaller --noconfirm --clean --onefile --name CleanHome-Home-Setup-Windows-experimental --paths "$PWD" --paths "$PWD/tools/home-setup" --add-data "$PWD/tools/home-setup/index.html:." --add-data "$PWD/dist/home-setup/tools/home-setup/payload:payload" --distpath dist/companion --workpath .local/pyinstaller --specpath .local/pyinstaller tools/home-setup/setup.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & ./dist/companion/CleanHome-Home-Setup-Windows-experimental.exe --help
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python scripts/package-windows-setup.py dist/companion/CleanHome-Home-Setup-Windows-experimental.exe
