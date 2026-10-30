@@ -1,6 +1,6 @@
 # Read-only native Home inspection
 
-This is a getter-only diagnostic, separate from the normal signed widget. On 28 October 2026 its netcoreapp3.1 build successfully ran on the actual Q60B as SDK UID 901, returned the original Home/startup preferences and boot eligibility, and confirmed temporary staging cleanup. No transport or installer is included in this public source directory. The installed Clean Home widget does not contain it.
+This is a getter-only diagnostic, separate from the normal signed widget. On 28 October 2026 its netcoreapp3.1 build successfully ran on the actual Q60B as SDK UID 901, returned the original Home/startup preferences and boot eligibility, and confirmed temporary staging cleanup. The optional [Home Setup companion](../../docs/NATIVE-HOME.md) now provides the separate public transport; the widget itself does not contain it.
 
 The getters adapt [Clean Home's native helper](https://github.com/chaosmanage/samsung-tv-launcher/blob/57415fdf5ffc2013b66bc98aca94e0963e0888be/scripts/native-home/Control.cs), MIT, copyright 2026 Nathan Clark; retain the root [licence](../../LICENSE) and [notices](../../docs/THIRD_PARTY_NOTICES.md). Upstream applies a default Home assignment on a different, firmware-guarded 2024 TV. **Its write functions and SDB command-injection transport are excluded here.**
 
@@ -17,7 +17,7 @@ The project builds **netcoreapp3.1 and net6.0 separately**. The 3.1 target follo
 
 Before any eventual device query, separately establish the runtime, library signatures, developer execution path and read permissions. The upstream `run.py` injects a command through a package-name field even for queries; review its staging/execution effects explicitly rather than calling it an ordinary inventory read. Do not relax guards to get past errors. The owner's 28 October clarification allows reconsidering native Home/startup changes; this keeps the method in scope for investigation. The separate [native controller](../home-control/README.md) now implements scoped apply/restore using the saved actual baseline; this getter-only tool still contains no setters.
 
-See [startup findings](../../docs/NATIVE-HOME.md). This tool is not required for the REST startup candidate.
+The public query also reads the exact Last App integer needed for Undo. That addition and the new companion require their own hardware rehearsal; the earlier successful query remains historical evidence. See [native setup](../../docs/NATIVE-HOME.md).
 
 ## Bounded startup-component inspection
 

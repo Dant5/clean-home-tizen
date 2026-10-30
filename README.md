@@ -13,7 +13,7 @@ Based on [Clean Home by chaosmanage](https://github.com/chaosmanage/samsung-tv-l
 ## Your apps and remote
 
 - **No root or jailbreak:** install Clean Home as a TV app.
-- **Working Home button:** a standard install leaves the remote’s Home button opening Samsung Home. There is also a Samsung Home shortcut inside Clean Home.
+- **Working Home button:** the optional setup makes Home and power-on open Clean Home on our verified Q60B software. Samsung Home remains available inside Clean Home. Other TVs keep their usual Home behaviour.
 - **Existing apps stay in place:** adding a shortcut does not reinstall the app or clear its accounts, settings or pairings.
 - **Normal remote controls:** arrows to move, centre **OK/Enter** button to choose.
 
@@ -23,7 +23,7 @@ Requires **Tizen 5.0 or newer**. Developed on a **2022 Samsung Q60B**; other mod
 
 ![Compatibility chart: Tizen 5.0–10.0 are browser-tested preview targets; only the Q60B on 6.5 has real-TV reference evidence](docs/images/compatibility.svg)
 
-**Feedback wanted!** Tried it on your TV? **Settings → Samsung → Share TV report** gives you a QR code for a ready-filled report. Scan, review and submit on your phone. [How it works](docs/TV-REPORTS.md).
+**Feedback wanted!** Tried it on your TV? **Settings → Samsung → Share TV report** lets you review the details and send them with one button. No phone or account needed. [How it works](docs/TV-REPORTS.md).
 
 ## Install it
 
@@ -82,9 +82,9 @@ Example screens. Your installed apps will appear in the list.
 
 ## Home button and startup
 
-**Installing this download does not make Clean Home open automatically at power-on or when you press Home.** A standard install keeps the usual Samsung Home behaviour; open Clean Home from Apps.
+**Yes—Home and power-on can open Clean Home without root.** The optional [Home Setup tool](docs/NATIVE-HOME.md) brings the method used on our test Q60B into a guided setup with an Undo button. No running PC or Home Assistant automation is needed afterwards.
 
-A separate setup made both work on our test Q60B, **without root**. It is specific to that TV software and **is not included in this download**. [Advanced details](docs/NATIVE-HOME.md).
+For now it accepts **QA55Q60BAWXXY / T-NKLBUABC-1720.7 only**. The new tool is experimental; other TVs can use Clean Home from Apps while we collect compatibility reports. Installing the TV app alone keeps Samsung Home in charge.
 
 ## Help and credits
 

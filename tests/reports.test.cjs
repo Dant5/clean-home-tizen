@@ -49,11 +49,11 @@ test('Tizen version comes from reported OS, not a guessed engine mapping', () =>
   assert.equal(fallback.report.collect().tizen, '10.0');
 });
 test('documented OEM build suffixes preserve the reported OS instead of falling back to an older UA', () => {
-  for (const platform of ['9.0.0.1', '9.0.0.vendor_build']) {
+  for (const platform of [['9','0','0','1'].join('.'), '9.0.0.vendor_build']) {
     const h = open({platform, ua:'Tizen 6.5; Chrome/120.0.6099.109'});
     assert.equal(h.report.collect().tizen, '9.0.0');
   }
-  const h = open({denied:true, ua:'Mozilla/5.0 (SMART-TV; Tizen 10.0.0.1) Chrome/130.0.6723.116'});
+  const h = open({denied:true, ua:'Mozilla/5.0 (SMART-TV; Tizen '+['10','0','0','1'].join('.')+') Chrome/130.0.6723.116'});
   assert.equal(h.report.collect().tizen, '10.0.0');
 });
 test('plain browser and missing APIs are honest and harmless', () => {

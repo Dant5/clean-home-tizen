@@ -1,7 +1,9 @@
-/* Opt-in, local report preparation. No upload, identifiers, app list or raw logs. */
+/* Opt-in reports: explicit Send only; no identifiers, app list or raw logs. */
 (function () {
   'use strict';
   var errors = 0, rejections = 0, tvErrors = 0, lastTVError = 'None', qrState = 'idle', qrWaiters = [];
+  var pendingSend = null, lastSentAt = 0;
+  var endpoint = 'https://clean-home-feedback.perkymule6.chatgpt.site/api/reports';
   window.addEventListener('error', function () { errors = Math.min(99, errors + 1); });
   window.addEventListener('unhandledrejection', function () { rejections = Math.min(99, rejections + 1); });
   function read(object, method) {
@@ -63,6 +65,41 @@
     clean.result = outcome === 'works' ? 'Works on my TV' : 'There is a problem';
     return { text: JSON.stringify(clean, null, 2), url: 'https://github.com/Dant5/clean-home-tizen/issues/new?template=tv-report.yml&title=' + encodeURIComponent('TV report: ' + clean.model + ' - ' + clean.result) + '&diagnostics=' + encodeURIComponent(JSON.stringify(clean)) };
   }
+  function canSend() { return !!(window.CleanHomeConfig && window.CleanHomeConfig.reportEndpoint === endpoint); }
+  function send(report, outcome, done) {
+    var xhr, finished = false, timer;
+    if (!canSend()) { done('Sending is unavailable. You can use your phone instead.'); return function () {}; }
+    if (pendingSend) { done('A report is already being sent.'); return function () {}; }
+    var elapsed = Date.now() - lastSentAt;
+    if (lastSentAt && elapsed >= 0 && elapsed < 60000) { done('Please wait a minute before sending another report.'); return function () {}; }
+    function finish(error, receipt) {
+      if (finished) return;
+      finished = true; clearTimeout(timer); if (pendingSend === cancel) pendingSend = null;
+      if (xhr) xhr.onload = xhr.onerror = xhr.ontimeout = xhr.onabort = null;
+      if (!error) lastSentAt = Date.now();
+      done(error, receipt);
+    }
+    function cancel() {
+      if (finished) return;
+      finished = true; clearTimeout(timer); if (pendingSend === cancel) pendingSend = null;
+      if (xhr) { xhr.onload = xhr.onerror = xhr.ontimeout = xhr.onabort = null; try { xhr.abort(); } catch (e) {} }
+    }
+    pendingSend = cancel;
+    try {
+      xhr = new XMLHttpRequest(); xhr.open('POST', endpoint, true); xhr.withCredentials = false; xhr.timeout = 10000;
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.onload = function () {
+        var value;
+        try { if (xhr.status === 201 && xhr.responseText.length < 256) value = JSON.parse(xhr.responseText); } catch (e) {}
+        if (value && value.accepted === true && /^CH-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/.test(value.id)) finish(null, value.id);
+        else finish(xhr.status === 429 ? 'Reports are busy. Please try later.' : 'Could not confirm delivery. A report may have arrived. You can try again or use your phone.');
+      };
+      xhr.onerror = xhr.ontimeout = xhr.onabort = function () { finish('Could not confirm delivery. A report may have arrived. You can try again or use your phone.'); };
+      timer = setTimeout(function () { finish('Sending timed out. A report may have arrived. You can try again or use your phone.'); try { xhr.abort(); } catch (e) {} }, 11000);
+      xhr.send(prepare(report, outcome).text);
+    } catch (e) { finish('Sending is unavailable. You can use your phone instead.'); }
+    return cancel;
+  }
   function draw(canvas, url, done) {
     function paint(ok) {
       if (!ok) { done(false); return; }
@@ -93,5 +130,5 @@
     timer = setTimeout(function () { finish(false); }, 5000);
     document.head.appendChild(script);
   }
-  window.FrameReport = { collect: collect, prepare: prepare, draw: draw, recordTVError: recordTVError };
+  window.FrameReport = { collect: collect, prepare: prepare, draw: draw, canSend: canSend, send: send, recordTVError: recordTVError };
 }());

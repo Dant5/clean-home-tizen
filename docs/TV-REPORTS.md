@@ -3,15 +3,19 @@
 Tried Clean Home on another Samsung TV? Reports of success are as useful as bug reports.
 
 1. Open **Settings → Samsung → Share TV report** in Clean Home 1.4.2 or newer.
-2. Choose **Works on my TV** or **Report a problem**.
-3. Scan the QR code with your phone's camera.
-4. Sign in to GitHub, review the details and add a sentence about what you tried. Choose **Submit new issue**.
+2. Review the details shown on screen.
+3. Choose **Send: works** or **Send: problem**. No phone, QR code or account is required.
+4. Wait for **Thank you** and a receipt. That confirms the receiver accepted your report.
 
 The report fills in the TV model, firmware, Tizen version, browser generation, app version, app surface size and basic loading checks. Unavailable details say **Not reported**; you can add your exact model from **TV Settings → Support → About This TV**. Do not include the serial number.
 
-The TV prepares the code locally. It does not upload a report, open a browser or interrupt your apps. Scanning opens a GitHub draft on your phone; submitting makes it public. It needs a GitHub account. Reports go to this project's [GitHub issues](https://github.com/Dant5/clean-home-tizen/issues), where maintainers can review them; they are not sent directly to an AI or Samsung.
+Nothing is sent until you choose **Send**. The details go to the project's [feedback receiver](https://clean-home-feedback.perkymule6.chatgpt.site), in a private maintainer database. They are not automatically posted to GitHub, sent to Samsung or delivered to a running AI chat. Reviewed compatibility findings may be added to the public chart. There is no background retry or offline queue. Double presses are ignored while sending; successful sends have a one-minute cooldown.
 
-No installed-app list, app IDs, accounts, pairing data, network addresses, serial numbers, DUIDs, signing material, screenshots or raw logs are collected for sharing. Error counters and the last TV error category/code are included, without error messages or URLs. GitHub receives the report details when you open the scanned link; review the on-TV summary first.
+If delivery cannot be confirmed, a report may already have arrived. Try again only if you choose. Back closes the sheet and cancels a pending request; it cannot retract a report already received. For a detailed explanation, [open a GitHub issue](https://github.com/Dant5/clean-home-tizen/issues/new?template=tv-report.yml) and include the receipt. This is optional.
+
+No installed-app list, app IDs, accounts, pairing data, network addresses, serial numbers, DUIDs, signing material, screenshots or raw logs are collected for sharing. Error counters and the last TV error category/code are included, without error messages or URLs. The hosting provider sees normal web-request information, including your internet address; the database does not store it. Reports older than 90 days are pruned on incoming submissions. [Receiver source](../tools/report-service/README.md).
+
+**Use phone** remains available if direct sending fails. Choose an outcome, scan the QR code, sign in to GitHub, review the draft and submit. Scanning sends the prefilled details to GitHub; submitting makes them public. This fallback requires a phone and GitHub account.
 
 If the app will not open, the QR code fails, or you are using an older Clean Home version, [open a TV report manually](https://github.com/Dant5/clean-home-tizen/issues/new?template=tv-report.yml). A cropped photo is optional; leave account screens out.
 

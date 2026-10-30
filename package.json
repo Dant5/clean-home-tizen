@@ -19,7 +19,7 @@
     "check:bing": "node scripts/_bing-next.mjs",
     "check:performance": "node scripts/check-performance.mjs",
     "check:python": ".local/venv/bin/python -m pytest -q tests",
-    "check:package": "node scripts/check-package.mjs && node scripts/check-reports.mjs --widget",
+    "check:package": "node scripts/check-package.mjs && node scripts/check-reports.mjs --widget && node scripts/check-report-send.mjs --widget",
     "check:backgrounds": "node scripts/check-backgrounds.mjs",
     "build:backgrounds": "node scripts/build-background-overlays.mjs",
     "check:startup-input": "node scripts/check-startup-input.mjs",
@@ -28,7 +28,9 @@
     "check:responsive": "node scripts/check-responsive.mjs",
     "check:compatibility": "node scripts/check-compatibility.mjs",
     "check:legacy-network": "node scripts/check-legacy-network.mjs",
-    "check:reports": "node --test tests/reports.test.cjs && node scripts/check-reports.mjs"
+    "check:reports": "node --test tests/reports.test.cjs tests/report-send.test.cjs && node scripts/check-reports.mjs && node scripts/check-report-send.mjs",
+    "check:home-setup": "node scripts/check-home-setup.mjs",
+    "check:tizen-sim": "node scripts/check-tizen-sim.mjs"
   },
   "devDependencies": {
     "acorn": "8.15.0",

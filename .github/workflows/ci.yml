@@ -52,6 +52,7 @@ jobs:
           npm run package
           npm run check:package
           npm run check:performance
+          npm run check:home-setup
       - name: Check public source
         run: npm run check:public
       - name: Prepare unsigned generic release assets

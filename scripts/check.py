@@ -19,7 +19,7 @@ assert not manifest.findall('t:background-category', ns)
 privileges = {e.get('name') for e in manifest.findall('t:privilege', ns)}
 assert privileges == {'http://tizen.org/privilege/' + x for x in ['application.launch', 'application.info', 'tv.inputdevice', 'tv.window', 'system', 'fullscreen', 'internet']} | {'http://developer.samsung.com/privilege/productinfo'}
 for node in manifest.findall('w:access', ns):
-    assert node.get('origin') in ['https://api.open-meteo.com', 'https://www.bing.com']
+    assert node.get('origin') in ['https://api.open-meteo.com', 'https://www.bing.com', 'https://clean-home-feedback.perkymule6.chatgpt.site']
 for tag in ['content', 'icon']:
     assert (app / manifest.find('w:' + tag, ns).get('src')).is_file()
 for reference in re.findall(r'(?:src|href)=[\"\']([^\"\']+)', (app / 'index.html').read_text()):

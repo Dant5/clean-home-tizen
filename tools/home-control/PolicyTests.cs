@@ -55,6 +55,19 @@ internal static class Tests {
   Run("Option mutation failure restores exact prior value",()=>{var f=new FakeOption{Value=1,Fail=true};var r=StartupOption.Execute(f,1,"disable-last-app");Assert(!r.Success && r.RolledBack && f.Value==1);});
   Run("Option silent mismatch cannot pass",()=>{var f=new FakeOption{Value=1,Silent=true};Assert(!StartupOption.Execute(f,1,"disable-last-app").Success);});
   Run("Option rollback failure is explicit",()=>{var f=new FakeOption{Value=1,Fail=true,FailRollback=true};var r=StartupOption.Execute(f,1,"disable-last-app");Assert(!r.Success && !r.RolledBack && r.Error.Contains("rollback incomplete"));});
+  foreach(int initialAuto in new[]{0,1})foreach(int initialOption in new[]{0,1})Run("Combined setup and exact Undo "+initialAuto+initialOption,()=>{
+   var o=Original(initialAuto);var f=new Fake(o);var opt=new FakeOption{Value=initialOption};
+   Assert(SetupPolicy.Execute(f,opt,o,initialOption,"apply-all").Success && opt.Value==0 && f.State.Main==Policy.Target && f.State.AutoStart==1);
+   Assert(SetupPolicy.Execute(f,opt,o,initialOption,"restore-all").Success && Policy.Same(f.State,o) && opt.Value==initialOption);
+  });
+  for(int point=1;point<=4;point++){int failure=point;Run("Combined write failure restores complete original "+failure,()=>{
+   var o=Original();var f=new Fake(o){FailAt=failure};var opt=new FakeOption{Value=1};
+   var r=SetupPolicy.Execute(f,opt,o,1,"apply-all");Assert(!r.Success && r.RolledBack && Policy.Same(f.State,o) && opt.Value==1);
+  });}
+  Run("Combined Last App failure restores Home too",()=>{var o=Original();var f=new Fake(o);var opt=new FakeOption{Value=1,Fail=true};var r=SetupPolicy.Execute(f,opt,o,1,"apply-all");Assert(!r.Success && r.RolledBack && Policy.Same(f.State,o) && opt.Value==1);});
+  Run("Combined drift refuses all writes",()=>{var o=Original();var f=new Fake(o);var opt=new FakeOption{Value=0};bool refused=false;try{SetupPolicy.Execute(f,opt,o,1,"apply-all");}catch{refused=true;}Assert(refused && f.Writes==0 && opt.Writes==0);});
+  Run("Undo refuses unrelated owner before changing Last App",()=>{var o=Original();var f=new Fake(o);f.State.Main="other.Home";var opt=new FakeOption{Value=0};bool refused=false;try{SetupPolicy.Execute(f,opt,o,1,"restore-all");}catch{refused=true;}Assert(refused && f.Writes==0 && opt.Writes==0);});
+  Run("Combined recovery failure is explicit",()=>{var o=Original();var f=new Fake(o){FailAt=1,FailRollback=true};var opt=new FakeOption{Value=1};var r=SetupPolicy.Execute(f,opt,o,1,"apply-all");Assert(!r.Success && !r.RolledBack && r.Error.Contains("recovery incomplete"));});
   Console.WriteLine("Native Home policy checks passed: "+passed);
  }
 }

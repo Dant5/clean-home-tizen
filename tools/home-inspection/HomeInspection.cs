@@ -66,7 +66,7 @@ internal static class HomeInspection {
             if (IntPtr.Size != 4 || RuntimeInformation.ProcessArchitecture != Architecture.Arm)
                 throw new InvalidOperationException("Query restricted to ARM32");
             var version = File.ReadLines("/etc/prd_info.ini").FirstOrDefault(line => line.StartsWith("Version=", StringComparison.Ordinal));
-            if (version == null || !version.Contains("T-NKLBUABC") || !Regex.IsMatch(version, @"(?<![0-9.])1720\.7(?![0-9.])"))
+            if (version != "Version=T-NKLBUABC-1720.7;")
                 throw new InvalidOperationException("Unverified firmware; native queries were not called");
             uint uid = getuid();
             if (uid != 901) throw new InvalidOperationException("Expected developer SDK UID 901; native queries were not called");
@@ -78,9 +78,14 @@ internal static class HomeInspection {
                     throw new InvalidOperationException("Unavailable autostart key");
                 return value;
             });
+            var lastApp = Read(() => {
+                if (vconf_get_int("db/menu/app_booting", out int value) != 0 || (value != 0 && value != 1))
+                    throw new InvalidOperationException("Unavailable Last App preference");
+                return value;
+            });
             Console.WriteLine(JsonSerializer.Serialize(new {
                 readOnly = true, target = Target, uid, firmware = version,
-                homeOperation = Read(() => ReadHome()), keys = values, autostart,
+                homeOperation = Read(() => ReadHome()), keys = values, autostart, lastApp,
                 bootSupported = Read(() => util_is_appbooting_supported_webapp_byappid(Target))
             }));
             return 0;

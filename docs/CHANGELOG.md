@@ -4,8 +4,10 @@
 
 - Adds a visual compatibility chart, separating browser checks from real-TV evidence.
 - Adds **Settings → Samsung → Share TV report** for success and problem reports.
-- Prepares a QR code locally with basic TV details; scan, review and submit on your phone.
+- Sends basic TV details only after an explicit button press; no phone or account needed. Received reports stay private. Phone/GitHub reporting remains optional.
 - Keeps accounts, app lists, addresses, unique device identifiers and raw logs out of shared reports.
+- Adds an experimental optional Home Setup companion, with original-setting backup and Undo, restricted to the verified Q60B model/software. The TV app alone preserves Samsung Home.
+- Adds tizen-sim platform checks, alongside the existing eight-engine browser matrix.
 
 ## 1.4.1 preview
 

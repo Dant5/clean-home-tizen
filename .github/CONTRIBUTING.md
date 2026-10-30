@@ -46,7 +46,11 @@ Keep the original appearance and licences. Test both a fresh empty configuration
 
 Bug reports should include a reproducible sequence, expected/actual result, model, firmware, Tizen/app version and installation method. Use the issue forms and label whether the result was visually observed, reported by an API or only simulated.
 
-The in-app **Share TV report** sheet prepares a GitHub draft locally. `npm run check:reports` tests its allowlisted fields, real remote events, failure/cancellation and independent QR decoding of rendered screenshots at 1080p/720p. `npm run check:package` repeats the UI checks against the actual widget. The QR encoder loads only when requested; never add automatic uploads or raw logs. [Report fields and maintaining the compatibility chart](../docs/TV-REPORTS.md).
+The in-app **Share TV report** sheet sends only on an explicit user choice; the optional phone fallback prepares a GitHub draft locally. `npm run check:reports` checks metadata allowlists, real XHR/remote events, success, errors, duplicates, timeouts, cancellation and independent fallback QR decoding at 1080p/720p. Tests mock the receiver and never send to the live service. `npm run check:package` repeats both flows from the actual widget. The QR encoder loads only for the phone option. Never add automatic uploads or raw logs. [Report fields and maintaining the compatibility chart](../docs/TV-REPORTS.md).
+
+`npm run check:home-setup` exercises the separate computer setup page against a fake companion. Native transaction/failure tests run with `dotnet run --project tools/home-control/PolicyTests.csproj -c Release`. Build its guarded SDK helpers using `python3 scripts/build-home-setup.py --dotnet PATH_TO_DOTNET`. [Native setup scope](../docs/NATIVE-HOME.md).
+
+For platform-level testing, run [tizen-sim](https://github.com/lucaskfp/tizen-sim) against the unsigned WGT in an isolated `TIZEN_SIM_HOME`, with the desired profile and its matching engine. Then run `npm run check:tizen-sim` with that same environment. The harness uses the local Session control API, does not replace the simulator's platform shims and deliberately exercises offline phone fallback to avoid live submissions. Its simulator screenshots/results stay in ignored `.local/qa/`. It cannot prove native Home or standby startup behaviour. Version 0.3.1 was used for the recorded checks.
 
 ## Sign and install with Tizen Studio
 

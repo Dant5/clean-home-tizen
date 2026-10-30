@@ -72,3 +72,7 @@ The displayed Moonlight monochrome SVG derives from the official Moonlight Qt sy
 ## Cached background shading
 
 `app/assets/background-overlays/` contains transparent images rendered from the original MIT CleanFrame/Clean Home CSS, without photographs. They preserve the CSS shading for the fifteen bundled wallpaper appearances and two layouts; the generation script and source-input hashes are included. They retain the original code copyright and MIT notice.
+
+## Optional native setup transport
+
+The optional Home Setup companion adapts AeroTizen's SDK staging helper at commit `64574228cee973095af590cd9ff387467e84d3b7`. Its original MIT licence is retained at `vendor/aerotizen/LICENSE`; provenance and changes are recorded in `vendor/aerotizen/sdk-SOURCE.json`. Root providers and watcher installation are not included. This code is separate from the TV widget.

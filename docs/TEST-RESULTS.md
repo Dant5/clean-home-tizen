@@ -1,4 +1,16 @@
-# 1.4.2 TV reports and compatibility chart
+# 1.4.2 direct reports and optional Home Setup — candidate validation
+
+The explicit-send report flow passes **31 source-preview checks each** in current Chromium 156 and Chromium 85, covering review-before-send, real XHR, response validation, duplicate suppression, timeout/offline/server failures, cancellation, focus, preference preservation and phone fallback. Sixteen Node tests cover the report privacy boundary and send lifecycle. The legacy phone path retains **32 checks** and independent screenshot decoding. Final actual-widget and full-suite checks are being repeated for the combined candidate before publication.
+
+The optional companion builds its checksum-verified .NET Core 3.1 payload and generic ZIP. **52 native-policy checks**, **28 host tests**, and **14 setup-page browser checks each** in current/85 pass against fake platforms/devices. These include combined Home/startup/Last App setup, exact Undo, partial failures, recovery failure, immutable device-bound originals, unknown network outcomes, one-time SDK callbacks/cleanup, real SDB-frame upload/shell tests and local-browser request protection. No TV was contacted. Windows packaging and hosted CI are pending.
+
+The packaged app initially passed **12 platform checks each** in tizen-sim 0.3.1 on profiles **5.0/Chromium 63 (720p), 6.5/85, 9.0/120 and 10.0/130 (1080p)**, using the simulator's own Tizen API/privilege boundary. The harness checks app discovery, real remote Select/Back, report metadata, fallback QR rendering and focus. Final candidate rechecks are pending. This does not emulate Samsung native Home or standby boot.
+
+The feedback receiver is deployed. Anonymous health, CORS preflight, strict-field rejection and a clearly labelled synthetic production submission were verified; there is no public record-reading endpoint. Local Worker/D1 checks passed 15 sequential requests, including valid submissions after rejected bodies. Backend schema tests pass 24 checks. The new body-read deadline is undergoing deployment/verification.
+
+The owner's installed **1.3.9** widget and native configuration were not modified. The underlying native mechanism has earlier physical-Q60B evidence; the new combined installer, Undo and report screen require their own hardware rehearsal. The exact model/firmware guard remains in place. Consumer instructions describe the companion as experimental.
+
+# 1.4.2 initial phone-report and compatibility-chart validation
 
 Local source and actual-widget report checks pass **32 each** in current Chromium 156 and Chromium 85. An independent jsQR decoder reads the rendered QR screenshots at 1080p and 720p, including maximum-length accepted metadata and error codes. Checks cover success/problem choices, real adapter errors reduced to safe codes, missing or denied metadata, all background modes, remote Back, late cancellation, offline encoder failure, no report uploads/app launches and unchanged saved preferences. Eight Node tests exercise the privacy boundary and structured URL fields, including Samsung's documented OEM platform-version suffixes. The encoder loads on demand, outside the Home startup path.
 

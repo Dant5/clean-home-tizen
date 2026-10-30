@@ -69,6 +69,11 @@ internal static class NativeControl {
    var original=JsonSerializer.Deserialize<Snapshot>(File.ReadAllText(args[1]));
    NativePlatform.Guard();
    using(var guard=new FileStream("/home/owner/share/tmp/sdk_tools/.cleanhome-native-control.lock",FileMode.OpenOrCreate,FileAccess.ReadWrite,FileShare.None)) {
+    if(args[0]=="apply-all" || args[0]=="restore-all") {
+     if(args.Length!=3 || (args[2]!="0" && args[2]!="1"))throw new Exception("Recorded Last App baseline required");
+     var setup=SetupPolicy.Execute(new NativePlatform(),new NativeStartupOption(),original,int.Parse(args[2]),args[0]);
+     Console.WriteLine(JsonSerializer.Serialize(setup));return setup.Success?0:1;
+    }
     if(args[0]=="verify-option" || args[0]=="disable-last-app" || args[0]=="restore-last-app") {
      if(args.Length!=3 || (args[2]!="0" && args[2]!="1"))throw new Exception("Recorded last-app baseline required");
      Policy.Validate(original);
