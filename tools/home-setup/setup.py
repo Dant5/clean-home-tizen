@@ -61,7 +61,7 @@ def create_server(companion):
                 self.respond({"error": "Not found"}, 404)
                 return
             folder = Path(getattr(sys, "_MEIPASS", Path(__file__).parent))
-            self.respond((folder / "index.html").read_text().replace("__TOKEN__", token), html=True)
+            self.respond((folder / "index.html").read_text(encoding="utf-8").replace("__TOKEN__", token), html=True)
         def do_POST(self):
             self.connection.settimeout(5)
             if self.path != "/action" or not self.permitted() or self.headers.get("X-Clean-Home") != token or self.headers.get("Content-Type") != "application/json":
@@ -95,10 +95,17 @@ def create_server(companion):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--no-browser", action="store_true")
+    parser.add_argument("--check-package", action="store_true", help="Verify bundled assets offline; never contact a TV")
     args = parser.parse_args()
     directory = Path(getattr(sys, "_MEIPASS", Path(__file__).parent))
+    files = read_payload(directory / "payload")
+    if args.check_package:
+        text = (directory / "index.html").read_text(encoding="utf-8")
+        if "__TOKEN__" not in text or "Check TV" not in text: raise ValueError("Setup page is missing")
+        print("Native payload hashes and UTF-8 setup page verified. No TV contacted.")
+        return
     store = Store()
-    companion = Companion(store, read_payload(directory / "payload"))
+    companion = Companion(store, files)
     with ProcessLock(store.folder):
         server = create_server(companion)
         url = "http://127.0.0.1:" + str(server.server_port)

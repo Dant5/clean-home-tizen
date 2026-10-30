@@ -39,6 +39,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           & ./dist/companion/CleanHome-Home-Setup-Windows-experimental.exe --help
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & ./dist/companion/CleanHome-Home-Setup-Windows-experimental.exe --check-package
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python scripts/package-windows-setup.py dist/companion/CleanHome-Home-Setup-Windows-experimental.exe
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:

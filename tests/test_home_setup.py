@@ -236,6 +236,7 @@ def test_local_wizard_requires_token_origin_and_explicit_confirmation():
     url = 'http://127.0.0.1:'+str(server.server_port)
     try:
         html = urllib.request.urlopen(url).read().decode()
+        assert 'Network Status → IP Settings' in html and 'TV’s local IP' in html
         import re
         token = re.search(r'nonce="([a-f0-9]+)"', html)[1]
         for headers, confirmed in [({}, True), ({'X-Clean-Home': token, 'Origin': 'https://example.com'}, True), ({'X-Clean-Home': token}, False)]:
