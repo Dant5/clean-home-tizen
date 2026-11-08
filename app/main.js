@@ -1547,6 +1547,7 @@
   var BING_POOL = { list: [], keys: {}, mkt: 0, idx: 0 };
   BING.today = ''; BING.pick = ''; BING.generation = 0; BING.cached = null;
   function bingKey(url) { var m = /OHR\.([^_&]+)/.exec(url || ''); return m ? m[1] : String(url || ''); }
+  function bingImageId(url) { var m = /[?&]id=([^&]+)/.exec(url || ''); return m ? m[1].replace(/_(?:[0-9]+x[0-9]+|UHD)\.jpg$/i, '') : ''; }
   function bingUrl(url) {
     return typeof url === 'string' && url.length <= 2048 && /^https:\/\/www\.bing\.com\/th\?id=[^\s<>"']+$/.test(url) ? url : '';
   }
@@ -2615,7 +2616,7 @@
     return { view: top().id, settingsGroup: top().id === 'wallpaper' ? 'wallpaper' : top().id === 'appearance' ? top().group : null, focus: name, focusAction: action, focusCount: count, wallpaper: S.wallShown, zone: top().f.zone || null };
   };
   // Local, read-only diagnostic. Nothing is uploaded or added to reports.
-  QA.bing = function () { return { localDay: todayKey(), timezoneOffsetMinutes: new Date().getTimezoneOffset(), market: window.CleanHomeConfig.bingMarket || 'en-AU', selectedIdentity: bingKey(BING.url), dailyIdentity: BING.identity, publication: BING.publication, lastCheckedAt: BING.checkedAt, lastUpdatedAt: BING.updatedAt, lastFailureAt: BING.lastFail, manualUntilNextDay: BING.pickDate || '', busy: BING.busy }; };
+  QA.bing = function () { return { localDay: todayKey(), timezoneOffsetMinutes: new Date().getTimezoneOffset(), market: window.CleanHomeConfig.bingMarket || 'en-AU', selectedIdentity: bingKey(BING.url), selectedImageId: bingImageId(BING.url), dailyIdentity: BING.identity, dailyImageId: bingImageId(BING.today), publication: BING.publication, lastCheckedAt: BING.checkedAt, lastUpdatedAt: BING.updatedAt, lastFailureAt: BING.lastFail, manualUntilNextDay: BING.pickDate || '', busy: BING.busy }; };
   QA.ready = function () { return fontsReady && !S.pending && !!S.shown && S.shown.bg === S.c.bg && S.shown.wall === S.c.wall && S.shown.font === S.c.font; };
   QA.nav = function () { var keys = arguments.length === 1 && Array.isArray(arguments[0]) ? arguments[0] : Array.prototype.slice.call(arguments); keys.forEach(function (key) { if (!NAV[key]) throw new Error('Unknown key'); lastNavAt = 0; press(NAV[key]); }); return QA.state(); };
   QA.look = function (patch) { setLook(patch, {}); return QA.state(); };

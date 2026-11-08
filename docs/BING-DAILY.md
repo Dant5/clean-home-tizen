@@ -10,7 +10,7 @@ Suspended TVs cannot fetch. The existing resume, visibility and online handlers 
 
 ## Local diagnostic
 
-In the launcher's local developer console, `ShoreQA.bing()` returns selected/daily image identity, provider publication date, last successful wallpaper change/check/failure timestamps, local date, timezone offset, market and manual-pick day. Times are milliseconds since epoch (`new Date(value).toISOString()` converts them). This read-only diagnostic is not added to automatic reports or sent anywhere. No TV connection is required to use it in the local preview.
+In the launcher's local developer console, `ShoreQA.bing()` returns selected/daily image identity (including full Bing image IDs), provider publication date, last successful wallpaper change/check/failure timestamps, local date, timezone offset, market and manual-pick day. Times are milliseconds since epoch (`new Date(value).toISOString()` converts them). This read-only diagnostic is not added to automatic reports or sent anywhere. No TV connection is required to use it in the local preview.
 
 Timezone/configuration on the physical television was not queried or changed. If investigating there later, check its displayed date/time and timezone privately; Perth is UTC+8 year-round. A correct TV clock cannot fix late provider publication by itself. Internet loss, standby, CDN metadata caching and image/decode failures are separate causes handled by the above retry/fallback paths. The observed Bing response on 8 November supplied `startdate`, `fullstartdate` and an identity URL; these fields do not establish a universal publication time.
 

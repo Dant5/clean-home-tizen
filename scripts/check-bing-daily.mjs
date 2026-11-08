@@ -36,6 +36,7 @@ async function scenario(timezoneId) {
   const resume = async time => { await page.clock.setFixedTime(new Date(time)); await page.evaluate(() => document.dispatchEvent(new Event('resume'))); await page.waitForTimeout(200); };
   await page.goto(p.baseURL); await wait('Old');
   assert.equal((await diag()).publication, '20261107');
+  assert.equal((await diag()).selectedImageId, 'OHR.Old');
   const oldStamp = (await diag()).lastUpdatedAt;
   await resume('2026-11-07T16:30:00Z'); // Perth midnight; still previous UTC date.
   assert.equal(state.calls.length, 2); assert.equal((await diag()).publication, '20261107');
