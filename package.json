@@ -16,7 +16,7 @@
     "check:signer": ".local/venv/bin/python -m pytest -q tests/test_signer.py",
     "test": "npm run check && npm run check:device && npm run check:browser && npm run check:q60b && npm run check:bing && npm run check:reliability && npm run check:onboarding && npm run check:startup-input && npm run check:backgrounds && npm run check:responsive && npm run check:python && npm run check:legacy-network && npm run check:reports",
     "check:reliability": "node scripts/check-reliability.mjs",
-    "check:bing": "node scripts/_bing-next.mjs",
+    "check:bing": "node scripts/_bing-next.mjs && node scripts/check-bing-daily.mjs",
     "check:performance": "node scripts/check-performance.mjs",
     "check:python": ".local/venv/bin/python -m pytest -q tests",
     "check:package": "node scripts/check-package.mjs && node scripts/check-reports.mjs --widget && node scripts/check-report-send.mjs --widget",

@@ -1404,7 +1404,7 @@
     setInterval(function () { fetchWeather(false); }, 15 * 60000);
   }
   /* Daily Bing photo: live URL on <img>, never saved to TV disk. One localStorage overwrite. */
-  var BING = { busy: false, url: '', date: '', lastFail: 0 };
+  var BING = { busy: false, url: '', date: '', lastFail: 0, attemptedAt: 0, attemptDay: '', checkedAt: 0, updatedAt: 0, publication: '', identity: '', pickDate: '' };
   function todayKey() {
     var d = new Date();
     return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
@@ -1538,7 +1538,8 @@
   function applyBingPhoto(url) { if (url && S.c && S.c.dailyBing) applyWallpaperEverywhere(url); }
   function clearBingPhoto() { applyWallpaperEverywhere(); }
   /* Bing photo state.
-     BING.today = today's en-AU image (refreshed when the date changes; checked hourly).
+     BING.today = latest observed market image. Publication and identity come from Bing,
+     independently of the TV's local date. Revalidate hourly even after a successful check.
      BING.url   = the photo actually shown: today's, or a manual pick from Settings -> Background ->
                   "Next Bing photo". A manual pick is kept until the date changes, then today's wins.
      Only the chosen URL is kept (localStorage 'cleanhome.bing'); images stay live URLs, nothing on disk. */
@@ -1546,6 +1547,7 @@
   var BING_POOL = { list: [], keys: {}, mkt: 0, idx: 0 };
   BING.today = ''; BING.pick = ''; BING.generation = 0; BING.cached = null;
   function bingKey(url) { var m = /OHR\.([^_&]+)/.exec(url || ''); return m ? m[1] : String(url || ''); }
+  function bingImageId(url) { var m = /[?&]id=([^&]+)/.exec(url || ''); return m ? m[1].replace(/_(?:[0-9]+x[0-9]+|UHD)\.jpg$/i, '') : ''; }
   function bingUrl(url) {
     return typeof url === 'string' && url.length <= 2048 && /^https:\/\/www\.bing\.com\/th\?id=[^\s<>"']+$/.test(url) ? url : '';
   }
@@ -1555,10 +1557,10 @@
     return bingUrl(path.indexOf('/th?') === 0 ? 'https://www.bing.com' + path : path);
   }
   function bingSave() {
-    try { localStorage.setItem('cleanhome.bing', JSON.stringify({ url: BING.url, today: BING.today, pick: BING.pick, date: BING.date })); } catch (e) {}
+    try { localStorage.setItem('cleanhome.bing', JSON.stringify({ url: BING.url, today: BING.today, pick: BING.pick, date: BING.date, pickDate: BING.pickDate, publication: BING.publication, identity: BING.identity, checkedAt: BING.checkedAt, updatedAt: BING.updatedAt })); } catch (e) {}
   }
   function bingJson(mkt, idx, n, cb) {
-    var url = 'https://www.bing.com/HPImageArchive.aspx?format=js&idx=' + idx + '&n=' + n + '&mkt=' + encodeURIComponent(mkt);
+    var url = 'https://www.bing.com/HPImageArchive.aspx?format=js&idx=' + idx + '&n=' + n + '&mkt=' + encodeURIComponent(mkt) + '&ch=' + Date.now();
     var controller = typeof AbortController === 'function' ? new AbortController() : null;
     /* Chromium 63 has fetch but no AbortController. Use a cancellable request there. */
     if (!controller && typeof XMLHttpRequest === 'function') {
@@ -1581,7 +1583,7 @@
     }
     if (typeof fetch !== 'function') { cb(null); return; }
     var done = false, timer = setTimeout(function () { if (!done) { done = true; if (controller) controller.abort(); cb(null); } }, 10000);
-    fetch(url, controller ? { signal: controller.signal } : undefined)
+    fetch(url, controller ? { signal: controller.signal, cache: 'no-store' } : { cache: 'no-store' })
       .then(function (r) { if (!r.ok) throw new Error('HTTP'); return r.json(); })
       .then(function (j) { if (done) return; done = true; clearTimeout(timer); cb(j && Array.isArray(j.images) ? j.images.slice(0, 8) : null); })
       ['catch'](function () { if (!done) { done = true; clearTimeout(timer); cb(null); } });
@@ -1602,21 +1604,36 @@
   function fetchBingDaily(force) {
     if (document.hidden || !S.c || !S.c.dailyBing || S.c.bg !== 'photo') return;
     if (BING.busy || BING.nextBusy) return;
-    if (!force && BING.date === todayKey() && BING.url) { applyBingPhoto(BING.url); return; }
-    if (!force && BING.lastFail && Date.now() - BING.lastFail < 15 * 60000) return;
+    var now = Date.now(), day = todayKey();
+    // Resume/online events share this gate. No burst of requests after repeated wake events.
+    if (!force && BING.lastFail && now >= BING.lastFail && now - BING.lastFail < 15 * 60000) return;
+    if (!force && !BING.lastFail && BING.attemptDay === day && now >= BING.attemptedAt && now - BING.attemptedAt < 60 * 60000) return;
     if (typeof fetch !== 'function') return;
-    BING.busy = true;
+    BING.busy = true; BING.attemptedAt = now; BING.attemptDay = day;
     var generation = BING.generation;
     bingJson(window.CleanHomeConfig.bingMarket || 'en-AU', 0, 1, function (images) {
       if (generation !== BING.generation) return;
-      var url = bingFullUrl(images && images[0]);
+      var image = images && images[0], url = bingFullUrl(image);
       if (!url) { BING.busy = false; BING.lastFail = Date.now(); return; }
+      var publication = /^\d{8}$/.test(image.startdate || '') ? image.startdate : '';
+      if (!publication && BING.publication) {
+        if (bingKey(url) !== BING.identity) { BING.busy = false; BING.lastFail = Date.now(); return; }
+        publication = BING.publication;
+      }
+      // An old CDN response must never roll the daily selection backwards.
+      if (publication && BING.publication && publication < BING.publication && BING.today) {
+        url = BING.today; publication = BING.publication;
+      }
       var date = todayKey(), cached = BING.cached;
-      var pick = BING.date === date ? BING.pick : cached && cached.date === date ? cached.pick : '';
+      var pick = (BING.pickDate || BING.date) === date ? BING.pick : cached && (cached.pickDate || cached.date) === date ? cached.pick : '';
       var chosen = pick || url;
       function commit() {
         if (generation !== BING.generation) return;
+        var identity = bingKey(url);
+        if (chosen !== BING.url) BING.updatedAt = Date.now();
+        BING.checkedAt = Date.now(); BING.identity = identity; BING.publication = publication;
         BING.busy = false; BING.lastFail = 0; BING.today = url; BING.date = date;
+        BING.pickDate = pick ? date : '';
         BING.pick = pick; BING.url = chosen; BING.cached = null; BING.msg = '';
         bingSave(); applyBingPhoto(chosen); render();
       }
@@ -1679,7 +1696,7 @@
       bingPreload(item.url, function () {
         if (generation !== BING.generation) return;
         BING.nextBusy = false;
-        BING.url = item.url; BING.pick = item.url; BING.date = todayKey(); BING.cached = null; bingSave();
+        BING.updatedAt = Date.now(); BING.url = item.url; BING.pick = item.url; BING.pickDate = todayKey(); BING.date = todayKey(); BING.cached = null; bingSave();
         chDebug('bing-next', { url: item.url, pool: BING_POOL.list.length });
         BING.msg = item.title ? 'Now showing: ' + item.title : 'New Bing photo applied';
         applyBingPhoto(item.url); render();
@@ -1697,15 +1714,15 @@
     cancelBingChoice(); var generation = BING.generation;
     if (!BING.pick) { BING.msg = 'Already showing today\u2019s photo'; render(); return; }
     var url = BING.today;
-    if (!url || BING.date !== todayKey()) { BING.pick = ''; bingSave(); BING.msg = 'Getting today\u2019s photo\u2026'; fetchBingDaily(true); render(); return; }
-    bingPreload(url, function () { if (generation !== BING.generation) return; BING.pick = ''; BING.url = url; bingSave(); BING.msg = 'Back to today\u2019s photo'; applyBingPhoto(url); render(); },
+    if (!url || BING.date !== todayKey()) { BING.pick = ''; BING.pickDate = ''; bingSave(); BING.msg = 'Getting today\u2019s photo\u2026'; fetchBingDaily(true); render(); return; }
+    bingPreload(url, function () { if (generation !== BING.generation) return; BING.pick = ''; BING.pickDate = ''; BING.updatedAt = Date.now(); BING.url = url; bingSave(); BING.msg = 'Back to today\u2019s photo'; applyBingPhoto(url); render(); },
       function () { if (generation === BING.generation) bingStatus('Couldn\u2019t load today\u2019s photo. Current photo kept.'); });
   }
 
   function restoreBingState() {
     try {
       var c = JSON.parse(localStorage.getItem('cleanhome.bing') || 'null');
-      if (c && bingUrl(c.url)) BING.cached = { url: c.url, date: typeof c.date === 'string' ? c.date : '', today: bingUrl(c.today), pick: bingUrl(c.pick) };
+      if (c && bingUrl(c.url)) BING.cached = { url: c.url, date: typeof c.date === 'string' ? c.date : '', today: bingUrl(c.today), pick: bingUrl(c.pick), pickDate: typeof c.pickDate === 'string' ? c.pickDate : c.date, publication: /^\d{8}$/.test(c.publication || '') ? c.publication : '', identity: typeof c.identity === 'string' ? c.identity.slice(0, 256) : '', checkedAt: Number(c.checkedAt) || 0, updatedAt: Number(c.updatedAt) || 0 };
     } catch (e) {}
   }
   function initBing() {
@@ -1713,7 +1730,7 @@
     var cached = BING.cached, generation = BING.generation;
     if (cached && S.c.dailyBing && S.c.bg === 'photo') bingPreload(cached.url, function () {
       if (generation !== BING.generation || BING.url) return;
-      BING.url = cached.url; BING.date = cached.date; BING.today = cached.today; BING.pick = cached.pick;
+      BING.url = cached.url; BING.date = cached.date; BING.today = cached.today; BING.pick = cached.pick; BING.pickDate = cached.pickDate; BING.publication = cached.publication; BING.identity = cached.identity; BING.checkedAt = cached.checkedAt; BING.updatedAt = cached.updatedAt;
       applyBingPhoto(BING.url);
     }, function () {});
     fetchBingDaily(true);
@@ -2564,8 +2581,8 @@
     chDebug('home-reset', { reason: reason, from: from, now: top().id });
   }
   /* Resume only our UI. Native Home and startup remain under Samsung's control. */
-  function resumeUI() { cancelHomeHold(); heldKeys = {}; release(); focusStage(); after(); updateClock(); if (optionalStarted) fetchBingDaily(!BING.url || BING.date !== todayKey()); }
-  window.addEventListener('online', function () { if (optionalStarted) fetchBingDaily(true); });
+  function resumeUI() { cancelHomeHold(); heldKeys = {}; release(); focusStage(); after(); updateClock(); if (optionalStarted) fetchBingDaily(false); }
+  window.addEventListener('online', function () { if (optionalStarted) fetchBingDaily(false); });
   window.addEventListener('appcontrol', function () { resetToMain('appcontrol'); resumeUI(); });
   document.addEventListener('resume', resumeUI);
   document.addEventListener('visibilitychange', function () {
@@ -2598,6 +2615,8 @@
     Array.prototype.forEach.call(active, function (el) { if (renderedAction(el)) { count++; if (el.getAttribute('data-action') === action) name = el.getAttribute('aria-label') || el.textContent.replace(/\s+/g, ' ').trim(); } });
     return { view: top().id, settingsGroup: top().id === 'wallpaper' ? 'wallpaper' : top().id === 'appearance' ? top().group : null, focus: name, focusAction: action, focusCount: count, wallpaper: S.wallShown, zone: top().f.zone || null };
   };
+  // Local, read-only diagnostic. Nothing is uploaded or added to reports.
+  QA.bing = function () { return { localDay: todayKey(), timezoneOffsetMinutes: new Date().getTimezoneOffset(), market: window.CleanHomeConfig.bingMarket || 'en-AU', selectedIdentity: bingKey(BING.url), selectedImageId: bingImageId(BING.url), dailyIdentity: BING.identity, dailyImageId: bingImageId(BING.today), publication: BING.publication, lastCheckedAt: BING.checkedAt, lastUpdatedAt: BING.updatedAt, lastFailureAt: BING.lastFail, manualUntilNextDay: BING.pickDate || '', busy: BING.busy }; };
   QA.ready = function () { return fontsReady && !S.pending && !!S.shown && S.shown.bg === S.c.bg && S.shown.wall === S.c.wall && S.shown.font === S.c.font; };
   QA.nav = function () { var keys = arguments.length === 1 && Array.isArray(arguments[0]) ? arguments[0] : Array.prototype.slice.call(arguments); keys.forEach(function (key) { if (!NAV[key]) throw new Error('Unknown key'); lastNavAt = 0; press(NAV[key]); }); return QA.state(); };
   QA.look = function (patch) { setLook(patch, {}); return QA.state(); };

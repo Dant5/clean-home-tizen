@@ -57,7 +57,7 @@ await key('Enter'); await page.waitForTimeout(1500);
 check('Back to today restores Day0', /OHR\.Day0_/.test(await shown()), await shown());
 check('pick cleared', !(await stored()).pick);
 // next day: pick replaced by today's
-await page.evaluate(() => { const c = JSON.parse(localStorage.getItem('cleanhome.bing')); c.pick = c.url = 'https://www.bing.com/th?id=OHR.Day5_en-AU123_1920x1080.jpg'; c.date = '2000-1-1'; localStorage.setItem('cleanhome.bing', JSON.stringify(c)); });
+await page.evaluate(() => { const c = JSON.parse(localStorage.getItem('cleanhome.bing')); c.pick = c.url = 'https://www.bing.com/th?id=OHR.Day5_en-AU123_1920x1080.jpg'; c.date = c.pickDate = '2000-1-1'; localStorage.setItem('cleanhome.bing', JSON.stringify(c)); });
 await page.reload({ waitUntil: 'load' }); await page.waitForTimeout(2000);
 check('new day replaces manual pick with today', /OHR\.Day0_/.test(await shown()) && !(await stored()).pick, await shown());
 fs.mkdirSync('.local/qa', {recursive:true}); fs.writeFileSync('.local/qa/bing.json', JSON.stringify({checks:count,passed:ok,scope:'Mocked Bing only; no TV contacted'},null,2)+'\n'); console.log(ok ? 'PASS all' : 'FAIL some'); await p.close(); process.exit(ok ? 0 : 1);

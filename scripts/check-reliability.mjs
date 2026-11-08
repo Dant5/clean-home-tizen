@@ -106,7 +106,7 @@ try {
       await f.page.clock.setFixedTime(new Date('2026-10-30T12:00:00Z'));
       await f.page.evaluate(() => document.dispatchEvent(new Event('resume'))); await f.page.waitForTimeout(300);
       assert.notEqual((await f.saved()).date, '2026-10-30');
-      f.control.badImage = ''; await f.page.evaluate(() => document.dispatchEvent(new Event('resume')));
+      f.control.badImage = ''; await f.page.clock.setFixedTime(new Date('2026-10-30T12:16:00Z')); await f.page.evaluate(() => document.dispatchEvent(new Event('resume')));
       await f.page.waitForFunction(() => (document.querySelector('img.photo').getAttribute('data-live') || '').includes('Tomorrow'), null, { timeout: 3000 });
       assert.equal((await f.saved()).date, '2026-10-30');
     } finally { await f.page.close(); }
@@ -148,6 +148,7 @@ try {
     const f = await fixture({ decodeFailure: true });
     try {
       await f.ready(); await f.page.waitForTimeout(300); assert((await f.visible()).includes('/wallpapers/'));
+      await f.page.clock.setFixedTime(new Date('2026-10-29T12:16:00Z'));
       await f.page.evaluate(() => { window.__failDecode = false; window.dispatchEvent(new Event('online')); });
       await f.page.waitForFunction(() => (document.querySelector('img.photo').getAttribute('data-live') || '').includes('Today'), null, { timeout: 3000 });
     } finally { await f.page.close(); }
@@ -185,6 +186,7 @@ try {
     const f = await fixture({ failDisplayed: true, badImage: 'Missing' });
     try {
       await f.ready(); await f.page.waitForTimeout(350); assert((await f.visible()).includes('/wallpapers/'));
+      await f.page.clock.setFixedTime(new Date('2026-10-29T12:16:00Z'));
       await f.page.evaluate(() => { window.__failDisplayed = false; window.dispatchEvent(new Event('online')); });
       await f.page.waitForFunction(() => (document.querySelector('img.photo').getAttribute('data-live') || '').includes('Today') && document.querySelector('img.photo').naturalWidth > 0, null, { timeout: 3000 });
     } finally { await f.page.close(); }
@@ -195,7 +197,7 @@ try {
       await f.ready(); await f.page.waitForTimeout(100); assert(f.control.delayed);
       await f.page.clock.fastForward(11000);
       assert(await f.page.evaluate(() => __requests.some(r => r.url.includes('HPImageArchive') && r.signal && r.signal.aborted)), 'Timed-out request must actually be aborted');
-      f.control.slowDaily = false; await f.page.evaluate(() => window.dispatchEvent(new Event('online')));
+      f.control.slowDaily = false; await f.page.clock.fastForward(16 * 60000); await f.page.evaluate(() => window.dispatchEvent(new Event('online')));
       await f.page.waitForFunction(() => (document.querySelector('img.photo').getAttribute('data-live') || '').includes('Today'), null, { timeout: 3000 });
     } finally { await f.page.close(); }
   });
