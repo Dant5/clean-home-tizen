@@ -113,3 +113,8 @@ Documentation and privacy-check changes leave the unsigned widget byte-identical
 ## Build dependency audit
 
 The build requirements are pinned to cryptography 50.0.2, pytest 9.2.0, lxml 6.1.3 and Pillow 13.0.0. The updated environment passes all 63 Python tests. npm audit and pip-audit report no known vulnerabilities in the audited dependencies. These tools are not shipped in the TV widget.
+
+
+## AdGuard native-session regression
+
+The reference deployment exposed repeated Basic authentication as a dashboard-control bottleneck: individual reads measured approximately 0.5–3.9 seconds. The standard-library cookie client reuses AdGuard’s native, memory-only session. Against the actual pinned API, a warm full snapshot measured 0.061 seconds and pause/resume setters measured 0.016/0.024 seconds in that sample; these are backend timings, not TV remote latency guarantees. Fresh device-scope/readback checks remain enabled. Eight new real-HTTP cases cover session reuse, expiry, failed login, redirects, missing cookies, concurrent first reads, response bounds and refusal to replay a setter. The full Python suite passes **174 tests**. No administrator session reaches the TV.
