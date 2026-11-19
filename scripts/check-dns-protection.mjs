@@ -60,8 +60,12 @@ try{
  await page.evaluate(()=>ShoreQA.activate('dns.device'));
  assert.match(await page.locator('.dns-cards').innerText(),/30[\s\S]*120[\s\S]*25%/);
  // Hardware-style arrow keys, not only programmatic clicks.
- await page.evaluate(()=>{ShoreQA.activate('dns.refresh');});await page.waitForFunction(()=>document.body.textContent.includes('DNS filtering enabled'));
- await page.keyboard.press('ArrowRight');await page.waitForTimeout(60);await page.keyboard.press('ArrowRight');await page.keyboard.press('Enter');
+ await page.evaluate(()=>{ShoreQA.activate('dns.refresh');});
+ await page.waitForFunction(()=>document.querySelector('.dns-toolbar').getAttribute('aria-busy')==='false'&&document.body.textContent.includes('DNS filtering enabled'));
+ // Respect the app's 40ms repeat coalescing after the preceding navigation benchmark.
+ await page.waitForTimeout(60);await page.keyboard.press('ArrowRight');await page.waitForTimeout(60);await page.keyboard.press('ArrowRight');
+ assert.equal(await page.evaluate(()=>ShoreQA.state().focusAction),'dns.disable');
+ await page.keyboard.press('Enter');
  assert.match(await page.locator('.dns-warning').innerText(),/until you enable/);
  assert.deepEqual(writes,[]);
  await page.keyboard.press('Escape');
