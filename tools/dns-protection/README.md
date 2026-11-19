@@ -1,11 +1,11 @@
 # TV/soundbar DNS protection companion
 
-**Prepared, not deployed.** See [the deployment and recovery guide](../../docs/DNS-PROTECTION.md). This companion connects Clean Home to a dedicated [AdGuard Home](https://github.com/AdguardTeam/AdGuardHome) instance. It does not implement DNS, change a router, install on a TV or execute native TV commands.
+**Optional companion; manual commissioning required.** See [the deployment and recovery guide](../../docs/DNS-PROTECTION.md). This companion connects Clean Home to a dedicated [AdGuard Home](https://github.com/AdguardTeam/AdGuardHome) instance. It does not implement DNS, change a router, install on a TV or execute native TV commands.
 
 - `prepare.py`: creates an owner-only resolver profile and separate limited TV connection. No existing profile is overwritten.
 - `compose.yaml`: reviewed, digest-pinned resolver with explicit persistent mounts, loopback administration, restricted capabilities and no automatic startup.
 - `compose.production.yaml`: deliberate startup policy for later commissioning.
-- `bridge.py`: standard-library Python 3.12 adapter. Runs without root. Only combined/per-device status and protection enable/disable/bounded pauses for the dedicated instance are available. Controls apply to both configured devices.
+- `bridge.py`: standard-library Python 3.12 adapter. Runs without root. Owner-local `--action` controls provide recovery without a TV update. Only combined/per-device status and protection enable/disable/bounded pauses for the dedicated instance are available. Controls apply to both configured devices.
 - `cleanhome-privacy.service`: hardened service template, not an installed service.
 
 The bridge accepts only the configured TV's source address, exact server Host, a separate random capability and an allowed Origin. It never trusts a caller-supplied client address or forwarded headers. Every control rechecks AdGuard's exact configured TV/soundbar allowlist and rejects unexpected per-client settings. Do not share this resolver with the household or reuse its administrator API for other devices. Source IP is a scope check, not cryptographic device identity; protect the LAN. The TV capability cannot change domains, upstreams, access lists, logs, packages, files or services.

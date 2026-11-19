@@ -4,7 +4,7 @@ AdGuard Home v0.107.80 and a limited server-side adapter provide combined and se
 
 | Validation | Result and scope |
 |---|---|
-| Python suite | **164 passed**, including exact-client attribution, calendar boundaries, partial logs, scope drift, authentication, command limits, profile permissions and private-artifact release rejection |
+| Python suite | **166 passed**, including exact-client attribution, calendar boundaries, partial logs, scope drift, authentication, command limits, profile permissions and private-artifact release rejection |
 | Full source regression suites | Passed in current Chromium 156 and Chromium 85, including remote navigation, unavailable states, cancellation, no Home polling and preservation of existing launcher behavior |
 | Actual unsigned widget | Passed current/85 checks; SHA-256 `5461856afb145bda753a61c384a60ac990b742387a954b92aa9ff38a618426fa` |
 | Packaged engine matrix | **47 checks each** in Chromium 63, 69, 76, 85, 94, 108, 120 and 130, on the same artifact |
@@ -14,6 +14,8 @@ AdGuard Home v0.107.80 and a limited server-side adapter provide combined and se
 | Dashboard navigation cost | Chromium 85 focus navigation retained the statistics DOM: zero body replacements across 40 key events; local p95 approximately 1 ms. This is a browser measurement, not a TV latency claim |
 
 The image in the DNS guide is visibly labelled **browser preview / test data**. Loopback integration used controlled DNS queries, not owner-device traffic. Actual Q60B/Q930D DNS adoption, secondary/hardcoded/encrypted bypass, streaming, SmartThings, eARC/Q-Symphony and physical remote behavior remain commissioning checks. A configured filter or a successful API response does not establish complete device coverage. Hosted CI validates the committed head separately; the new resolver job adds real integration and restore checks without a Dell background job.
+
+Owner-local recovery controls additionally pass fixed-action/no-listener and sanitised-failure tests. The development network trial observed independently attributed TV and soundbar requests and actual TV blocks; Dell/another household client retained their existing DNS and were denied by the dedicated resolver. The TV still exposes a secondary resolver, so complete DNS coverage is **not** claimed. Physical streaming/audio and the updated TV dashboard remain unverified.
 
 Earlier successful results below retain their original scope.
 

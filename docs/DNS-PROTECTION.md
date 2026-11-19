@@ -1,6 +1,6 @@
 # Q60B + Q930D DNS protection
 
-**Status: implemented for local testing on PR #20; not active on the TV.** The installed Clean Home 1.3.9 and native Home/startup assignment are unchanged. This is an optional companion for the reference Q60B, not a new launcher or a claim of hardware qualification on other models.
+**Status: development feature on PR #20; not part of a released download.** The installed Clean Home 1.3.9 and native Home/startup assignment are unchanged. This is an optional companion for the reference Q60B, not a new launcher or a claim of hardware qualification on other models.
 
 ## Choice: AdGuard Home on the existing server
 
@@ -82,7 +82,7 @@ The owner must approve the exact per-device DNS / DHCP reservation proposal firs
 1. Protect the affected configuration and confirm the existing encrypted Hubert recovery copy, current backup payload/repository limits and free space. Enroll this service before persistent activation (below).
 2. Install the dedicated resolver with explicit persistent `conf/` and `work/` mounts. Apply the production restart override only after recovery/monitoring enrollment. Pin the reviewed digest; manual reviewed upgrades only. Host networking preserves the original DNS client address, but bind addresses, capabilities and actual listeners must be checked. DHCP, encrypted inbound DNS and installer UI remain disabled. Check localhost admin auth before any TV routing.
 3. Install the adapter's hardened service template with a dedicated non-login account, read-only code under `/opt/cleanhome-privacy`, and owner-only secret configuration under `/etc/cleanhome-privacy`. Set the private bind/TV IP profile explicitly. No root execution or Docker socket in the adapter. Do not deploy a second proxy, monitor or scheduler.
-4. In the existing router, reserve **only the verified TV and soundbar interfaces' current leases**, if not already reserved. Save each original reservation state privately. If this exact router firmware offers per-entry **DNS Server (Optional)**, propose setting it to the Dell for only those two entries, leaving all other entries/global fields unchanged. Verify DHCP option 6 and actual source-IP log attribution after renewal. The field was read back on the reference RT-AC88U / 3.0.0.4.386_48322; that does not prove the devices have adopted its DNS value. Do not change router WAN/LAN/DHCP-wide DNS, IPv6, Wi-Fi or firewall policies. A reservation apply may briefly refresh router services; assess that exact firmware's behavior before applying.
+4. In the existing router, reserve **only the verified TV and soundbar interfaces' current leases**, if not already reserved. Save each original reservation state privately. If this exact router firmware offers per-entry **DNS Server (Optional)**, propose setting it to the Dell for only those two entries, leaving all other entries/global fields unchanged. Verify DHCP option 6 and actual source-IP log attribution after renewal. The field was read back on the reference RT-AC88U / 3.0.0.4.386_48322; that does not prove the devices have adopted its DNS value. Do not change router WAN/LAN/DHCP-wide DNS, IPv6, Wi-Fi or firewall policies. On the reference firmware, the normal form uses `restart_net_and_phy` with a 30-second wait, which can briefly interrupt household LAN/Wi-Fi. Obtain approval for that wider interruption before applying; do not describe it as affecting only the two clients.
 5. If per-entry DHCP DNS is unsuitable, on the TV change **DNS only** to the Dell's LAN IP through Samsung's normal IP settings, preserving address/subnet/gateway. Capture the original automatic/manual setting and resolver list first. Read the resulting `/etc/resolv.conf` and confirm the TV's own new DNS requests appear under the exact dedicated client. Audit previously observed secondary DNS explicitly; one successful query is not full coverage.
 For the soundbar, use only a verified supported per-device DNS mechanism. Its local API has not established a DNS setter. If the router lacks per-device DNS, stop that routing stage and propose another reversible device-only route; do not change household DNS or install router firmware.
 6. Run the bounded client/function/coverage checks below. Revert immediately if normal TV functionality fails and pause does not recover it. Do not block update checks or flash firmware during validation.
@@ -93,7 +93,7 @@ For the soundbar, use only a verified supported per-device DNS mechanism. Its lo
 Use the existing Restic/Hubert jobs and exception-only Kuma/host checks. No extra backup/alert timer:
 
 - Explicitly protect the complete private profile (`conf`, `work`, admin/capability settings, Compose/environment), adapter configuration/code and installed service unit. Automatic mount discovery alone does not enroll a new container.
-- Add the resolver/profile to the existing `cold_copy_containers` mapping and selected backup sources. Stop only this resolver for a consistent complete capture and use the existing persisted-intent/finally/restart recovery path. Its query-log and statistics files must not be copied as if a generic live-file snapshot were consistent. Brief DNS unavailability during the daily capture must be measured; choose a safe retry window rather than hiding an unfiltered fallback. The stateless adapter needs only code/config backup.
+- Add the resolver/profile to the existing `cold_copy_containers` mapping and selected backup sources. Give its data a separate selected root (for example `/var/lib/cleanhome-dns`) so capturing a much larger parent directory does not hold DNS stopped throughout that parent’s backup. Stop only this resolver for a consistent complete capture and use the existing persisted-intent/finally/restart recovery path. Its query-log and statistics files must not be copied as if a generic live-file snapshot were consistent. Brief DNS unavailability during the daily capture must be measured; choose a safe retry window rather than hiding an unfiltered fallback. The stateless adapter needs only code/config backup.
 - Query logs contain browsing/service metadata. Live rotation is seven days per log interval (a previous rotation may remain); encrypted retained snapshots can keep older records under the server's existing no-prune policy. State this retention honestly; do not silently exclude query data or delete snapshots to shorten it.
 - Existing 5 GB payload and encrypted-repository limits stay unchanged. Review measured initial size, seven distinct days of growth and a 90-day budget before unattended use. The lab's small size is not a production estimate. Keep the existing staging/reserve checks; do not activate if protected scope cannot fit.
 - The adapter's `/health` returns JSON `status: UP` only after authenticated AdGuard scope/log/filter checks. It returns 503 on drift/down. Permit health only from the server itself. Enroll this URL in existing host `application_health_urls` under an existing alert category, or a single existing Kuma HTTP check with a meaningful response condition. Verify failure/recovery without sending success notifications. DNS traffic itself must also pass a commissioning probe; API health alone cannot prove UDP/TCP routing.
@@ -114,6 +114,18 @@ Use the existing Restic/Hubert jobs and exception-only Kuma/host checks. No extr
 | Recovery | Pause/resume, explicit off/on, server/adapter restart and reverting TV DNS to its original setting |
 
 Do not add router DNS interception, firewall rules or disable encrypted DNS as an automatic response. If bypass occurs, present an exact TV-only enforcement proposal and its rollback for fresh approval. Keep the UI's coverage warning until evidence supports a narrower, dated statement. No filtering statistic proves all tracking prevented.
+
+## Owner-local recovery without updating the TV app
+
+A server owner with the private profile can control the dedicated instance locally, before the dashboard is installed:
+
+```sh
+python3 tools/dns-protection/bridge.py --config "$PRIVATE_PROFILE/bridge.json" --action status
+python3 tools/dns-protection/bridge.py --config "$PRIVATE_PROFILE/bridge.json" --action pause15
+python3 tools/dns-protection/bridge.py --config "$PRIVATE_PROFILE/bridge.json" --action enable
+```
+
+Other fixed actions are `pause60` and `disable`. This mode starts no listener and exposes no administrator password. It uses the same fresh device-scope guard and readback as the dashboard. Pausing only disables filtering; it does not restore connectivity if the DNS server itself is unavailable.
 
 ## Recovery
 

@@ -385,9 +385,23 @@ class Handler(BaseHTTPRequestHandler):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--config', type=Path, required=True)
+    parser.add_argument('--action', choices=['status', 'enable', 'disable', 'pause15', 'pause60'],
+                        help='Owner-local recovery control; never starts an HTTP listener')
     args = parser.parse_args()
     cfg = load_config(args.config)
-    Server(cfg, Protection(cfg)).serve_forever(poll_interval=0.5)
+    protection = Protection(cfg)
+    if args.action:
+        try:
+            if args.action == 'status':
+                result = protection.snapshot(force=True)
+                print(json.dumps({key: result[key] for key in ('protectionEnabled', 'pausedUntil', 'today', 'coverage')}))
+            else:
+                print(json.dumps(protection.change(args.action)))
+        except Unavailable:
+            print(json.dumps({'error': 'Protection could not be verified. No confirmed change.'}))
+            raise SystemExit(1)
+        return
+    Server(cfg, protection).serve_forever(poll_interval=0.5)
 
 
 if __name__ == '__main__':

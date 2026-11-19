@@ -268,3 +268,30 @@ def test_two_devices_have_distinct_counts_and_no_third_device_leak():
 def test_unconfigured_soundbar_is_not_reported_as_zero():
     data = bridge.Protection(CFG, API()).snapshot()
     assert data['devices'][1] == {'id': 'soundbar', 'label': 'Soundbar', 'configured': False}
+
+
+def test_owner_cli_uses_fixed_control_without_http_listener(monkeypatch, capsys):
+    api = API()
+    protection = bridge.Protection(CFG, api)
+    monkeypatch.setattr(bridge, 'load_config', lambda path: CFG)
+    monkeypatch.setattr(bridge, 'Protection', lambda cfg: protection)
+    monkeypatch.setattr(bridge, 'Server', lambda *args: pytest.fail('CLI must not expose a listener'))
+    monkeypatch.setattr('sys.argv', ['bridge.py', '--config', 'private.json', '--action', 'pause15'])
+    bridge.main()
+    assert json.loads(capsys.readouterr().out) == {'accepted': True}
+    assert api.writes == [('/protection', {'enabled': False, 'duration': 900000})]
+
+
+def test_owner_cli_reports_fixed_unknown_without_upstream_details(monkeypatch, capsys):
+    class Failed:
+        def snapshot(self, **kwargs):
+            raise bridge.Unavailable('private upstream details')
+    monkeypatch.setattr(bridge, 'load_config', lambda path: CFG)
+    monkeypatch.setattr(bridge, 'Protection', lambda cfg: Failed())
+    monkeypatch.setattr('sys.argv', ['bridge.py', '--config', 'private.json', '--action', 'status'])
+    with pytest.raises(SystemExit) as error:
+        bridge.main()
+    assert error.value.code == 1
+    output = capsys.readouterr().out
+    assert 'private upstream details' not in output
+    assert json.loads(output)['error'].startswith('Protection could not be verified')
