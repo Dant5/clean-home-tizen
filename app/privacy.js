@@ -131,7 +131,7 @@
         html += '<section class="dns-week"><div class="dns-week-copy"><h3>This week</h3><p><strong>' + (d.complete ? '' : '≥') + count(week) + '</strong> blocked</p><span>Top: ' + esc(d.top.length ? d.top[0].domain : 'None recorded') + '</span></div><div class="dns-chart" role="img" aria-label="Blocked requests by calendar day">';
         d.days.slice(0, 7).forEach(function (day, i) {
           var height = Math.round(100 * day.blocked / max), label = String(day.date).slice(5), date = new Date(String(day.date) + 'T12:00:00Z'), names = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-          html += '<div class="dns-day' + (i === d.days.length - 1 ? ' is-today' : '') + '" aria-label="' + esc(label) + ': ' + count(day.blocked) + ' blocked"><div class="dns-bar-track"><div class="dns-bar" style="height:' + Math.max(0, Math.min(100, height)) + '%"></div></div><small>' + esc(isNaN(date.getTime()) ? label : names[date.getUTCDay()]) + '</small></div>';
+          html += '<div class="dns-day' + (i === d.days.length - 1 ? ' is-today' : '') + '" aria-label="' + esc(label) + ': ' + count(day.blocked) + ' blocked"><div class="dns-bar-track"><div class="dns-bar" style="height:' + Math.max(day.blocked > 0 ? 3 : 0, Math.min(100, height)) + '%"></div></div><small>' + esc(isNaN(date.getTime()) ? label : names[date.getUTCDay()]) + '</small></div>';
         });
         html += '</div></section><section class="dns-details"><h3>Device &amp; log details</h3>';
         if (combined && Array.isArray(d.devices)) html += '<p>' + d.devices.map(function (item) { return esc(item.label) + ': ' + (item.configured ? item.lastQueryAt ? 'DNS received' : 'waiting for DNS' : 'not connected to this filter'); }).join(' · ') + '</p>';

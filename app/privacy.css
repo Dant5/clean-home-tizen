@@ -50,7 +50,7 @@
 .dns-day{width:14.28%;text-align:center;font-size:18px;color:var(--dns-muted)}
 .dns-day small{font-size:17px;line-height:26px}
 .dns-bar-track{position:relative;height:74px;width:20px;margin:0 auto 4px}
-.dns-bar{position:absolute;bottom:0;width:100%;min-height:3px;border-radius:6px;background:rgba(240,107,99,.38)}
+.dns-bar{position:absolute;bottom:0;width:100%;min-height:0;border-radius:6px;background:rgba(240,107,99,.38)}
 .dns-day.is-today .dns-bar{background:var(--dns-accent)}
 .dns-details,.dns-requests,.dns-coverage{border-top:1px solid rgba(255,255,255,.18);padding-top:22px;margin-top:12px}
 .dns-details h3,.dns-requests h3,.dns-coverage h3{font-size:23px;line-height:30px;font-weight:600;margin:0 0 16px}

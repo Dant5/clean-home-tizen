@@ -82,6 +82,11 @@ try{
   await page.evaluate(()=>document.getElementById('dns-preview-label').remove());
  }
 
+ const firstBlocked=data.days[0].blocked;data.days[0].blocked=0;
+ await page.evaluate(()=>ShoreQA.activate('dns.refresh'));
+ await page.waitForFunction(()=>document.querySelector('.dns-bar').style.height==='0%');
+ assert.equal(await page.evaluate(()=>document.querySelector('.dns-bar').getBoundingClientRect().height),0,'Zero blocked requests never render as a positive bar');
+ data.days[0].blocked=firstBlocked;
  data.complete=false;await page.evaluate(()=>ShoreQA.activate('dns.refresh'));
  await page.waitForFunction(()=>document.body.textContent.includes('At least 30'));
  assert.match(await page.locator('.dns-cards strong').first().innerText(),/≥30/);
