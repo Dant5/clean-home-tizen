@@ -541,7 +541,7 @@
   }
 
   var busy = false, busyTimer = 0, launchGeneration = 0;
-  function release() { launchGeneration++; busy = false; clearTimeout(busyTimer); S.press = null; }
+  function release() { launchGeneration++; if (FrameDevice.cancelSource) FrameDevice.cancelSource(); busy = false; clearTimeout(busyTimer); S.press = null; }
   function message(title, line, note) {
     push({ id: 'message', msg: 'error', content: { title: title, line: line, note: note || '', actions: [['back', 'Back']] }, f: { b: 0 } });
   }
@@ -1237,6 +1237,7 @@
   function norm() { var t = top(), v = V[t.id]; if (v.norm) v.norm(t); }
   var lastNavAt = 0;
   function press(k) {
+    if (k === 'back') release();
     var t0 = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now(), dt;
     if (FrameDevice.isHdmi && FrameDevice.isHdmi() && (k === 'back' || k === 'ok')) {
       FrameDevice.exitHdmi(function () { render(); });
@@ -2592,7 +2593,7 @@
     press(k);
   });
   document.addEventListener('keyup', function (ev) { if (ev.keyCode === 13) finishHomeHold(ev.timeStamp); delete heldKeys[ev.keyCode]; });
-  window.addEventListener('blur', function () { cancelHomeHold(); heldKeys = {}; });
+  window.addEventListener('blur', function () { cancelHomeHold(); heldKeys = {}; release(); });
   window.addEventListener('focus', function () { release(); focusStage(); after(); updateClock(); });
   /* An explicit app-control relaunch returns to the dock. */
   function resetToMain(reason) {
@@ -2613,7 +2614,7 @@
   document.addEventListener('resume', resumeUI);
   document.addEventListener('visibilitychange', function () {
     cancelHomeHold(); heldKeys = {};
-    if (document.hidden) { pauseRotation(); clearTimeout(clockTimer); }
+    if (document.hidden) { release(); pauseRotation(); clearTimeout(clockTimer); }
     else resumeUI();
   });
   /* Keep input discovery separate from the launcher/native-handoff lifecycle. */

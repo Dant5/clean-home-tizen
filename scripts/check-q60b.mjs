@@ -33,7 +33,7 @@ try {
         getCurrentApplication() { return { appInfo: { id: 'D5Q60BHome.CleanHome' }, hide() { window.__calls.push(['hide']); } }; }
       },
       systeminfo: { getPropertyValue(key, ok, fail) { window.__sourceReads++; if (window.__deferSources) window.__sourceCallbacks.push([ok, fail]); else ok(window.__sourceInfo); } },
-      tvwindow: { setSource(source, ok) { window.__calls.push(['source', source.type, source.number]); ok(); } }
+      tvwindow: { setSource(source, ok) { window.__calls.push(['source', source.type, source.number]); if (window.__deferSource) window.__pendingSource = ok; else ok(); } }
     };
     if (!sessionStorage.getItem('seeded')) {
       localStorage.setItem('cleanhome.home.v1', JSON.stringify({ home: ['youtube','nuvio','spotify','moonlight'], dailyBing: false })); sessionStorage.setItem('seeded', 'yes');
@@ -83,6 +83,15 @@ try {
   check('Real input numbers and connection status shown', /HDMI 2.*Connected/.test(await page.$eval('#stage', e => e.innerText)));
   await page.keyboard.press('ArrowDown'); await page.keyboard.press('Enter');
   check('Remote selects HDMI 2 and hides launcher', await page.evaluate(() => __calls.some(c => c[0] === 'source' && c[2] === 2) && __calls.some(c => c[0] === 'hide')));
+  await page.evaluate(() => { __deferSource = true; __calls = []; });
+  await page.keyboard.press('Enter'); await page.waitForFunction(() => !!window.__pendingSource);
+  await back(); await page.evaluate(() => { __pendingSource(); __pendingSource = null; });
+  check('Back cancels late input handoff without hiding or reopening a panel', await page.evaluate(() => !__calls.some(c => c[0] === 'hide') && ShoreQA.state().view === 'appearance'));
+  await act('samsung.inputs'); await page.waitForFunction(() => ShoreQA.state().view === 'devicepanel');
+  await page.keyboard.press('Enter'); await page.waitForFunction(() => !!window.__pendingSource);
+  await page.evaluate(() => { window.dispatchEvent(new Event('blur')); __pendingSource(); __pendingSource = null; });
+  check('Blur cancels late input handoff without stealing focus', await page.evaluate(() => !__calls.some(c => c[0] === 'hide')));
+  await page.evaluate(() => { __deferSource = false; window.dispatchEvent(new Event('focus')); });
   await back(); await act('samsung.home'); await page.waitForTimeout(90);
   check('Samsung Home explicit escape uses installed ID', await page.evaluate(() => __calls[__calls.length - 1][1] === 'com.samsung.tv.csfs'));
   await act('samsung.inputs'); await page.waitForFunction(() => ShoreQA.state().view === 'devicepanel');

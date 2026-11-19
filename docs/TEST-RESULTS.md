@@ -1,3 +1,11 @@
+# Unreleased — input-switch lifecycle regression
+
+The adapter suite passes **28 tests** and the Q60B browser integration passes **44 checks each** in current Chromium 156 and Chromium 85. New cases verify one total discovery/switch deadline, cancellation before discovery, late success after timeout, superseding selection, wrong-source response, synchronous blur during successful handoff, hide failure, and actual UI Back/blur cancellation. Full source regressions pass in both engines; all **134 Python tests** remain green.
+
+The actual unsigned widget (`e1b1008056f2437bb0b7afa5aa8dae31e15cc7c478a463186cf2505c2674b7c5`) passes current/85 package/report checks and **44 checks per engine** in Chromium 63, 69, 76, 85, 94, 108, 120 and 130. Appearance, preferences, application identity and native helpers are unchanged. No new polling, service, dependency or migration is introduced.
+
+These tests mock the public Samsung boundary. No updated widget, input switch, Home reassignment or root component was deployed to a TV. The physical HDMI/CEC/audio and cancellation checks in [the upstream review](UPSTREAM-RELIABILITY-REVIEW.md) remain pending separate installation approval. An input command already accepted by Samsung cannot be undone by ignoring its callback. Earlier validation below keeps its original scope.
+
 # 1.4.3 — cross-model setup diagnostics
 
 Check TV now runs settings-read-only compatibility checks before applying the Home-write profile guard. An unlisted Samsung model can review, save and explicitly send its result. Independent native getters continue after missing-library, missing-symbol or access failures; dependent checks are marked skipped. Only the inspection assembly is staged in diagnostic mode, and root execution is refused. Home writes and original-value queries retain their exact model/firmware/UID guards.
@@ -94,6 +102,6 @@ The build requirements are pinned to cryptography 50.0.2, pytest 9.2.0, lxml 6.1
 
 ## Input-list foreground refresh (unreleased)
 
-The focused Q60B integration suite passes **53 checks** in current Chromium and Chromium 85 with mock Samsung APIs. It covers connection changes, reordered/removed inputs, Back focus, navigation during discovery, duplicate foreground events, unchanged DOM, failed and empty discovery, starting another action, and stale callbacks after blur/hiding/Back. The existing actual-widget eight-engine harness now includes nine input-refresh checks. Hosted results and the exact artifact are attached to the corresponding PR; no TV was contacted or updated.
+Before stacking on PR #21, the focused Q60B integration suite passed **53 checks** in current Chromium and Chromium 85 with mock Samsung APIs. It covers connection changes, reordered/removed inputs, Back focus, navigation during discovery, duplicate foreground events, unchanged DOM, failed and empty discovery, starting another action, and stale callbacks after blur/hiding/Back. The existing actual-widget eight-engine harness now includes nine input-refresh checks. Hosted results and the exact artifact are attached to the corresponding PR; no TV was contacted or updated.
 
-The public 1.3.9 hardware evidence above remains the installed baseline. Physical Q60B resume/source/CEC/audio checks for this change are pending a separately approved same-identity update. See [input refresh](INPUT-REFRESH.md) for cost, upstream comparison and rollback. DNS/privacy work and the late native-handoff fix remain separate PRs.
+The public 1.3.9 hardware evidence above remains the installed baseline. Physical Q60B resume/source/CEC/audio checks for this change are pending a separately approved same-identity update. See [input refresh](INPUT-REFRESH.md) for cost, upstream comparison and rollback. DNS/privacy work remains a separate PR. The input refresh follow-up is stacked on the late native-handoff fix; hosted checks qualify the combined head.
