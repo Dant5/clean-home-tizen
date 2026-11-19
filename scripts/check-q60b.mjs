@@ -12,7 +12,8 @@ try {
   await page.route('https://**/*', route => route.abort());
   await page.route('**/$WEBAPIS/webapis/webapis.js', route => route.fulfill({ body: '' }));
   await page.addInitScript(() => {
-    window.__calls = []; window.__failLaunch = false;
+    window.__calls = []; window.__failLaunch = false; window.__sourceReads = 0; window.__sourceCallbacks = [];
+    window.__sourceInfo = { connected: [{ type: 'HDMI', number: 2 }], disconnected: [{ type: 'HDMI', number: 1 }] };
     window.__catalog = [
       { id: 'ActualYT01.Video', name: 'YouTube', show: true },
       { id: 'MyLegacy01.Custom', name: 'Nuvio Legacy', show: true },
@@ -31,8 +32,8 @@ try {
         launch(id, ok, fail) { window.__calls.push(['launch', id]); setTimeout(() => window.__failLaunch ? fail({ message: 'Permission denied' }) : ok(), 40); },
         getCurrentApplication() { return { appInfo: { id: 'D5Q60BHome.CleanHome' }, hide() { window.__calls.push(['hide']); } }; }
       },
-      systeminfo: { getPropertyValue(key, ok) { ok({ connected: [{ type: 'HDMI', number: 2 }], disconnected: [{ type: 'HDMI', number: 1 }] }); } },
-      tvwindow: { setSource(source, ok) { window.__calls.push(['source', source.type, source.number]); ok(); } }
+      systeminfo: { getPropertyValue(key, ok, fail) { window.__sourceReads++; if (window.__deferSources) window.__sourceCallbacks.push([ok, fail]); else ok(window.__sourceInfo); } },
+      tvwindow: { setSource(source, ok) { window.__calls.push(['source', source.type, source.number]); if (window.__deferSource) window.__pendingSource = ok; else ok(); } }
     };
     if (!sessionStorage.getItem('seeded')) {
       localStorage.setItem('cleanhome.home.v1', JSON.stringify({ home: ['youtube','nuvio','spotify','moonlight'], dailyBing: false })); sessionStorage.setItem('seeded', 'yes');
@@ -82,8 +83,69 @@ try {
   check('Real input numbers and connection status shown', /HDMI 2.*Connected/.test(await page.$eval('#stage', e => e.innerText)));
   await page.keyboard.press('ArrowDown'); await page.keyboard.press('Enter');
   check('Remote selects HDMI 2 and hides launcher', await page.evaluate(() => __calls.some(c => c[0] === 'source' && c[2] === 2) && __calls.some(c => c[0] === 'hide')));
+  await page.evaluate(() => { __deferSource = true; __calls = []; });
+  await page.keyboard.press('Enter'); await page.waitForFunction(() => !!window.__pendingSource);
+  await back(); await page.evaluate(() => { __pendingSource(); __pendingSource = null; });
+  check('Back cancels late input handoff without hiding or reopening a panel', await page.evaluate(() => !__calls.some(c => c[0] === 'hide') && ShoreQA.state().view === 'appearance'));
+  await act('samsung.inputs'); await page.waitForFunction(() => ShoreQA.state().view === 'devicepanel');
+  await page.keyboard.press('Enter'); await page.waitForFunction(() => !!window.__pendingSource);
+  await page.evaluate(() => { window.dispatchEvent(new Event('blur')); __pendingSource(); __pendingSource = null; });
+  check('Blur cancels late input handoff without stealing focus', await page.evaluate(() => !__calls.some(c => c[0] === 'hide')));
+  await page.evaluate(() => { __deferSource = false; window.dispatchEvent(new Event('focus')); });
   await back(); await act('samsung.home'); await page.waitForTimeout(90);
   check('Samsung Home explicit escape uses installed ID', await page.evaluate(() => __calls[__calls.length - 1][1] === 'com.samsung.tv.csfs'));
+  await act('samsung.inputs'); await page.waitForFunction(() => ShoreQA.state().view === 'devicepanel');
+  await page.keyboard.press('ArrowDown');
+  await page.evaluate(() => {
+    __deferSources = true; window.__refreshStart = __sourceReads;
+    window.dispatchEvent(new Event('focus')); document.dispatchEvent(new Event('resume')); window.dispatchEvent(new Event('focus'));
+  });
+  check('Duplicate foreground events share one pending input refresh', await page.evaluate(() => __sourceReads === __refreshStart + 1 && __sourceCallbacks.length === 1));
+  await page.evaluate(() => __sourceCallbacks.shift()[0]({ connected: [{ type: 'HDMI', number: 0 }, { type: 'HDMI', number: 1 }], disconnected: [{ type: 'HDMI', number: 2 }] }));
+  check('Foreground refresh updates connection state while preserving the selected input', await page.$eval('.device-row.is-focus', e => /HDMI 2.*Not connected/.test(e.textContent)));
+  await page.evaluate(() => { window.dispatchEvent(new Event('focus')); window.__sameRow = document.querySelector('.device-row'); __sourceCallbacks.shift()[0]({ connected: [{ type: 'HDMI', number: 0 }, { type: 'HDMI', number: 1 }], disconnected: [{ type: 'HDMI', number: 2 }] }); });
+  check('Unchanged input results do not replace the rendered list', await page.evaluate(() => __sameRow === document.querySelector('.device-row')));
+  await page.evaluate(() => window.dispatchEvent(new Event('focus')));
+  await page.waitForTimeout(45); await page.keyboard.press('ArrowDown');
+  await page.evaluate(() => __sourceCallbacks.shift()[0]({ connected: [{ type: 'HDMI', number: 2 }], disconnected: [] }));
+  check('Back remains selected when input count changes during refresh', await page.$eval('.device-row.is-focus', e => e.textContent === 'Back'));
+  await page.evaluate(() => window.dispatchEvent(new Event('focus')));
+  await page.waitForTimeout(45); await page.keyboard.press('ArrowUp');
+  await page.evaluate(() => __sourceCallbacks.shift()[1]({ message: 'Temporary source service failure' }));
+  check('Refresh failure keeps the last list and current remote focus without a modal', (await state()).view === 'devicepanel' && await page.$eval('.device-row.is-focus', e => /HDMI 2/.test(e.textContent)));
+  await page.evaluate(() => window.dispatchEvent(new Event('focus')));
+  await act('device.0');
+  await page.evaluate(() => __sourceCallbacks.shift()[0]({ connected: [{ type: 'HDMI', number: 9 }], disconnected: [] }));
+  check('Starting an input action invalidates the pending status refresh', await page.$eval('.device-panel', e => /HDMI 2/.test(e.textContent) && !/HDMI 9/.test(e.textContent)));
+  await page.evaluate(() => __sourceCallbacks.shift()[0]({ connected: [{ type: 'HDMI', number: 2 }], disconnected: [] }));
+
+  await page.evaluate(() => window.dispatchEvent(new Event('focus')));
+  await back();
+  await page.evaluate(() => __sourceCallbacks.shift()[0]({ connected: [], disconnected: [] }));
+  check('Late input refresh cannot reopen the panel after Back', (await state()).view === 'appearance');
+  await page.evaluate(() => { __deferSources = false; });
+  await act('samsung.inputs'); await page.waitForFunction(() => ShoreQA.state().view === 'devicepanel');
+  await page.evaluate(() => {
+    __deferSources = true; window.dispatchEvent(new Event('focus')); window.dispatchEvent(new Event('blur')); window.dispatchEvent(new Event('focus'));
+    __sourceCallbacks.pop()[0]({ connected: [{ type: 'HDMI', number: 2 }], disconnected: [] });
+    __sourceCallbacks.shift()[0]({ connected: [{ type: 'HDMI', number: 9 }], disconnected: [] });
+  });
+  check('A pre-blur refresh cannot overwrite newer foreground results', await page.$eval('.device-panel', e => /HDMI 2/.test(e.textContent) && !/HDMI 9/.test(e.textContent)));
+  await page.evaluate(() => {
+    window.dispatchEvent(new Event('focus'));
+    Object.defineProperty(document, 'hidden', { configurable: true, value: true }); document.dispatchEvent(new Event('visibilitychange'));
+    Object.defineProperty(document, 'hidden', { configurable: true, value: false }); document.dispatchEvent(new Event('visibilitychange'));
+    __sourceCallbacks.pop()[0]({ connected: [{ type: 'HDMI', number: 2 }], disconnected: [] });
+    __sourceCallbacks.shift()[0]({ connected: [{ type: 'HDMI', number: 9 }], disconnected: [] });
+    delete document.hidden;
+  });
+  check('A pre-suspend refresh cannot overwrite newer visible results', await page.$eval('.device-panel', e => /HDMI 2/.test(e.textContent) && !/HDMI 9/.test(e.textContent)));
+
+  await page.evaluate(() => { window.dispatchEvent(new Event('focus')); __sourceCallbacks.shift()[0]({ connected: [], disconnected: [] }); });
+  check('All removed inputs leave a usable Back row', await page.$$eval('.device-row', rows => rows.length === 1 && rows[0].textContent === 'Back' && rows[0].classList.contains('is-focus')));
+  await back(); await page.evaluate(() => { __deferSources = false; window.__refreshStart = __sourceReads; window.dispatchEvent(new Event('focus')); document.dispatchEvent(new Event('resume')); });
+  check('Foreground events outside the input panel do not query inputs', await page.evaluate(() => __sourceReads === __refreshStart));
+
   await act('samsung.settings'); await page.waitForTimeout(90);
   check('Samsung Settings explicit action uses installed ID', await page.evaluate(() => __calls[__calls.length - 1][1] === 'org.tizen.menu'));
   await scene('home'); await act('util.samsunghome'); await page.waitForTimeout(90);

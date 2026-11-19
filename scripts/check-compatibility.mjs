@@ -75,6 +75,29 @@ try{
  for(const layout of ['dock','list'])for(const controls of ['icons','both','text'])for(const apps of ['icons','both','text']){await evaluate('ShoreQA.scene("home");ShoreQA.look('+JSON.stringify({layout,controls,apps})+')');await until(()=>evaluate('ShoreQA.ready()'),'appearance');await spacing(layout+' '+controls+' '+apps);}
  await evaluate('ShoreQA.scene("home");ShoreQA.look({layout:"list"})');await until(()=>evaluate('ShoreQA.ready()'),'list');await spacing('List Home');
  check('One visible remote focus target',await evaluate('ShoreQA.where().focusCount===1'));
+ // Exercise resume discovery in the actual widget on every supported browser engine.
+ await evaluate('window.__inputReads=0;window.__inputPending=[];window.__inputDefer=false;tizen.systeminfo={getPropertyValue:function(k,ok,fail){__inputReads++;if(__inputDefer)__inputPending.push([ok,fail]);else ok({connected:[{type:"HDMI",number:2}],disconnected:[{type:"HDMI",number:1}]});}};tizen.tvwindow={setSource:function(){}};ShoreQA.scene("settings")');
+ await action('settings.group.samsung');await action('samsung.inputs');await key(40);
+ await evaluate('window.__inputDefer=true;window.__inputStart=__inputReads;window.dispatchEvent(new Event("focus"));document.dispatchEvent(new Event("resume"));window.dispatchEvent(new Event("focus"))');
+ check('Input foreground events coalesce pending discovery',await evaluate('__inputReads===__inputStart+1&&__inputPending.length===1'));
+ await evaluate('__inputPending.shift()[0]({connected:[{type:"HDMI",number:0},{type:"HDMI",number:1}],disconnected:[{type:"HDMI",number:2}]})');
+ check('Input refresh preserves identity and updates status',await evaluate('/HDMI 2.*Not connected/.test(document.querySelector(".device-row.is-focus").textContent)'));
+ await evaluate('window.dispatchEvent(new Event("focus"));window.__inputRow=document.querySelector(".device-row");__inputPending.shift()[0]({connected:[{type:"HDMI",number:0},{type:"HDMI",number:1}],disconnected:[{type:"HDMI",number:2}]})');
+ check('Unchanged refresh avoids replacing input rows',await evaluate('__inputRow===document.querySelector(".device-row")'));
+ await evaluate('window.dispatchEvent(new Event("focus"))');await key(40);
+ await evaluate('__inputPending.shift()[0]({connected:[{type:"HDMI",number:2}],disconnected:[]})');
+ check('Back stays selected when inputs disappear',await evaluate('document.querySelector(".device-row.is-focus").textContent==="Back"'));
+ await evaluate('window.dispatchEvent(new Event("focus"));window.dispatchEvent(new Event("blur"));window.dispatchEvent(new Event("focus"));__inputPending.pop()[0]({connected:[{type:"HDMI",number:2}],disconnected:[]});__inputPending.shift()[0]({connected:[{type:"HDMI",number:9}],disconnected:[]})');
+ check('Old foreground results cannot replace newer inputs',await evaluate('!/HDMI 9/.test(document.querySelector(".device-panel").textContent)'));
+ await evaluate('window.dispatchEvent(new Event("focus"));__inputPending.shift()[1]({message:"Temporary lookup failure"})');
+ check('Failed refresh keeps input panel usable',await evaluate('ShoreQA.state().view==="devicepanel"&&document.querySelector(".device-row.is-focus").textContent==="Back"'));
+ await evaluate('window.dispatchEvent(new Event("focus"));__inputPending.shift()[0]({connected:[],disconnected:[]})');
+ check('Empty refreshed list retains Back',await evaluate('document.querySelectorAll(".device-row").length===1&&document.querySelector(".device-row.is-focus").textContent==="Back"'));
+ await evaluate('window.dispatchEvent(new Event("focus"))');await key(27);
+ await evaluate('__inputPending.shift()[0]({connected:[{type:"HDMI",number:9}],disconnected:[]})');
+ check('Late discovery cannot reopen a closed input panel',(await state()).view==='appearance');
+ await evaluate('window.__inputStart=__inputReads;window.dispatchEvent(new Event("focus"));document.dispatchEvent(new Event("resume"))');
+ check('Other screens do not perform input discovery',await evaluate('__inputReads===__inputStart'));
  await evaluate('CleanHomeConfig.reportEndpoint="";ShoreQA.scene("settings")');await action('settings.group.samsung');await action('samsung.diagnostics');
  check('TV report opens without sharing',await evaluate('ShoreQA.state().view==="tvreport"&&document.querySelector(".tv-report-qr canvas").hidden'));
  await action('report.1');await until(()=>evaluate('!document.querySelector(".tv-report-qr canvas").hidden'),'locally generated report code');
