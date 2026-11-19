@@ -60,6 +60,8 @@ No apps are removed, reinstalled or updated. There is no rooting, firmware flash
 
 ## For developers
 
+For proposed privacy/optional-feature controls, see [Q60B privacy plan](Q60B-PRIVACY-PLAN.md). It keeps installed-state audits, public API access, on-demand SDK actions and any future root decision separate. No privacy control is deployed by that proposal.
+
 Sources: `tools/home-setup/`, `tools/home-control/` and `tools/home-inspection/`. Build the companion with `python3 scripts/build-home-setup.py --dotnet PATH_TO_DOTNET`. The helper targets the TV’s existing .NET Core 3.1 runtime; never install or upgrade a TV runtime to run it.
 
 The transport adapts [AeroTizen’s](https://github.com/helalaou/AeroTizen) bounded SDK staging, with its MIT notice and pinned source record retained. It does not include AeroTizen’s root providers or watcher installation. Native policies have fake-platform failure and recovery tests; the host has fake-device, identity, snapshot, transport and local-browser request tests. [Test evidence](TEST-RESULTS.md).
