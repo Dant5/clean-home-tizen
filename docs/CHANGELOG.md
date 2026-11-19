@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased — input reliability
+
+- Prevents late input-switch callbacks from hiding Clean Home after timeout, Back, suspend or a newer selection.
+- Bounds the complete input operation and rejects an unexpected selected-input response.
+- Preserves the existing native input handoff, appearance, application identity and preferences.
+
 ## 1.4.3 preview
 
 - Lets other Samsung models run setup diagnostics and send a compatibility report instead of being rejected at the model check.

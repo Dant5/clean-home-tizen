@@ -3,20 +3,20 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
-function harness({ list = [], store = {}, verified = {}, launch, info, infoError = false, sourceError = false, writeError = false, initialNow = 1000000 } = {}) {
+function harness({ list = [], store = {}, verified = {}, launch, info, infoError = false, sourceError = false, writeError = false, initialNow = 1000000, sourceInfo, switchSource, hide } = {}) {
   const timers = new Map(), calls = []; let timerId = 0, now = initialNow, infoCalls = 0;
   const app = {
     getAppsInfo(ok, fail) { infoCalls++; if (info) info(ok, fail); else infoError ? fail({ name: 'SecurityError' }) : ok(list); },
     launch(id, ok, fail) { calls.push(['launch', id]); if (launch) launch(id, ok, fail); else ok(); },
-    getCurrentApplication() { return { hide() { calls.push(['hide']); } }; }
+    getCurrentApplication() { return { hide() { calls.push(['hide']); if (hide) hide(); } }; }
   };
   const context = { console, navigator: { userAgent: 'Chromium/85 QA' },
     Date: { now: () => now },
     setTimeout(fn, delay) { timers.set(++timerId, { fn, at: now + delay }); return timerId; }, clearTimeout(id) { timers.delete(id); },
     localStorage: { getItem(key) { return store[key] || null; }, setItem(key, value) { if (writeError) throw Error('QuotaExceeded'); store[key] = value; } },
     CleanHomeConfig: { timeoutMs: 8000, verifiedAppIds: verified }, tizen: { application: app,
-      systeminfo: { getPropertyValue(key, ok, fail) { assert.equal(key, 'VIDEOSOURCE'); if (sourceError) return fail({ name: 'SecurityError' }); ok({ connected: [{ type: 'HDMI', number: 2 }], disconnected: [{ type: 'HDMI', number: 1 }, { type: 'TV', number: 1 }] }); } },
-      tvwindow: { setSource(source, ok) { calls.push(['source', source.type, source.number]); ok(); } } } };
+      systeminfo: { getPropertyValue(key, ok, fail) { assert.equal(key, 'VIDEOSOURCE'); if (sourceInfo) return sourceInfo(ok, fail); if (sourceError) return fail({ name: 'SecurityError' }); ok({ connected: [{ type: 'HDMI', number: 2 }], disconnected: [{ type: 'HDMI', number: 1 }, { type: 'TV', number: 1 }] }); } },
+      tvwindow: { setSource(source, ok) { calls.push(['source', source.type, source.number]); if (switchSource) return switchSource(source, ok); ok(); } } } };
   context.window = context;
   vm.runInNewContext(fs.readFileSync('app/device.js', 'utf8'), context);
   return { device: context.FrameDevice, calls, store, context, get infoCalls() { return infoCalls; },
@@ -195,4 +195,52 @@ test('malformed asynchronous video-source response is bounded without changing i
   h.context.tizen.systeminfo.getPropertyValue = (key, ok) => { deliver = ok; };
   h.device.sources(e => { error = e; });
   assert.doesNotThrow(() => deliver({ connected: {} })); assert(error); assert.equal(h.calls.length, 0);
+});
+
+// A native callback may arrive after timeout, Back, suspend or a newer selection.
+test('late input completion after timeout never hides the launcher', () => {
+  let complete, calls = 0, error;
+  const h = harness({ switchSource(source, ok) { complete = ok; } });
+  h.device.openSource('HDMI', 2, e => { calls++; error = e; });
+  h.advance(8000); assert.match(error.message, /did not respond/);
+  complete(); assert.equal(calls, 1); assert(!h.calls.some(x => x[0] === 'hide'));
+});
+test('input cancellation before discovery prevents a native switch', () => {
+  let discovered, result;
+  const h = harness({ sourceInfo(ok) { discovered = ok; } });
+  h.device.openSource('HDMI', 2, e => result = e); h.device.cancelSource();
+  discovered({ connected: [{ type: 'HDMI', number: 2 }] });
+  assert.equal(result.cancelled, true); assert.equal(h.calls.length, 0);
+});
+test('a new input selection supersedes an old native completion', () => {
+  const callbacks = []; let first, second;
+  const h = harness({ switchSource(source, ok) { callbacks.push(ok); } });
+  h.device.openSource('HDMI', 1, e => first = e);
+  h.device.openSource('HDMI', 2, e => second = e);
+  callbacks[0](); assert.equal(first.cancelled, true); assert(!h.calls.some(x => x[0] === 'hide'));
+  callbacks[1](); assert.equal(second, null); assert.equal(h.calls.filter(x => x[0] === 'hide').length, 1);
+});
+test('input operation has one total deadline across discovery and switching', () => {
+  let discovery, completion, error;
+  const h = harness({ sourceInfo(ok) { discovery = ok; }, switchSource(source, ok) { completion = ok; } });
+  h.device.openSource('HDMI', 2, e => error = e); h.advance(7000);
+  discovery({ connected: [{ type: 'HDMI', number: 2 }] }); h.advance(1000);
+  assert.match(error.message, /did not respond/); completion(); assert(!h.calls.some(x => x[0] === 'hide'));
+});
+test('mismatched source readback does not hide the launcher', () => {
+  let result; const h = harness({ switchSource(source, ok) { ok({ type: 'HDMI', number: 1 }); } });
+  h.device.openSource('HDMI', 2, e => result = e); assert.match(result.message, /different input/);
+  assert(!h.calls.some(x => x[0] === 'hide'));
+});
+test('handoff can synchronously blur without cancelling success; hide errors are reported', () => {
+  const h = harness({ hide() { h.device.cancelSource(); } }); let result;
+  h.device.openSource('HDMI', 2, e => result = e); assert.equal(result, null);
+  const denied = harness({ hide() { throw Error('Denied'); } });
+  denied.device.openSource('HDMI', 2, e => result = e); assert.match(result.message, /Input selected/);
+});
+test('invalid input identifiers never enumerate or switch', () => {
+  const h = harness({ sourceInfo() { assert.fail('Do not enumerate an invalid target'); } });
+  for (const [type, number] of [['HDMI', -1], ['HDMI', NaN], ['OTHER', 1], ['HDMI', '2']]) {
+    let result; h.device.openSource(type, number, e => result = e); assert(result); assert.equal(h.calls.length, 0);
+  }
 });

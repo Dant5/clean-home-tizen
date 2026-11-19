@@ -159,17 +159,41 @@
       finish(null, result);
     }, function (err) { finish(failure(err, 'Could not read TV inputs.')); }); } catch (err) { finish(failure(err)); }
   }
+  var cancelInput = null;
+  function cancelSource() { if (cancelInput) cancelInput(); }
   function openSource(type, number, done) {
+    cancelSource();
+    var ended = false, timer;
+    function finish(err, handoff) {
+      if (ended) return;
+      ended = true; clearTimeout(timer);
+      if (cancelInput === cancel) cancelInput = null;
+      if (handoff) {
+        /* Settle before hide: its blur event must not cancel a successful handoff. */
+        try { api().getCurrentApplication().hide(); }
+        catch (e) { err = failure(e, 'Input selected; use the remote Source button to display it.'); }
+      }
+      done(err || null);
+    }
+    function cancel() { finish({ message: 'Input change cancelled.', cancelled: true }); }
+    if (!/^(HDMI|TV|AV|COMP)$/.test(type) || typeof number !== 'number' || !isFinite(number) || number < 0 || Math.floor(number) !== number) {
+      finish(failure(null, 'This input is not available.')); return;
+    }
+    timer = setTimeout(function () { finish(failure(null, 'The TV did not respond. Please try again.')); }, window.CleanHomeConfig.timeoutMs || 8000);
+    cancelInput = cancel;
     sources(function (err, list) {
-      if (err) { done(err); return; }
+      if (ended) return;
+      if (err) { finish(err); return; }
       var source = list.filter(function (a) { return a.type === type && a.number === number; })[0];
-      if (!source) { done(failure(null, 'This input is no longer available.')); return; }
-      var finish = bounded(done);
-      try { tizen.tvwindow.setSource({ type: source.type, number: source.number }, function () {
-        /* Hide only this launcher so the selected native input is visible. No persistent TV window. */
-        try { api().getCurrentApplication().hide(); finish(null); }
-        catch (e) { finish(failure(e, 'Input selected; use the remote Source button to display it.')); }
-      }, function (e) { finish(failure(e, 'Could not switch inputs.')); }, 'MAIN'); } catch (e) { finish(failure(e)); }
+      if (!source) { finish(failure(null, 'This input is no longer available.')); return; }
+      try { tizen.tvwindow.setSource({ type: source.type, number: source.number }, function (selected) {
+        if (ended) return;
+        if (selected && (selected.type !== type || selected.number !== number)) {
+          finish(failure(null, 'The TV selected a different input. Please try again.')); return;
+        }
+        /* Keep the reference TV's existing public-API/native-input handoff. */
+        finish(null, true);
+      }, function (e) { if (!ended) finish(failure(e, 'Could not switch inputs.')); }, 'MAIN'); } catch (e) { finish(failure(e)); }
     });
   }
   function diagnostics() {
@@ -178,6 +202,6 @@
     return { appId: SELF, userAgent: navigator.userAgent, model: model, firmware: firmware, applications: raw.slice(), favourites: BRANDS.map(function (brand) { return { name: NAMES[brand], appId: resolve(brand), manual: !!bindings[brand] }; }), capabilities: { application: !!api(), sources: !!(window.tizen && tizen.systeminfo && tizen.tvwindow) } };
   }
   window.FrameDevice = { apps: apps, cachedApps: cachedApps, launch: launch, launchApp: launchApp, home: function (done) { systemScreen('home', done); }, settings: function (done) { systemScreen('settings', done); },
-    sources: sources, openSource: openSource, diagnostics: diagnostics, setBinding: setBinding,
+    sources: sources, openSource: openSource, cancelSource: cancelSource, diagnostics: diagnostics, setBinding: setBinding,
     getBinding: function (brand) { return bindings[brand] || resolve(brand); } };
 }());
