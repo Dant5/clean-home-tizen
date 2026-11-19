@@ -99,6 +99,14 @@ Use the existing Restic/Hubert jobs and exception-only Kuma/host checks. No extr
 - The adapter's `/health` returns JSON `status: UP` only after authenticated AdGuard scope/log/filter checks. It returns 503 on drift/down. Permit health only from the server itself. Enroll this URL in existing host `application_health_urls` under an existing alert category, or a single existing Kuma HTTP check with a meaningful response condition. Verify failure/recovery without sending success notifications. DNS traffic itself must also pass a commissioning probe; API health alone cannot prove UDP/TCP routing.
 - Add the resolver to existing essential-container coverage and the adapter to the existing failed-unit checks. Add the pinned AdGuard release to silent metadata awareness; no auto-updater. Record versions, paths, listeners, measured capacity, recovery evidence and rollback in the local infrastructure register.
 
+## Reference trial results
+
+The owner-approved Q60B/Q930D trial is active on the development server. Final authenticated router readback confirmed exactly the intended two reservations, the original reservation and all global DHCP/DNS fields unchanged. Independently attributed requests from both devices and actual TV blocks were observed. Two other household clients retained their original normal DNS and were rejected by the dedicated resolver; no household-wide DNS change was made. These checks qualify that specific trial, not all network clients or every TV function.
+
+The TV adopted the dedicated resolver as primary but still lists a Google secondary. Hardcoded/encrypted escape paths and actual fallback frequency remain unverified. Keep the dashboard coverage warning; do not infer complete protection from block counts. A future enforcement change requires a separate exact proposal and approval.
+
+The limited adapter, native pause/resume and encrypted off-machine recovery were tested. The newer dashboard widget remains uninstalled. Streaming/DRM, SmartThings, eARC/Q-Symphony, microphone/assistant state, update connectivity and seven days of actual storage growth remain commissioning checks. No root, app removal, firmware change or Home reassignment occurred. Private identities, query logs and recovery evidence stay outside Git.
+
 ## Client verification and bypass assessment
 
 | Test | Required evidence |
