@@ -547,6 +547,7 @@
   }
   function perform(title, run) {
     if (busy) return;
+    cancelInputRefresh();
     busy = true; var generation = ++launchGeneration; busyTimer = setTimeout(release, 18000);
     run(function (err) {
       if (generation !== launchGeneration) return false; // A resume/new interaction superseded this request.
@@ -1139,6 +1140,29 @@
         return { action: 'binding.' + brand, label: names[brand], description: FrameDevice.getBinding(brand) || 'Not discovered; enter a verified ID' };
       }).concat([{ action: 'bindings.refresh', label: 'Refresh installed apps' }]) }];
   }
+  var inputRefresh = null;
+  function cancelInputRefresh() { inputRefresh = null; }
+  function inputItems(sources) {
+    return sources.map(function (source) { return { key: source.type + ':' + source.number, label: source.name + (source.connected ? ' · Connected' : ' · Not connected'), run: function () { perform(source.name, function (finish) { FrameDevice.openSource(source.type, source.number, finish); }); } }; });
+  }
+  function refreshInputs() {
+    var panel = top();
+    if (!panel.inputPanel || document.hidden || busy || inputRefresh) return;
+    var request = inputRefresh = {};
+    FrameDevice.sources(function (err, sources) {
+      if (inputRefresh !== request) return;
+      inputRefresh = null;
+      if (err || top() !== panel || document.hidden || busy) return;
+      var items = inputItems(sources), index = panel.f.i, back = index === panel.items.length;
+      var selected = !back && panel.items[index] ? panel.items[index].key : null;
+      var unchanged = items.length === panel.items.length && items.every(function (item, i) { return item.key === panel.items[i].key && item.label === panel.items[i].label; });
+      if (unchanged) return;
+      panel.items = items;
+      panel.f.i = back ? items.length : Math.min(index, items.length);
+      items.some(function (item, i) { if (item.key !== selected) return false; panel.f.i = i; return true; });
+      render();
+    });
+  }
   function devicePanel(title, items) { push({ id: 'devicepanel', title: title, items: items, f: { i: 0 } }); render(); }
   function openInputs() {
     var origin = top();
@@ -1146,7 +1170,8 @@
       if (top() !== origin) { done(null); return; }
       if (!done(err) || err) return;
       if (!sources.length) { message('Inputs', 'No inputs reported by this TV. Use the remote Source button.'); render(); return; }
-      devicePanel('HDMI / inputs', sources.map(function (source) { return { label: source.name + (source.connected ? ' · Connected' : ' · Not connected'), run: function () { perform(source.name, function (finish) { FrameDevice.openSource(source.type, source.number, finish); }); } }; }));
+      devicePanel('HDMI / inputs', inputItems(sources));
+      top().inputPanel = true;
     }); });
   }
   function showDiagnostics() {
@@ -2572,6 +2597,7 @@
   window.addEventListener('focus', function () { release(); focusStage(); after(); updateClock(); });
   /* An explicit app-control relaunch returns to the dock. */
   function resetToMain(reason) {
+    cancelInputRefresh();
     var from = top() ? top().id : '?';
     try {
       if (bindingEntry) bindingEntry.close();
@@ -2591,6 +2617,11 @@
     if (document.hidden) { release(); pauseRotation(); clearTimeout(clockTimer); }
     else resumeUI();
   });
+  /* Keep input discovery separate from the launcher/native-handoff lifecycle. */
+  window.addEventListener('blur', cancelInputRefresh);
+  window.addEventListener('focus', refreshInputs);
+  document.addEventListener('resume', refreshInputs);
+  document.addEventListener('visibilitychange', function () { if (document.hidden) cancelInputRefresh(); else refreshInputs(); });
   window.addEventListener('resize', fit);
  
   /* Readable browser checks use the real state and actions, without fake outcomes. */
