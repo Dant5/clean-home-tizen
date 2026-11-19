@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Adds an optional local DNS protection companion for the Q60B and Q930D, using AdGuard Home and conservative maintained lists.
+- Adds Settings → Privacy → DNS Protection: combined/separate real device statistics, blocked domains, recent requests, a weekly chart, enable/disable and timed pauses.
+- Adapts Veil’s privacy-panel composition independently to the existing Clean Home interface.
+- Keeps administrator credentials on the server; generic downloads remain disconnected until privately configured.
+- Requires approved per-device network setup and hardware qualification; it does not change an existing TV installation.
+
 ## 1.4.3 preview
 
 - Lets other Samsung models run setup diagnostics and send a compatibility report instead of being rejected at the model check.

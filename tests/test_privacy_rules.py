@@ -49,3 +49,11 @@ def test_ipv6_hosts_are_checked_without_confusing_css_pseudo_elements():
     assert content_findings('app/device-config.js', host) == ['literal network address']
     assert not content_findings('tests/fixture.py', '2001:db8::7')
     assert not content_findings('app/style.css', '.tile::before .tile::after')
+
+
+def test_dns_bootstrap_exception_is_narrow():
+    text = '9.9.9.9 149.112.112.112'
+    assert not content_findings('tools/dns-protection/prepare.py', text)
+    assert 'literal network address' in content_findings('app/device-config.js', text)
+    assert 'literal network address' in content_findings('tools/other.py', text)
+    assert 'literal network address' in content_findings('tools/dns-protection/prepare.py', '.'.join(map(str, [10, 25, 30, 40])))

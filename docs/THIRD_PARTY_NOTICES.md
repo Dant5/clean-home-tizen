@@ -76,3 +76,11 @@ The displayed Moonlight monochrome SVG derives from the official Moonlight Qt sy
 ## Optional native setup transport
 
 The optional Home Setup companion adapts AeroTizen's SDK staging helper at commit `64574228cee973095af590cd9ff387467e84d3b7`. Its original MIT licence is retained at `vendor/aerotizen/LICENSE`; provenance and changes are recorded in `vendor/aerotizen/sdk-SOURCE.json`. Root providers and watcher installation are not included. This code is separate from the TV widget.
+
+## Optional DNS protection companion
+
+The separately run AdGuard Home component is GPL-3.0 licensed by its upstream contributors: https://github.com/AdguardTeam/AdGuardHome. Its image is referenced by pinned digest, not incorporated into the widget. HaGeZi Light and Samsung DNS subscriptions are GPL-3.0 upstream resources with their own notices: https://github.com/hagezi/dns-blocklists. They are downloaded independently by the resolver, not bundled or relabelled as Clean Home lists. Preserve their notices in service backups/redistribution. The Clean Home bridge/UI remain this repository's MIT-licensed code.
+
+## Privacy dashboard visual reference
+
+The privacy panel and pill were visually informed by [Veil](https://github.com/trbrnt/Veil), GPL-3.0, reference commit `9880a3f861b1e5deb35c3c43dc647e179a159f38`. Clean Home's DOM/CSS/JavaScript implementation and local AdGuard adapter were independently authored; no Veil Kotlin source, logos, screenshots, API credentials or Android permission mechanisms are included in this repository's widget. See [the reference and data-boundary notes](DNS-PROTECTION.md#visual-reference).

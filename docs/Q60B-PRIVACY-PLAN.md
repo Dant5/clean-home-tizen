@@ -1,6 +1,6 @@
 # Q60B privacy controls: implementation proposal
 
-**Status: research and design. No privacy/debloat controls have been deployed.** Keep Clean Home as the launcher, with its existing appearance, saved apps, Samsung Home escape and native Home/startup assignment. This proposal is specific to QA55Q60BAWXXY / T-NKLBUABC-1720.7 / Tizen 6.5; broader widget compatibility is separate.
+**Status: the optional DNS companion/dashboard is implemented for local testing; no TV privacy controls or live DNS routing have been deployed.** Keep Clean Home as the launcher, with its existing appearance, saved apps, Samsung Home escape and native Home/startup assignment. This proposal is specific to QA55Q60BAWXXY / T-NKLBUABC-1720.7 / Tizen 6.5; broader widget compatibility is separate.
 
 Before any update, identify the installed app and resource hashes. Repository version labels, a stable tag and the latest release can describe three different builds. Future releases should expose a non-sensitive source/build identity alongside the app version so the installed build can be identified without guessing. Preserve the actual installed signed widget, matching author identity, current preferences and device-bound native originals. A launcher/certificate backup does not contain other apps' private accounts or pairings. [Update/recovery boundary](BING-DAILY.md#later-installation-and-rollback-not-performed).
 
@@ -14,9 +14,13 @@ The private legacy repository's Vetro/root/reaper records describe UA43DU7660KLX
 
 Owner inventories, consent states, network addresses, signed packages, profiles and raw diagnostics stay outside Git. Public reporting remains opt-in and does not acquire an app inventory, advertising identifier or raw native log.
 
-## Controls in the existing interface
+## Current implementation
 
-Add **Settings → Samsung → Privacy & optional features**, using the current rows, typography, focus and Back behavior. No new launcher, dashboard or always-running watcher.
+The owner selected server-side DNS protection for only the Q60B and Q930D with **Settings → Privacy → DNS Protection**. [Implementation, deployment approval boundary and recovery](DNS-PROTECTION.md). It uses AdGuard Home and a limited local statistics/control adapter; the launcher never gets administrator credentials. No TV install, DHCP/DNS change, root or package/service modification is part of local testing.
+
+## Deferred Samsung consent controls
+
+The following remain research opportunities, outside the DNS implementation. Reuse the existing settings interface if they are later approved; no new launcher or TV watcher.
 
 | Row | Initial behavior | Evidence shown |
 |---|---|---|

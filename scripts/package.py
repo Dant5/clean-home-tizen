@@ -15,11 +15,12 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--cert-dir', type=Path, help='External owner-only directory containing author.p12, distributor.p12, password.txt')
     parser.add_argument('--bindings-json', type=Path, help='Private, inventory-verified mapping of the four favourite names to IDs')
+    parser.add_argument('--dns-profile-json', type=Path, help='Private endpoint and limited TV token; never AdGuard admin credentials')
     args = parser.parse_args()
     out = ROOT / 'dist'
     out.mkdir(exist_ok=True)
     target = out / 'CleanHome-Q60B-unsigned.wgt'
-    overlay = None
+    overlay = {}
     bindings = None
     if args.bindings_json:
         bindings = json.loads(args.bindings_json.read_text())
@@ -28,6 +29,12 @@ def main():
             parser.error('Bindings must contain only the four favourite names and valid application IDs.')
         base = (ROOT / 'app/device-config.js').read_text()
         overlay = {'device-config.js': (base + '\nwindow.CleanHomeConfig.verifiedAppIds = ' + json.dumps(bindings, sort_keys=True) + ';\n').encode()}
+    if args.dns_profile_json:
+        from dns_profile import runtime_overlay
+        try:
+            overlay = runtime_overlay(args.dns_profile_json, overlay)
+        except ValueError as error:
+            parser.error(str(error))
     write_widget_archive(target, include_private=False, runtime_overlay=overlay)
     with zipfile.ZipFile(target, 'a', zipfile.ZIP_DEFLATED) as package:
         for source, name in [('LICENSE', 'LICENSE'), ('docs/THIRD_PARTY_NOTICES.md', 'THIRD_PARTY_NOTICES.md'), ('vendor/aerotizen/LICENSE', 'AeroTizen-LICENSE')]:
@@ -55,7 +62,7 @@ def main():
         assert package.testzip() is None
         assert len(package.namelist()) == len(set(package.namelist()))
         identity = XML.fromstring(package.read('config.xml')).find('{http://tizen.org/ns/widgets}application')
-    report = {'file': target.name, 'bytes': target.stat().st_size, 'sha256': hashlib.sha256(target.read_bytes()).hexdigest(), 'signed': bool(args.cert_dir), 'application_id': identity.get('id'), 'minimum_tizen': identity.get('required_version'), 'tv_contacted': False, 'verified_favourite_ids': bindings}
+    report = {'file': target.name, 'bytes': target.stat().st_size, 'sha256': hashlib.sha256(target.read_bytes()).hexdigest(), 'signed': bool(args.cert_dir), 'application_id': identity.get('id'), 'minimum_tizen': identity.get('required_version'), 'tv_contacted': False, 'private_dns_connection': bool(args.dns_profile_json), 'verified_favourite_ids': bindings}
     (out / (target.stem + '.json')).write_text(json.dumps(report, indent=2) + '\n')
     (out / (target.name + '.sha256')).write_text(report['sha256'] + '  ' + target.name + '\n')
     print(json.dumps(report, indent=2))

@@ -968,6 +968,7 @@
       { id: 'focus', label: 'Focus', value: VALUE_NAMES[S.c.focus] + (materialApplies() ? ', ' + VALUE_NAMES[S.c.material] : '') },
       { id: 'editor', label: 'Apps on Home', value: n + (n === 1 ? ' app' : ' apps') },
       { id: 'samsung', label: 'Samsung', value: 'Home, TV settings and inputs' },
+      { id: 'privacy', label: 'Privacy', value: 'DNS protection for this TV' },
       { id: 'bindings', label: 'Application IDs', value: 'Discovery and verified IDs' }];
   }
   function settingsIds() { return settingsRows().map(function (r) { return r.id; }); }
@@ -985,7 +986,8 @@
     point: function (t, z, i, id) { if (z === 'row' && id) { t.f.id = id; this.key(t, 'ok'); } }
   };
   function settingsOk(id) {
-    if (id === 'editor') openEditor('settings');
+    if (id === 'privacy') privacy.open();
+    else if (id === 'editor') openEditor('settings');
     else openAppearance(id);
   }
   var DETAIL_NAMES = { background: 'Background', layout: 'Layout', typography: 'Typography', focus: 'Focus', rotation: 'Rotation', samsung: 'Samsung', bindings: 'Application IDs' };
@@ -1284,7 +1286,7 @@
     if (!adaptive && shown.dockClockInk) stage.style.setProperty('--dock-clock-ink', shown.dockClockInk);
     else stage.style.removeProperty('--dock-clock-ink');
     applyHomeFont();
-    if (!sheet) renderHome(t);
+    if (!sheet || t.id === 'dns') renderHome(t);
     renderSheet(t, sheet);
     renderAppearance(t);
     renderFocusStatus(t);
@@ -2660,6 +2662,7 @@
     }).join('');
     var focused = slots.items.querySelector('.is-focus'); if (focused) focused.scrollIntoView({ block: 'nearest' });
   };
+  var privacy = FramePrivacy.install({ views: V, frames: FRAMES, fills: FILLS, top: top, push: push, pop: pop, render: render });
   /* ---------- Start ---------- */
   cueL.innerHTML = icon('left'); cueR.innerHTML = icon('right');
   initialise();
