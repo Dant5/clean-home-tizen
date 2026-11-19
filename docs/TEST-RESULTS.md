@@ -90,3 +90,10 @@ Documentation and privacy-check changes leave the unsigned widget byte-identical
 ## Build dependency audit
 
 The build requirements are pinned to cryptography 50.0.2, pytest 9.2.0, lxml 6.1.3 and Pillow 13.0.0. The updated environment passes all 63 Python tests. npm audit and pip-audit report no known vulnerabilities in the audited dependencies. These tools are not shipped in the TV widget.
+
+
+## Input-list foreground refresh (unreleased)
+
+The focused Q60B integration suite passes **53 checks** in current Chromium and Chromium 85 with mock Samsung APIs. It covers connection changes, reordered/removed inputs, Back focus, navigation during discovery, duplicate foreground events, unchanged DOM, failed and empty discovery, starting another action, and stale callbacks after blur/hiding/Back. The existing actual-widget eight-engine harness now includes nine input-refresh checks. Hosted results and the exact artifact are attached to the corresponding PR; no TV was contacted or updated.
+
+The public 1.3.9 hardware evidence above remains the installed baseline. Physical Q60B resume/source/CEC/audio checks for this change are pending a separately approved same-identity update. See [input refresh](INPUT-REFRESH.md) for cost, upstream comparison and rollback. DNS/privacy work and the late native-handoff fix remain separate PRs.

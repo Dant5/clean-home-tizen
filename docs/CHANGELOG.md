@@ -2,6 +2,8 @@
 
 ## 1.4.3 preview
 
+- Refreshes an already-open HDMI list on foreground return, preserving input/Back focus and ignoring stale discovery results. No polling or layout change.
+
 - Lets other Samsung models run setup diagnostics and send a compatibility report instead of being rejected at the model check.
 - Checks connection, native runtime, account/architecture and each Home/startup getter independently, with fixed failure codes and skipped stages.
 - Adds review, one-button send, local save, duplicate suppression and setup/Undo outcome reporting. No raw settings, app IDs, addresses or device identifiers are uploaded.
