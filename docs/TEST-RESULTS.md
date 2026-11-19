@@ -1,3 +1,11 @@
+# Unreleased — input-switch lifecycle regression
+
+The adapter suite passes **28 tests** and the Q60B browser integration passes **44 checks each** in current Chromium 156 and Chromium 85. New cases verify one total discovery/switch deadline, cancellation before discovery, late success after timeout, superseding selection, wrong-source response, synchronous blur during successful handoff, hide failure, and actual UI Back/blur cancellation. Full source regressions pass in both engines; all **134 Python tests** remain green.
+
+The actual unsigned widget (`e1b1008056f2437bb0b7afa5aa8dae31e15cc7c478a463186cf2505c2674b7c5`) passes current/85 package/report checks and **44 checks per engine** in Chromium 63, 69, 76, 85, 94, 108, 120 and 130. Appearance, preferences, application identity and native helpers are unchanged. No new polling, service, dependency or migration is introduced.
+
+These tests mock the public Samsung boundary. No updated widget, input switch, Home reassignment or root component was deployed to a TV. The physical HDMI/CEC/audio and cancellation checks in [the upstream review](UPSTREAM-RELIABILITY-REVIEW.md) remain pending separate installation approval. An input command already accepted by Samsung cannot be undone by ignoring its callback. Earlier validation below keeps its original scope.
+
 # 1.4.3 — cross-model setup diagnostics
 
 Check TV now runs settings-read-only compatibility checks before applying the Home-write profile guard. An unlisted Samsung model can review, save and explicitly send its result. Independent native getters continue after missing-library, missing-symbol or access failures; dependent checks are marked skipped. Only the inspection assembly is staged in diagnostic mode, and root execution is refused. Home writes and original-value queries retain their exact model/firmware/UID guards.
