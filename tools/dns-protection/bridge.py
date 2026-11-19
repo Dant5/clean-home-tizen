@@ -2,11 +2,11 @@
 from __future__ import annotations
 
 import argparse
-import base64
 from collections import Counter
 from datetime import datetime, timedelta, timezone
 import hmac
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from http.cookiejar import CookieJar
 import ipaddress
 import json
 from pathlib import Path
@@ -16,7 +16,7 @@ import threading
 import time
 from urllib.error import HTTPError
 from urllib.parse import urlencode, urlsplit
-from urllib.request import build_opener, HTTPRedirectHandler, ProxyHandler, Request
+from urllib.request import build_opener, HTTPRedirectHandler, HTTPCookieProcessor, ProxyHandler, Request
 from zoneinfo import ZoneInfo
 
 MAX_RECORDS = 20000
@@ -76,23 +76,48 @@ def load_config(path):
 class AdGuard:
     def __init__(self, cfg):
         self.base = cfg['agh_url'] + '/control'
-        credential = (cfg['agh_user'] + ':' + cfg['agh_password']).encode()
-        self.auth = 'Basic ' + base64.b64encode(credential).decode()
-        self.opener = build_opener(NoRedirect(), ProxyHandler({}))
+        self.credentials = {'name': cfg['agh_user'], 'password': cfg['agh_password']}
+        self.cookies = CookieJar()  # Memory only, never exposed to the TV or written to disk.
+        self.auth_lock = threading.Lock()
+        self.opener = build_opener(NoRedirect(), ProxyHandler({}), HTTPCookieProcessor(self.cookies))
+
+    def login(self, expired=False):
+        with self.auth_lock:
+            if not expired and any(not cookie.is_expired() for cookie in self.cookies):
+                return
+            self.cookies.clear()
+            request = Request(self.base + '/login', data=json.dumps(self.credentials).encode(),
+                              headers={'Content-Type': 'application/json'})
+            with self.opener.open(request, timeout=4) as response:
+                if len(response.read(4097)) > 4096:
+                    raise Unavailable('Resolver unavailable')
+            if not any(not cookie.is_expired() for cookie in self.cookies):
+                raise Unavailable('Resolver unavailable')
 
     def call(self, path, data=None):
         # Paths are constants chosen below, never provided by an HTTP caller.
-        request = Request(self.base + path, data=None if data is None else json.dumps(data).encode(),
-                          headers={'Authorization': self.auth, 'Content-Type': 'application/json'})
+        # Native sessions avoid a costly password hash for every scope/statistics read.
         try:
-            with self.opener.open(request, timeout=4) as response:
-                raw = response.read(2_000_001)
-                if len(raw) > 2_000_000:
-                    raise Unavailable('Response too large')
-                value = {} if data is not None else json.loads(raw) if raw.strip() else {}
-                if not isinstance(value, dict):
-                    raise Unavailable('Invalid resolver response')
-                return value
+            self.login()
+            for attempt in range(2 if data is None else 1):
+                request = Request(self.base + path, data=None if data is None else json.dumps(data).encode(),
+                                  headers={'Content-Type': 'application/json'})
+                try:
+                    with self.opener.open(request, timeout=4) as response:
+                        raw = response.read(2_000_001)
+                        if len(raw) > 2_000_000:
+                            raise Unavailable('Response too large')
+                        value = {} if data is not None else json.loads(raw) if raw.strip() else {}
+                        if not isinstance(value, dict):
+                            raise Unavailable('Invalid resolver response')
+                        return value
+                except HTTPError as exc:
+                    # Renew an expired session only for reads. Never replay a setter.
+                    if exc.code == 401 and data is None and attempt == 0:
+                        exc.close()
+                        self.login(expired=True)
+                        continue
+                    raise
         except (OSError, ValueError, HTTPError) as exc:
             raise Unavailable('Resolver unavailable') from exc
 
