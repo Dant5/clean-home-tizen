@@ -14,10 +14,11 @@ def row(at, client='tv'):
 
 def test_enrol_restart_attribution_and_no_double_count(tmp_path):
     p = tmp_path/'state'
-    assert m.update(p, [row(NOW-timedelta(seconds=1))], IDS, NOW, True)['blocked'] == 0
-    rows = [row(NOW+timedelta(seconds=1)), row(NOW+timedelta(seconds=2), 'soundbar')]
+    history = row(NOW-timedelta(seconds=1))
+    assert m.update(p, [history], IDS, NOW, True)['blocked'] == 1
+    rows = [history, row(NOW+timedelta(seconds=1)), row(NOW+timedelta(seconds=2), 'soundbar')]
     out = m.update(p, rows, IDS, NOW+timedelta(seconds=3), True)
-    assert out['blocked'] == 2 and out['devices'] == {'tv': 1, 'soundbar': 1}
+    assert out['blocked'] == 3 and out['devices'] == {'tv': 2, 'soundbar': 1}
     before = p.stat().st_mtime_ns
     assert m.update(p, rows, IDS, NOW+timedelta(seconds=4), True) == out
     assert p.stat().st_mtime_ns == before, 'Unchanged refresh does not rewrite the counter'
@@ -51,3 +52,21 @@ def test_log_reset_with_same_count_is_not_claimed_complete(tmp_path):
     m.update(p, [row(NOW+timedelta(seconds=1))], IDS, NOW+timedelta(seconds=2), True)
     out=m.update(p, [row(NOW+timedelta(seconds=3))], IDS, NOW+timedelta(seconds=4), True)
     assert out['blocked']==1 and out['complete'] is False
+
+
+def test_backfill_is_sum_of_retained_days_without_double_counting(tmp_path):
+    p=tmp_path/'state';m.update(p, [], IDS, NOW, True)
+    recent=row(NOW+timedelta(seconds=1));m.update(p, [recent], IDS, NOW+timedelta(seconds=2), True)
+    old=row(NOW-timedelta(days=1));sound=row(NOW-timedelta(hours=1), 'soundbar')
+    rows=[old,sound,recent]
+    out=m.update(p, rows, IDS, NOW+timedelta(seconds=3), True, backfill=True)
+    assert out['blocked']==3 and out['devices']=={'tv':2,'soundbar':1}
+    assert out['since']==old['time'] and out['complete'] is False
+    assert m.update(p, rows, IDS, NOW+timedelta(seconds=4), True, backfill=True)==out
+
+
+def test_initial_retained_history_seeding_does_not_count_other_devices(tmp_path):
+    p=tmp_path/'state';other=row(NOW-timedelta(days=2));other['client']='192.0.2.99'
+    out=m.update(p,[row(NOW-timedelta(days=1)),other],IDS,NOW,True)
+    assert out['blocked']==1 and out['complete'] is False
+    assert out['since']==(NOW-timedelta(days=1)).isoformat()

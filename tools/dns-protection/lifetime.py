@@ -12,20 +12,30 @@ import tempfile
 
 BLOCKED_REASONS = {'FilteredBlackList', 'FilteredSafeBrowsing', 'FilteredParental', 'FilteredBlockedService', 'FilteredInvalid', 'FilteredSafeSearch'}
 
-def update(path, rows, identities, now, complete):
+def update(path, rows, identities, now, complete, backfill=False):
     p = Path(path)
     if p.parent.is_symlink() or p.parent.stat().st_mode & 0o022:
         raise ValueError('Unsafe lifetime directory')
     fd = os.open(p.with_suffix('.lock'), os.O_WRONLY | os.O_CREAT | os.O_NOFOLLOW, 0o600)
     with os.fdopen(fd, 'w') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        return _update(path, rows, identities, now, complete)
+        return _update(path, rows, identities, now, complete, backfill)
 
 
-def _update(path, rows, identities, now, complete):
+def _update(path, rows, identities, now, complete, backfill):
     p = Path(path)
     if p.is_symlink() or p.parent.is_symlink() or p.parent.stat().st_mode & 0o022:
         raise ValueError('Unsafe lifetime storage')
+    earliest = now
+    for row in rows:
+        if not isinstance(row, dict) or row.get('client') not in identities.values():
+            continue
+        try:
+            at = datetime.fromisoformat(row['time'].replace('Z', '+00:00'))
+            if at.tzinfo is not None and at <= now:
+                earliest = min(earliest, at)
+        except (KeyError, ValueError, TypeError, AttributeError):
+            continue
     original = None
     if p.exists():
         if p.stat().st_mode & 0o077 or p.stat().st_size > 32768:
@@ -51,7 +61,14 @@ def _update(path, rows, identities, now, complete):
     else:
         state = {'schema': 1, 'since': now.isoformat(), 'checkedAt': now.isoformat(),
                  'lastBlockedAt': None, 'identities': identities, 'totals': {k: 0 for k in identities}, 'days': {}, 'complete': True}
-        since = now
+        since = earliest
+        state['since'] = since.isoformat()
+        if earliest < now:
+            state['complete'] = False  # Older history before the retained log is unverified.
+    if backfill and earliest < since:
+        since = earliest
+        state['since'] = since.isoformat()
+        state['complete'] = False
     state['complete'] = state['complete'] and complete
     buckets = {}
     reverse = {v: k for k, v in identities.items()}
