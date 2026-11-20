@@ -91,9 +91,8 @@ def test_pause_is_native_and_readback_checked():
     api = API(); p = bridge.Protection(CFG, api)
     assert p.change('pause15') == {'accepted': True}
     assert api.writes == [('/protection', {'enabled': False, 'duration': 900000})]
+    p.change('enable')  # Resuming protection is allowed immediately after Pause.
     with pytest.raises(bridge.Unavailable): p.change('enable')
-    p.last_action = 0
-    p.change('enable')
     assert api.responses['/dns_info']['protection_enabled']
     with pytest.raises(ValueError): p.change('install')
 
@@ -353,3 +352,14 @@ def test_optional_counter_health_does_not_misreport_stale_totals(monkeypatch):
     assert not p.counters_healthy()
     monkeypatch.setattr(p, 'enforcement', lambda: {'ruleStatus':'present'})
     assert p.counters_healthy()
+
+
+@pytest.mark.parametrize('off', ['pause15', 'pause60', 'disable'])
+def test_immediate_resume_preserves_duplicate_write_limit(off):
+    api=API();p=bridge.Protection(CFG,api)
+    p.change(off)
+    p.change('enable')
+    assert api.responses['/dns_info']['protection_enabled'] is True
+    assert len(api.writes)==2
+    with pytest.raises(bridge.Unavailable): p.change('enable')
+    assert len(api.writes)==2
