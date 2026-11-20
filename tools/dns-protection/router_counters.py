@@ -49,7 +49,7 @@ def read_snapshot(path, now=None):
     if set(data) != required or data['schema'] != 1 or data['device'] != 'tv' or data['ruleStatus'] != 'present' or data['period'] != 'current-router-counters':
         raise ValueError('Invalid counter snapshot')
     at = datetime.fromisoformat(data['sampledAt'])
-    if at.tzinfo is None or not -5 <= (now-at).total_seconds() <= 120:
+    if at.tzinfo is None or not -5 <= (now-at).total_seconds() <= 360:
         raise ValueError('Counter snapshot is stale or future-dated')
     if any(type(data[k]) is not int or not 0 <= data[k] <= 2**64-1 for k in ('udpPackets', 'tcpPackets')):
         raise ValueError('Invalid packet counts')

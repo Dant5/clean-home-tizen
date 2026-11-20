@@ -195,6 +195,7 @@ class Protection:
         self.cached = None
         self.cache_at = 0.0
         self.last_action = 0.0
+        self.lifetime_last_success = None
 
     def guard(self):
         if self.api.call('/status').get('running') is not True:
@@ -272,6 +273,7 @@ class Protection:
                     module = importlib.util.module_from_spec(spec)
                     spec.loader.exec_module(module)
                     lifetime = module.update(self.cfg['lifetime_file'], rows, identities, now, complete)
+                    self.lifetime_last_success = time.monotonic()
                     result['lifetime'] = {k: lifetime[k] for k in ('since', 'complete', 'blocked')}
                     for device in result['devices']:
                         if device['configured']:
@@ -304,6 +306,13 @@ class Protection:
             return module.read_snapshot(path)
         except (OSError, ValueError, TypeError, KeyError, ImportError, AttributeError):
             return {'schema': 1, 'ruleStatus': 'unknown'}
+
+    def counters_healthy(self):
+        if self.cfg.get('lifetime_file') and (self.lifetime_last_success is None or time.monotonic() - self.lifetime_last_success > 900):
+            return False
+        if self.cfg.get('router_counter_file') and self.enforcement().get('ruleStatus') != 'present':
+            return False
+        return True
 
     def change(self, action):
         choices = {'enable': {'enabled': True}, 'disable': {'enabled': False},
@@ -419,6 +428,9 @@ class Handler(BaseHTTPRequestHandler):
         if self.path == '/health' and self.client_address[0] in ('127.0.0.1', self.server.cfg['bind']):
             try:
                 self.server.protection.guard()
+                if not self.server.protection.counters_healthy():
+                    self.reply(503, {'status': 'DOWN', 'component': 'dashboard counters'})
+                    return
                 self.reply(200, {'status': 'UP'})
             except Unavailable:
                 self.reply(503, {'status': 'DOWN'})

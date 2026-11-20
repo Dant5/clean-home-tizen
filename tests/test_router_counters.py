@@ -29,7 +29,7 @@ def test_missing_duplicate_changed_scope_is_unknown(raw):
 def test_untrusted_snapshots_refused(tmp_path, change):
     value = m.parse_counters(RULES, IP)
     now = datetime.now(timezone.utc)
-    if change in ('stale','future'): value['sampledAt'] = (now+timedelta(seconds=-121 if change=='stale' else 6)).isoformat()
+    if change in ('stale','future'): value['sampledAt'] = (now+timedelta(seconds=-361 if change=='stale' else 6)).isoformat()
     if change == 'negative': value['udpPackets'] = -1
     if change == 'boolean': value['tcpPackets'] = True
     if change == 'extra': value['raw'] = 'private data'
