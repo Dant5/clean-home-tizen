@@ -134,6 +134,27 @@ try{
  await page.waitForTimeout(400);assert.equal(await page.evaluate(()=>ShoreQA.where().view),'privacy');
  await page.keyboard.press('Escape');await page.keyboard.press('Escape');const before=gets;
  await page.waitForTimeout(1100);assert.equal(gets,before,'No polling or DNS stats on Home');
+ // A native Home relaunch must dismiss DNS, including a pending request,
+ // without changing protection or saved launcher preferences.
+ for(const confirming of [false,true]){
+  delay=300;
+  const saved=await page.evaluate(()=>localStorage.getItem('cleanhome.home.v1'));
+  await page.evaluate(()=>{ShoreQA.scene('settings');ShoreQA.activate('settings.group.privacy');ShoreQA.activate('dns.open');});
+  if(confirming){
+   await page.waitForFunction(()=>document.body.textContent.includes('DNS filtering enabled'));
+   await page.evaluate(()=>ShoreQA.activate('dns.disable'));
+   assert(await page.evaluate(()=>ShoreQA.actions().includes('dns.confirm')));
+  }
+  const previousWrites=writes.slice();
+  await page.evaluate(()=>window.dispatchEvent(new Event('appcontrol')));
+  assert.equal(await page.evaluate(()=>ShoreQA.where().view),'home');
+  assert.equal(await page.locator('.dns-overlay:visible').count(),0);
+  await page.waitForTimeout(450);
+  assert.equal(await page.evaluate(()=>ShoreQA.where().view),'home');
+  assert.equal(await page.evaluate(()=>localStorage.getItem('cleanhome.home.v1')),saved);
+  assert.deepEqual(writes,previousWrites,'Home never confirms a pending protection change');
+  const settled=gets;await page.waitForTimeout(1100);assert.equal(gets,settled,'Home stops dashboard refresh');
+ }
  assert.deepEqual(errors,[]);
  writeFileSync(root+'.local/qa/dns-browser'+(process.env.CLEANHOME_CHROMIUM?'-85':'')+'.json',JSON.stringify({engine:await preview.browser.version(),scope:'Browser fixtures, not TV traffic',errors,passed:true},null,2)+'\n');
  console.log('DNS dashboard workflow and error-state checks passed in '+await preview.browser.version());
