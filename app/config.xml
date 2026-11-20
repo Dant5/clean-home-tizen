@@ -16,6 +16,10 @@
     <tizen:src name="index.html" reload="disable"/>
     <tizen:operation name="http://tizen.org/appcontrol/operation/main"/>
   </tizen:app-control>
+  <tizen:app-control>
+    <tizen:src name="index.html" reload="disable"/>
+    <tizen:operation name="http://tizen.org/appcontrol/operation/default"/>
+  </tizen:app-control>
   <tizen:privilege name="http://tizen.org/privilege/application.launch"/>
   <tizen:privilege name="http://tizen.org/privilege/application.info"/>
   <tizen:privilege name="http://tizen.org/privilege/tv.inputdevice"/>
