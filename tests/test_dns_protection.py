@@ -336,3 +336,20 @@ def test_lifetime_collection_reuses_server_when_dashboard_closed(monkeypatch):
         server.service_actions()
         assert server.counter_worker is None and protection.calls == 2
     finally: server.server_close()
+
+
+def test_optional_counter_health_does_not_misreport_stale_totals(monkeypatch):
+    p = bridge.Protection(CFG, API())
+    assert p.counters_healthy()
+    p.cfg = dict(CFG, lifetime_file='/fixture')
+    assert not p.counters_healthy()
+    monkeypatch.setattr(bridge.time, 'monotonic', lambda: 1000)
+    p.lifetime_last_success = 999
+    assert p.counters_healthy()
+    p.lifetime_last_success = 0
+    assert not p.counters_healthy()
+    p.cfg = dict(CFG, router_counter_file='/fixture')
+    monkeypatch.setattr(p, 'enforcement', lambda: {'ruleStatus':'unknown'})
+    assert not p.counters_healthy()
+    monkeypatch.setattr(p, 'enforcement', lambda: {'ruleStatus':'present'})
+    assert p.counters_healthy()
