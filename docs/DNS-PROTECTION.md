@@ -1,6 +1,6 @@
 # Q60B + Q930D DNS protection
 
-**Status: development feature on PR #20; not part of a released download.** The installed Clean Home 1.3.9 and native Home/startup assignment are unchanged. This is an optional companion for the reference Q60B, not a new launcher or a claim of hardware qualification on other models.
+**Status: development feature on PR #20; not part of a released download.** The reference TV has separately approved 1.4.3 integration builds installed; its native Home/startup assignment and saved preferences are preserved. No newer deployment is implied by this source guide. This is an optional companion for the reference Q60B, not a new launcher or a claim of hardware qualification on other models.
 
 ## Choice: AdGuard Home on the existing server
 
@@ -146,3 +146,11 @@ Other fixed actions are `pause60` and `disable`. This mode starts no listener an
 ## Primary references
 
 [AdGuard Home configuration](https://adguard-dns.io/kb/adguard-home/configuration/), [client identification and per-client rules](https://adguard-dns.io/kb/adguard-home/clients/), [pinned API schema](https://github.com/AdguardTeam/AdGuardHome/blob/v0.107.80/openapi/openapi.yaml), [DNS limitations](https://adguard-dns.io/kb/adguard-home/faq/#are-there-any-known-limitations), [HaGeZi lists and licensing](https://github.com/hagezi/dns-blocklists), [NextDNS pricing/cap behavior](https://nextdns.io/pricing), [Pi-hole client groups](https://docs.pi-hole.net/group_management/groups/), [ASUS per-reservation DNS guidance](https://www.asus.com/us/support/faq/1000906/).
+
+## Dashboard count meanings
+
+**Blocked today** counts refused DNS lookups for the selected device(s), using the configured calendar day. **Lookups today** counts all recorded requests, including those refused and repeated requests. Neither is a count of individual adverts.
+
+The prepared **Lifetime blocked** counter begins when explicitly enabled. It persists across adapter restarts and log expiry, stores no domain history and is included in the existing protected data/backup scope when deployed. Earlier activity is not invented. Missing or partial history is labelled ≥; an unavailable/unconfigured counter shows an em dash. The existing adapter collects counts every five minutes while enabled, including when the dashboard is closed, without another service or system timer. See [optional counter setup and limitations](../tools/dns-protection/README.md#optional-dashboard-counters-source-preparation-only).
+
+Optional router packet counts are separate: **External DNS packets blocked** is a timestamped TV-only snapshot of the audited UDP/TCP port-53 DROP counters. All resolver destinations are included. Counters reset after router/firewall restarts, include retries/test packets and are never added to daily or lifetime DNS lookup totals. Their presence does not rule out encrypted DNS. The dashboard service receives only sanitised data, never router administrator credentials or key access. This source addition has not been deployed on the reference TV.
