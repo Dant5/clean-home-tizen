@@ -8,7 +8,7 @@ Validation: full current-browser regression suite passed before commissioning; f
 
 Before/after encrypted backups were actually checksummed and restored from the owner's recovery machine. All 41 installed-state hashes matched; a functional isolated lifetime-counter restore preserved its start date and totals with read-only resolver data. The complete new state root is enrolled in the existing encrypted backup system. No router saved field, DNS routing, soundbar policy, native Home, firmware or other application was changed during this update. Encrypted DNS and resolver-outage fallback remain unverified.
 
-Current and Chromium **85.0.4182.0** DNS workflows passed. The same final generic integration artifact (`dbdb79e0e6e2c78301e25a7c9e4ded7513ff72a6b8e9577f237d3796bfe75054`) passed **56 checks each** in Chromium 63, 69, 76, 85, 94, 108, 120 and 130. These are browser/mock-platform results; they are separate from installed TV evidence. Source/private-data and reachable-history secret scans passed. No merge or public release is implied by this private commissioning.
+Current and Chromium **85.0.4182.0** DNS workflows passed, including compact K/M/B formatting, rounding boundaries and plain-number rendering for partial history. The same final generic integration artifact (`dbdb79e0e6e2c78301e25a7c9e4ded7513ff72a6b8e9577f237d3796bfe75054`) passed **56 checks each** in Chromium 63, 69, 76, 85, 94, 108, 120 and 130. These are browser/mock-platform results; they are separate from installed TV evidence. Source/private-data and reachable-history secret scans passed. No merge or public release is implied by this private commissioning.
 
 # Earlier DNS companion validation checkpoint
 
