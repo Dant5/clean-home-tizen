@@ -12,6 +12,7 @@ import json
 from pathlib import Path
 import re
 import socket
+import importlib.util
 import threading
 import time
 from urllib.error import HTTPError
@@ -265,6 +266,20 @@ class Protection:
                     result['devices'].append({'id': key, 'label': label, 'configured': True, **stats})
                 else:
                     result['devices'].append({'id': key, 'label': label, 'configured': False})
+            if self.cfg.get('lifetime_file'):
+                try:
+                    spec = importlib.util.spec_from_file_location('cleanhome_lifetime', Path(__file__).with_name('lifetime.py'))
+                    module = importlib.util.module_from_spec(spec)
+                    spec.loader.exec_module(module)
+                    lifetime = module.update(self.cfg['lifetime_file'], rows, identities, now, complete)
+                    result['lifetime'] = {k: lifetime[k] for k in ('since', 'complete', 'blocked')}
+                    for device in result['devices']:
+                        if device['configured']:
+                            result_count = lifetime['devices'][device['id']]
+                            device['lifetime'] = dict(result['lifetime'], blocked=result_count)
+                except (OSError, ValueError, TypeError, KeyError, ImportError, AttributeError):
+                    # A counter failure must not hide the working resolver or invent zero.
+                    result['lifetime'] = None
             # Log retention and start-of-service are not proof of seven complete days.
             result.update({'schema': 1, 'sampledAt': now.isoformat(), 'timezone': self.cfg['timezone'],
                            'protectionEnabled': dns.get('protection_enabled') is True,
@@ -275,6 +290,20 @@ class Protection:
                            'listsUpdatedAt': [f.get('last_updated') for f in filtering.get('filters', []) if f.get('enabled')]})
             self.cached, self.cache_at = result, time.monotonic()
             return result
+
+    def enforcement(self):
+        # Optional read-only file, provisioned by the owner. Never access a router key
+        # or execute a management command under the adapter's service identity.
+        path = self.cfg.get('router_counter_file')
+        if not path:
+            return {'schema': 1, 'ruleStatus': 'unknown'}
+        try:
+            spec = importlib.util.spec_from_file_location('cleanhome_router_counters', Path(__file__).with_name('router_counters.py'))
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            return module.read_snapshot(path)
+        except (OSError, ValueError, TypeError, KeyError, ImportError, AttributeError):
+            return {'schema': 1, 'ruleStatus': 'unknown'}
 
     def change(self, action):
         choices = {'enable': {'enabled': True}, 'disable': {'enabled': False},
@@ -301,7 +330,26 @@ class Server(ThreadingHTTPServer):
     def __init__(self, cfg, protection):
         self.cfg, self.protection = cfg, protection
         self.slots = threading.BoundedSemaphore(8)
+        self.counter_refresh_at = 0.0
+        self.counter_worker = None
         super().__init__((cfg['bind'], cfg['port']), Handler)
+
+    def service_actions(self):
+        # Reuse this service for an explicitly enabled durable counter, including
+        # while the TV page is closed. Never block HTTP handling on log collection.
+        if not self.cfg.get('lifetime_file') or time.monotonic() < self.counter_refresh_at:
+            return
+        if self.counter_worker and self.counter_worker.is_alive():
+            return
+        self.counter_refresh_at = time.monotonic() + 300
+        self.counter_worker = threading.Thread(target=self.refresh_counter, daemon=True)
+        self.counter_worker.start()
+
+    def refresh_counter(self):
+        try:
+            self.protection.snapshot(force=True)
+        except (Unavailable, OSError, ValueError, TypeError, KeyError):
+            pass  # Leave existing state intact; the next read retries or reports unknown.
 
     def handle_error(self, request, client_address):
         pass  # Avoid default traceback logs containing client addresses or private data.
@@ -353,7 +401,7 @@ class Handler(BaseHTTPRequestHandler):
         return not token or hmac.compare_digest(self.headers.get('Authorization', ''), 'Bearer ' + cfg['tv_token'])
 
     def do_OPTIONS(self):
-        if self.path not in ('/v1/status', '/v1/protection') or not self.permitted(token=False):
+        if self.path not in ('/v1/status', '/v1/protection', '/v1/enforcement') or not self.permitted(token=False):
             self.reply(403)
             return
         if self.headers.get('Access-Control-Request-Method') not in ('GET', 'POST'):
@@ -377,6 +425,9 @@ class Handler(BaseHTTPRequestHandler):
             return
         if not self.permitted():
             self.reply(403)
+            return
+        if self.path == '/v1/enforcement':
+            self.reply(200, self.server.protection.enforcement())
             return
         if self.path != '/v1/status':
             self.reply(404)

@@ -295,3 +295,44 @@ def test_owner_cli_reports_fixed_unknown_without_upstream_details(monkeypatch, c
     output = capsys.readouterr().out
     assert 'private upstream details' not in output
     assert json.loads(output)['error'].startswith('Protection could not be verified')
+
+
+def test_enforcement_optional_and_authenticated(http_server):
+    server, api = http_server
+    assert json.loads(call(server, 'GET', '/v1/enforcement')[2]) == {'schema': 1, 'ruleStatus': 'unknown'}
+    assert call(server, 'GET', '/v1/enforcement', headers={'Authorization': 'Bearer wrong'})[0] == 403
+    assert call(server, 'GET', '/v1/enforcement?command=anything')[0] == 404
+    assert call(server, 'POST', '/v1/enforcement', '{}')[0] == 404
+    assert not api.writes
+
+
+def test_enforcement_stale_file_does_not_break_resolver(tmp_path):
+    path = tmp_path/'counter.json';path.write_text('{}');path.chmod(0o644)
+    p = bridge.Protection(dict(CFG, router_counter_file=str(path)), API())
+    assert p.enforcement() == {'schema': 1, 'ruleStatus': 'unknown'}
+    assert p.snapshot()['resolver'] == 'AdGuard Home'
+
+
+def test_lifetime_collection_reuses_server_when_dashboard_closed(monkeypatch):
+    class CounterProtection:
+        def __init__(self): self.calls = 0
+        def snapshot(self, force=False):
+            assert force
+            self.calls += 1
+    clock = [1000.0]
+    monkeypatch.setattr(bridge.time, 'monotonic', lambda: clock[0])
+    protection = CounterProtection()
+    server = bridge.Server(dict(CFG, lifetime_file='/not-accessed-by-fixture'), protection)
+    try:
+        server.service_actions();server.counter_worker.join(timeout=2)
+        assert protection.calls == 1
+        server.service_actions();assert protection.calls == 1
+        clock[0] += 300
+        server.service_actions();server.counter_worker.join(timeout=2)
+        assert protection.calls == 2
+    finally: server.server_close()
+    server = bridge.Server(CFG, protection)
+    try:
+        server.service_actions()
+        assert server.counter_worker is None and protection.calls == 2
+    finally: server.server_close()

@@ -1,4 +1,14 @@
-# Unreleased — local DNS privacy companion
+# Unreleased — dashboard count follow-up, 20 November 2026
+
+Prepared changes replace the percentage card with **Lifetime blocked**, retain daily blocked/lookups and separately display optional sanitised TV-only router packet counters. No updated widget, adapter or collector has been deployed by this follow-up. The installed reference integration remains unchanged.
+
+Validation: the full current-browser `npm test` suite passed (352 browser checks and 42 Q60B mock integration checks). The final Python suite passed **198 tests**, including collection within the existing service while the dashboard is closed. Targeted tests cover persistence/restart, per-device attribution, no double counting, log resets, incomplete history, unsafe/stale counter files, authenticated endpoint boundaries and unavailable states. The actual source and unsigned widget DNS workflows pass in Chromium **85.0.4182.0**, as well as current Chromium 156. The same unsigned widget (`55007c55e6be1269eee7189156f728a25c7dbaef28b79a961e15795a02d08003`) passed **47 checks each** in Chromium 63, 69, 76, 85, 94, 108, 120 and 130. Source and reachable-history secret scans passed. Navigation benchmarks recorded zero statistics-body replacements during arrow movement. These are browser/simulated boundaries, not hardware deployment evidence.
+
+The read-only exporter also read actual reference-router UDP/TCP DROP counters without changing rules. Separately, the approved attended network trial passed normal-GUI Apply → Undo → reapply: fresh controlled Google UDP/TCP DNS succeeded before/after Undo and failed under the rules, with native counter increases. The owner reported all grouped app/audio/SmartThings/dashboard/wake/control checks passed without extra delay. Those are owner-reported physical results; they do not qualify the new counter UI. Encrypted DNS and resolver-outage fallback remain unverified; no full-coverage claim is made.
+
+Lifetime begins when enabled, not at an inferred historical installation date. Missing history remains an explicit lower bound. Router packet counts include retries/tests, reset independently and never inflate DNS lookup totals. Provisioning persistent state, backup/restore coverage, optional counter refresh and deployment remain separate commissioning steps.
+
+# Earlier DNS companion validation checkpoint
 
 AdGuard Home v0.107.80 and a limited server-side adapter provide combined and separate TV/soundbar statistics. The independently implemented Veil-inspired panel lives in the existing Clean Home widget. No TV app update or live DNS routing was performed by these tests; the installed 1.3.9 and native Home assignment remain unchanged.
 

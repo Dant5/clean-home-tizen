@@ -18,7 +18,7 @@
       xhr.onload = function () {
         var data;
         try { if (xhr.status === 200 && xhr.responseText.length < 65536) data = JSON.parse(xhr.responseText); } catch (e) {}
-        if (data && (action ? data.accepted === true : data.schema === 1 && data.today && Array.isArray(data.days) && Array.isArray(data.top) && Array.isArray(data.recent))) finish(null, data);
+        if (data && (action ? data.accepted === true : data.schema === 1 && (path === '/v1/enforcement' ? typeof data.ruleStatus === 'string' : data.today && Array.isArray(data.days) && Array.isArray(data.top) && Array.isArray(data.recent)))) finish(null, data);
         else finish(action ? 'Change not confirmed. Refresh to check protection.' : 'Protection unavailable. Check the Dell resolver.');
       };
       xhr.onerror = xhr.ontimeout = function () { finish('Cannot reach the resolver. Protection is unknown.'); };
@@ -33,18 +33,26 @@
   function count(value) { return typeof value === 'number' && isFinite(value) && value >= 0 ? String(Math.round(value)).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '\u2014'; }
   function button(t, label, action, i) { return '<button type="button" tabindex="-1" class="btn' + (t.f.i === i ? ' is-focus' : '') + '" data-z="dns" data-i="' + i + '" data-action="dns.' + action + '">' + esc(label) + '</button>'; }
   function install(ctx) {
-    var V = ctx.views, frames = ctx.frames, fills = ctx.fills, cancel = null, refreshTimer = null;
-    function stop() { if (cancel) cancel(); cancel = null; clearTimeout(refreshTimer); }
+    var V = ctx.views, frames = ctx.frames, fills = ctx.fills, cancel = null, counterCancel = null, refreshTimer = null;
+    function stop() { if (cancel) cancel(); if (counterCancel) counterCancel(); counterCancel = null; cancel = null; clearTimeout(refreshTimer); }
     function active(t) { return ctx.top() === t && !document.hidden; }
     function fetch(t, action) {
-      stop(); t.busy = true; t.error = ''; ctx.render();
+      stop(); t.enforcement = null; t.busy = true; t.error = ''; ctx.render();
       cancel = request(action ? '/v1/protection' : '/v1/status', action, function (error, data) {
         cancel = null;
         if (!active(t)) return;
         t.busy = false;
         if (error) { t.error = error; t.data = null; }
         else if (action) { fetch(t); return; }
-        else t.data = data;
+        else {
+          t.data = data;
+          counterCancel = request('/v1/enforcement', null, function (counterError, counters) {
+            counterCancel = null;
+            if (!active(t)) return;
+            t.enforcement = counterError ? null : counters;
+            ctx.render();
+          });
+        }
         ctx.render();
         refreshTimer = setTimeout(function () { if (active(t)) fetch(t); }, 60000);
       });
@@ -99,10 +107,10 @@
       el.actions.innerHTML = actions(t).map(function (id, i) { return button(t, labels[id], id, i); }).join('');
       el.actions.setAttribute('aria-busy', t.busy ? 'true' : 'false');
       /* Arrow keys change focus/scroll, not the data. Keep the static body intact. */
-      if (t.paintNode === el.body && t.paintData === t.data && t.paintDevice === t.device && t.paintConfirm === t.confirm && t.paintBusy === t.busy && t.paintError === t.error) {
+      if (t.paintNode === el.body && t.paintData === t.data && t.paintDevice === t.device && t.paintConfirm === t.confirm && t.paintBusy === t.busy && t.paintError === t.error && t.paintEnforcement === t.enforcement) {
         el.body.scrollTop = t.scroll || 0; t.scroll = el.body.scrollTop; return;
       }
-      t.paintNode = el.body; t.paintData = t.data; t.paintDevice = t.device; t.paintConfirm = t.confirm; t.paintBusy = t.busy; t.paintError = t.error;
+      t.paintEnforcement = t.enforcement; t.paintNode = el.body; t.paintData = t.data; t.paintDevice = t.device; t.paintConfirm = t.confirm; t.paintBusy = t.busy; t.paintError = t.error;
       var d = t.data, html = '', max = 1, selected = null, combined = t.device !== 'tv' && t.device !== 'soundbar', notConfigured = false;
       if (d && !combined && Array.isArray(d.devices)) {
         d.devices.forEach(function (item) { if (item.id === t.device) selected = item; });
@@ -123,7 +131,8 @@
         var client = d.observedClientProtocols || {}, upstream = d.observedUpstreamTransport || {}, week = 0;
         html += '<div class="dns-intro"><h3>' + (state === 'ENABLED' ? (d.complete ? '' : 'At least ') + count(d.today.blocked) + ' DNS requests blocked today.' : state === 'PAUSED' ? 'Protection is taking a break.' : 'DNS filtering is off.') + '</h3><p>'
           + (state === 'ENABLED' ? 'Blocks known ad and tracker domains. Alternate DNS paths are not verified.' : state === 'PAUSED' ? 'Blocking resumes at ' + esc(time(d.pausedUntil, d.timezone, true)) + '. You can enable it now.' : 'The devices still use this resolver, with blocking disabled. Choose Enable to resume filtering.') + '</p><span class="dns-sr">' + (state === 'ENABLED' ? 'DNS filtering enabled' : state === 'PAUSED' ? 'Protection paused' : 'Protection off') + '</span></div>';
-        html += '<div class="dns-cards"><div class="dns-accent"><strong>' + (d.complete ? '' : '≥') + count(d.today.blocked) + '</strong><span>Blocked</span></div><div><strong>' + (d.complete ? '' : '≥') + count(d.today.queries) + '</strong><span>Lookups</span></div><div><strong>' + esc(d.today.percent) + '%</strong><span>Blocked %</span></div></div>';
+        html += '<div class="dns-cards"><div class="dns-accent"><strong>' + (d.complete ? '' : '≥') + count(d.today.blocked) + '</strong><span>Blocked today</span></div><div><strong>' + (d.complete ? '' : '≥') + count(d.today.queries) + '</strong><span>Lookups today</span></div><div><strong>' + (d.lifetime ? (d.lifetime.complete ? '' : '≥') + count(d.lifetime.blocked) : '—') + '</strong><span>Lifetime blocked</span></div></div>';
+        html += '<p class="dns-note">Lookups are DNS requests, including repeats, not a count of adverts.</p>' + (d.lifetime ? '<p class="dns-note">Lifetime since ' + esc(time(d.lifetime.since, d.timezone, true)) + '. ' + (d.lifetime.complete ? 'Recorded since this counter was enabled.' : 'At least this many; some history was unavailable.') + '</p>' : '<p class="dns-note">Lifetime counter not connected yet. Earlier activity is not assumed.</p>');
         html += '<section class="dns-top"><h3>Most blocked · today</h3>';
         html += d.topToday && d.topToday.length ? d.topToday.slice(0, 3).map(function (r) { return '<div class="dns-domain"><i></i><span>' + esc(r.domain) + '</span><b>' + count(r.count) + '</b></div>'; }).join('') : '<p class="dns-note">No blocked requests in today’s available log.</p>';
         html += '</section><p class="dns-transport">' + (client[''] ? 'Device DNS: plain observed.' : Object.keys(client).length ? 'Device DNS: encrypted observed.' : 'Device DNS: not observed.') + ' Upstream: ' + (upstream.Encrypted && !upstream['Plain DNS'] ? 'encrypted observed.' : upstream['Plain DNS'] ? 'plain observed.' : 'not observed.') + '</p>';
@@ -138,7 +147,9 @@
         html += '<p>' + esc(d.lastQueryAt ? 'Last device query: ' + time(d.lastQueryAt, d.timezone, true) : 'Waiting for device queries. Routing is not yet verified.') + '</p><p>Checked ' + esc(time(d.sampledAt, d.timezone)) + ' · Today in ' + esc(d.timezone) + '.</p><p>' + (d.complete ? 'Counts from available log records. ' : 'Partial log: totals are lower bounds. ') + esc(d.history) + '</p><p class="dns-control-scope">Controls apply to all configured devices. The View button only changes displayed statistics.</p></section>';
         html += '<section class="dns-requests"><h3>Recent blocked requests</h3>';
         html += d.recent.length ? d.recent.slice(0, 12).map(function (r) { return '<div class="dns-request"><div><strong>' + esc(r.domain) + '</strong><span>' + esc(time(r.time, d.timezone, true)) + ' · ' + esc(r.device || '') + '</span></div><p>' + esc(r.reason) + ' / ' + esc(r.source) + '</p></div>'; }).join('') : '<p>No blocked requests yet.</p>';
-        html += '</section><section class="dns-coverage"><h3>Connection &amp; coverage</h3><p>' + esc(d.resolver) + ' · ' + esc(d.scope) + '</p><p>' + esc(d.coverage) + '. Cached traffic, hardcoded addresses, other resolvers and encrypted DNS can bypass filtering.</p><p>Lists: ' + esc((d.filters || []).join(', ')) + '. Categories are not supplied for every domain. DNS filtering cannot reliably remove YouTube video ads.</p><h3>Soundbar microphone</h3><p>DNS protection does not mute the microphone. Use the soundbar’s supported Mic On/Off button; red indicates muted. Microphone and assistant state are not read by this dashboard. Mic-dependent features may be affected.</p></section>';
+        var e = t.enforcement, eTime = e && new Date(e.sampledAt).getTime(), eValid = e && e.ruleStatus === 'present' && e.device === 'tv' && e.period === 'current-router-counters' && isFinite(eTime) && Date.now() - eTime >= -5000 && Date.now() - eTime <= 120000 && typeof e.udpPackets === 'number' && typeof e.tcpPackets === 'number' && isFinite(e.udpPackets) && isFinite(e.tcpPackets) && e.udpPackets >= 0 && e.tcpPackets >= 0;
+        html += '</section><section class="dns-details dns-enforcement"><h3>External DNS packets blocked</h3><p>' + (t.device === 'soundbar' ? 'No soundbar enforcement is configured. These router rules apply only to the TV.' : eValid ? 'TV: ' + count(e.udpPackets) + ' UDP · ' + count(e.tcpPackets) + ' TCP. Router rules present; counters checked ' + esc(time(e.sampledAt, d.timezone)) + '.' : 'Unknown — no recent router counter reading.') + '</p><p>External plain DNS on port 53 only, across all resolver destinations. Counts include retries and test packets, reset after firewall/router restarts, and are separate from today’s DNS lookups. Encrypted DNS is outside these rules. Pause changes blocklists; it does not remove router rules.</p></section>';
+        html += '<section class="dns-coverage"><h3>Connection &amp; coverage</h3><p>' + esc(d.resolver) + ' · ' + esc(d.scope) + '</p><p>' + esc(d.coverage) + '. Cached traffic, hardcoded addresses, other resolvers and encrypted DNS can bypass filtering.</p><p>Lists: ' + esc((d.filters || []).join(', ')) + '. Categories are not supplied for every domain. DNS filtering cannot reliably remove YouTube video ads.</p><h3>Soundbar microphone</h3><p>DNS protection does not mute the microphone. Use the soundbar’s supported Mic On/Off button; red indicates muted. Microphone and assistant state are not read by this dashboard. Mic-dependent features may be affected.</p></section>';
       }
       el.body.innerHTML = html;
       el.body.scrollTop = t.scroll || 0; t.scroll = el.body.scrollTop;
