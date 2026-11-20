@@ -195,6 +195,7 @@ class Protection:
         self.cached = None
         self.cache_at = 0.0
         self.last_action = 0.0
+        self.last_action_name = None
         self.lifetime_last_success = None
 
     def guard(self):
@@ -320,12 +321,14 @@ class Protection:
         if action not in choices:
             raise ValueError('Unsupported action')
         with self.lock:
-            if self.last_action and time.monotonic() - self.last_action < 2:
+            restoring = action == 'enable' and self.last_action_name in ('disable', 'pause15', 'pause60')
+            if self.last_action and time.monotonic() - self.last_action < 2 and not restoring:
                 raise Unavailable('Please wait before changing protection again')
             self.guard()  # Fresh scope check immediately before every setter.
             self.api.call('/protection', choices[action])
             self.cached = None
             self.last_action = time.monotonic()
+            self.last_action_name = action
             readback = self.api.call('/dns_info')
             if readback.get('protection_enabled') is not choices[action]['enabled']:
                 raise Unavailable('Protection change could not be confirmed')
