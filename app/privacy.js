@@ -30,7 +30,14 @@
   function time(value, zone, date) {
     try { var d = new Date(value); if (isNaN(d.getTime())) return 'Unknown time'; return d.toLocaleString('en-GB', { timeZone: zone, hour: '2-digit', minute: '2-digit', day: date ? '2-digit' : undefined, month: date ? 'short' : undefined }); } catch (e) { return 'Unknown time'; }
   }
-  function count(value) { return typeof value === 'number' && isFinite(value) && value >= 0 ? String(Math.round(value)).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '\u2014'; }
+  function count(value) {
+    if (typeof value !== 'number' || !isFinite(value) || value < 0) return '\u2014';
+    var n = Math.round(value), unit = 0, suffixes = ['', 'K', 'M', 'B', 'T'], rounded;
+    while (n >= 1000 && unit < suffixes.length - 1) { n /= 1000; unit++; }
+    rounded = Number(n.toFixed(unit && n < 100 ? 1 : 0));
+    if (rounded >= 1000 && unit < suffixes.length - 1) { rounded /= 1000; unit++; }
+    return String(rounded) + suffixes[unit];
+  }
   function button(t, label, action, i) { return '<button type="button" tabindex="-1" class="btn' + (t.f.i === i ? ' is-focus' : '') + '" data-z="dns" data-i="' + i + '" data-action="dns.' + action + '">' + esc(label) + '</button>'; }
   function install(ctx) {
     var V = ctx.views, frames = ctx.frames, fills = ctx.fills, cancel = null, counterCancel = null, refreshTimer = null;
@@ -129,15 +136,15 @@
         html += '<div class="dns-empty"><h3>' + (t.busy ? 'Checking protection…' : config() ? 'Protection unknown' : 'Not connected') + '</h3><p>' + esc(t.error || (config() ? 'Reading the local resolver.' : 'Set up the dedicated resolver on your server before connecting this page.')) + '</p><p>Only real, attributed device traffic appears here.</p></div>';
       } else {
         var client = d.observedClientProtocols || {}, upstream = d.observedUpstreamTransport || {}, week = 0;
-        html += '<div class="dns-intro"><h3>' + (state === 'ENABLED' ? (d.complete ? '' : 'At least ') + count(d.today.blocked) + ' DNS requests blocked today.' : state === 'PAUSED' ? 'Protection is taking a break.' : 'DNS filtering is off.') + '</h3><p>'
+        html += '<div class="dns-intro"><h3>' + (state === 'ENABLED' ? count(d.today.blocked) + ' DNS requests blocked today.' : state === 'PAUSED' ? 'Protection is taking a break.' : 'DNS filtering is off.') + '</h3><p>'
           + (state === 'ENABLED' ? 'Blocks known ad and tracker domains. Alternate DNS paths are not verified.' : state === 'PAUSED' ? 'Blocking resumes at ' + esc(time(d.pausedUntil, d.timezone, true)) + '. You can enable it now.' : 'The devices still use this resolver, with blocking disabled. Choose Enable to resume filtering.') + '</p><span class="dns-sr">' + (state === 'ENABLED' ? 'DNS filtering enabled' : state === 'PAUSED' ? 'Protection paused' : 'Protection off') + '</span></div>';
-        html += '<div class="dns-cards"><div class="dns-accent"><strong>' + (d.complete ? '' : '≥') + count(d.today.blocked) + '</strong><span>Blocked today</span></div><div><strong>' + (d.complete ? '' : '≥') + count(d.today.queries) + '</strong><span>Lookups today</span></div><div><strong>' + (d.lifetime ? (d.lifetime.complete ? '' : '≥') + count(d.lifetime.blocked) : '—') + '</strong><span>Lifetime blocked</span></div></div>';
-        html += '<p class="dns-note">Lookups are DNS requests, including repeats, not a count of adverts.</p>' + (d.lifetime ? '<p class="dns-note">Lifetime since ' + esc(time(d.lifetime.since, d.timezone, true)) + '. ' + (d.lifetime.complete ? 'Recorded since this counter was enabled.' : 'At least this many; some history was unavailable.') + '</p>' : '<p class="dns-note">Lifetime counter not connected yet. Earlier activity is not assumed.</p>');
+        html += '<div class="dns-cards"><div class="dns-accent"><strong>' + count(d.today.blocked) + '</strong><span>Blocked today</span></div><div><strong>' + count(d.today.queries) + '</strong><span>Lookups today</span></div><div><strong>' + (d.lifetime ? count(d.lifetime.blocked) : '—') + '</strong><span>Lifetime blocked</span></div></div>';
+        html += '<p class="dns-note">Lookups are DNS requests, including repeats, not a count of adverts.</p>' + (d.lifetime ? '<p class="dns-note">Lifetime since ' + esc(time(d.lifetime.since, d.timezone, true)) + '. ' + (d.lifetime.complete ? 'Recorded since this counter was enabled.' : 'Available history only; earlier records may be missing.') + '</p>' : '<p class="dns-note">Lifetime counter not connected yet. Earlier activity is not assumed.</p>');
         html += '<section class="dns-top"><h3>Most blocked · today</h3>';
         html += d.topToday && d.topToday.length ? d.topToday.slice(0, 3).map(function (r) { return '<div class="dns-domain"><i></i><span>' + esc(r.domain) + '</span><b>' + count(r.count) + '</b></div>'; }).join('') : '<p class="dns-note">No blocked requests in today’s available log.</p>';
         html += '</section><p class="dns-transport">' + (client[''] ? 'Device DNS: plain observed.' : Object.keys(client).length ? 'Device DNS: encrypted observed.' : 'Device DNS: not observed.') + ' Upstream: ' + (upstream.Encrypted && !upstream['Plain DNS'] ? 'encrypted observed.' : upstream['Plain DNS'] ? 'plain observed.' : 'not observed.') + '</p>';
         d.days.slice(0, 7).forEach(function (day) { max = Math.max(max, Number(day.blocked) || 0); week += Number(day.blocked) || 0; });
-        html += '<section class="dns-week"><div class="dns-week-copy"><h3>This week</h3><p><strong>' + (d.complete ? '' : '≥') + count(week) + '</strong> blocked</p><span>Top: ' + esc(d.top.length ? d.top[0].domain : 'None recorded') + '</span></div><div class="dns-chart" role="img" aria-label="Blocked requests by calendar day">';
+        html += '<section class="dns-week"><div class="dns-week-copy"><h3>This week</h3><p><strong>' + count(week) + '</strong> blocked</p><span>Top: ' + esc(d.top.length ? d.top[0].domain : 'None recorded') + '</span></div><div class="dns-chart" role="img" aria-label="Blocked requests by calendar day">';
         d.days.slice(0, 7).forEach(function (day, i) {
           var height = Math.round(100 * day.blocked / max), label = String(day.date).slice(5), date = new Date(String(day.date) + 'T12:00:00Z'), names = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
           html += '<div class="dns-day' + (i === d.days.length - 1 ? ' is-today' : '') + '" aria-label="' + esc(label) + ': ' + count(day.blocked) + ' blocked"><div class="dns-bar-track"><div class="dns-bar" style="height:' + Math.max(day.blocked > 0 ? 3 : 0, Math.min(100, height)) + '%"></div></div><small>' + esc(isNaN(date.getTime()) ? label : names[date.getUTCDay()]) + '</small></div>';

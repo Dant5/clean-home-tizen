@@ -64,8 +64,14 @@ try{
  await page.waitForFunction(()=>document.querySelectorAll('.dns-cards strong')[2].textContent==='84');
  data.lifetime.complete=false;
  await page.evaluate(()=>ShoreQA.activate('dns.refresh'));
- await page.waitForFunction(()=>document.querySelectorAll('.dns-cards strong')[2].textContent==='≥84');
- assert.match(await page.locator('.dns-scroll').innerText(),/some history was unavailable/);
+ await page.waitForFunction(()=>document.querySelectorAll('.dns-cards strong')[2].textContent==='84');
+ assert.match(await page.locator('.dns-scroll').innerText(),/earlier records may be missing/);
+ for(const [value,expected] of [[999,'999'],[1000,'1K'],[1250,'1.3K'],[12345,'12.3K'],[123456,'123K'],[999999,'1M'],[1000000,'1M'],[1250000,'1.3M'],[1000000000,'1B']]){
+  data.lifetime.blocked=value;
+  await page.evaluate(()=>ShoreQA.activate('dns.refresh'));
+  await page.waitForFunction(expected=>document.querySelectorAll('.dns-cards strong')[2].textContent===expected,expected);
+ }
+ assert(!await page.locator('.dns-cards').innerText().then(text=>text.includes('≥')));
  delete data.lifetime;
  await page.evaluate(()=>ShoreQA.activate('dns.refresh'));
  await page.waitForFunction(()=>document.querySelectorAll('.dns-cards strong')[2].textContent==='—');
@@ -116,8 +122,8 @@ try{
  assert.equal(await page.evaluate(()=>document.querySelector('.dns-bar').getBoundingClientRect().height),0,'Zero blocked requests never render as a positive bar');
  data.days[0].blocked=firstBlocked;
  data.complete=false;await page.evaluate(()=>ShoreQA.activate('dns.refresh'));
- await page.waitForFunction(()=>document.body.textContent.includes('At least 30'));
- assert.match(await page.locator('.dns-cards strong').first().innerText(),/≥30/);
+ await page.waitForFunction(()=>document.body.textContent.includes('Partial log'));
+ assert.match(await page.locator('.dns-cards strong').first().innerText(),/30/);
  data.complete=true;
  unavailable=true;await page.evaluate(()=>ShoreQA.activate('dns.refresh'));
  await page.waitForFunction(()=>document.body.textContent.includes('Protection unknown'));
