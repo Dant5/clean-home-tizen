@@ -1,3 +1,13 @@
+# Privacy-page Home fix — reference Q60B, 21 November 2026
+
+Installed source `d7474f1` preserves the launcher identity, preferences, favourite bindings and native Home/startup readbacks. All **156 retained widget files** match the owner-signed artifact. No DNS/router/backend, soundbar, other application or system Home setting changed.
+
+On this firmware, native SmartHub re-entry into the active launcher did not deliver an `appcontrol` event. A foreground-only Samsung SmartHub key registration now returns Privacy/DNS to the existing dock. It is guarded to the exact reference model/firmware and releases on page exit, blur, suspend and pagehide. Other models retain their existing behavior; no wider hardware claim is made.
+
+The owner physically confirmed the temporary registration path. The permanent installed handler then passed a **trusted native-generated `XF86Home`** test, including Privacy, DNS refresh and an unconfirmed disable dialog; each returned to Home and released the key. This is distinct from a fresh physical-button check of the final package. Immediate native generation during first page entry was not reliable, so earliest-entry physical timing is not claimed.
+
+The full source suite, **204 Python tests**, **25 device/key adapter tests**, and current/Chromium **85.0.4182.0** packaged DNS workflows passed. The same generic widget (`d1afed6289a958fbe184164d4f1090a226376c96257590baa12be4ccac180414`) passed **56 checks each** in pinned Chromium 63, 69, 76, 85, 94, 108, 120 and 130. Browser fixtures cover pending requests, confirmation cancellation, unchanged protection/preferences and key cleanup. Encrypted before/after recovery copies were checked by actual copyback/decryption from the owner's recovery machine. The launcher was restored to normal non-debug operation.
+
 # Counter dashboard — reference Q60B deployment, 20 November 2026
 
 Owner-approved 1.4.3 update installed with **Blocked today**, **Lookups today** and **Lifetime blocked**. The widget's only runtime change is `privacy.js`; all 155 retained installed files match the signed artifact. The installer did not retain distributor signature XML; the author signature matches. Application/signing identity, favourites, manual bindings, preferences and native Home/startup readbacks were preserved. The normal launcher is restored after testing.
