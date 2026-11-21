@@ -1,3 +1,9 @@
+# Direct Privacy dashboard — reference Q60B, 21 November 2026
+
+Settings → Privacy now opens DNS Protection directly, with no intermediate menu. Back returns to Settings with Privacy selected. Installed source `e43e029` passed the actual-TV navigation and trusted native Home-key checks; all 156 retained files, preferences, bindings and native Home/startup readbacks were verified. Normal launch was restored; its fresh physical check is pending.
+
+The full source regression suite, current/Chromium 85 packaged workflows and the same final generic widget (`e5f3118fe0261d1f2ac8bc1d2ff0da51c3c31151d230ead990b10ce2e199bcce`) passed 56 checks on each of eight pinned engines. Encrypted before/after archives were restored from the owner's recovery machine and checked. DNS/server/router policies are unchanged.
+
 # Privacy-page Home fix — reference Q60B, 21 November 2026
 
 Installed source `d7474f1` preserves the launcher identity, preferences, favourite bindings and native Home/startup readbacks. All **156 retained widget files** match the owner-signed artifact. No DNS/router/backend, soundbar, other application or system Home setting changed.
