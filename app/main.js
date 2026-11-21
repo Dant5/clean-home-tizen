@@ -1285,6 +1285,7 @@
     else stage.style.removeProperty('--clock-ink');
     if (!adaptive && shown.dockClockInk) stage.style.setProperty('--dock-clock-ink', shown.dockClockInk);
     else stage.style.removeProperty('--dock-clock-ink');
+    FramePrivacyHomeKey.setEnabled(t.id === 'privacy' || t.id === 'dns');
     applyHomeFont();
     if (!sheet || t.id === 'dns') renderHome(t);
     renderSheet(t, sheet);
@@ -2555,6 +2556,9 @@
   }
   document.addEventListener('keydown', function (ev) {
     var code = ev.keyCode, k = KEYS[code];
+    if (code === 10071 && FramePrivacyHomeKey.active()) {
+      ev.preventDefault(); cancelHomeHold(); heldKeys = {}; resetToMain('privacy-home-key'); resumeUI(); return;
+    }
     if (code === 9) { ev.preventDefault(); return; }
     if (!k || ev.metaKey || ev.ctrlKey || ev.altKey) return;
     ev.preventDefault();
