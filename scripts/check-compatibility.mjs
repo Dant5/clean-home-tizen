@@ -67,6 +67,10 @@ try{
  check('Choices survive reload without auto-launch',JSON.stringify((await state()).dock)==='["AppOne0001.Main","AppThree03.Main"]'&&await evaluate('__launches.length===0'));
  await evaluate('ShoreQA.scene("settings")');await spacing('Settings overview');
  for(const group of ['layout','typography','background','focus','samsung','bindings']){await evaluate('ShoreQA.scene("settings")');await action('settings.group.'+group);await spacing('Settings '+group);}
+ await evaluate('ShoreQA.scene("settings")');await action('settings.group.privacy');
+ check('Disconnected DNS dashboard makes no protection claim',await evaluate('!!document.querySelector(".dns-empty")&&document.querySelector(".dns-empty").textContent.indexOf("Not connected")>=0&&!document.querySelector(".dns-cards")'));
+ await key(27);check('DNS Back restores Settings directly',await evaluate('ShoreQA.where().view==="settings"'));
+ await key(27);check('Settings Back restores Home',await evaluate('ShoreQA.where().view==="home"'));
  await evaluate('ShoreQA.scene("editor")');await spacing('App editor');
  for(const layout of ['dock','list'])for(const controls of ['icons','both','text'])for(const apps of ['icons','both','text']){await evaluate('ShoreQA.scene("home");ShoreQA.look('+JSON.stringify({layout,controls,apps})+')');await until(()=>evaluate('ShoreQA.ready()'),'appearance');await spacing(layout+' '+controls+' '+apps);}
  await evaluate('ShoreQA.scene("home");ShoreQA.look({layout:"list"})');await until(()=>evaluate('ShoreQA.ready()'),'list');await spacing('List Home');

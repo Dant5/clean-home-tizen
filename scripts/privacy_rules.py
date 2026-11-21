@@ -14,6 +14,7 @@ MATERIAL = re.compile(r'-----BEGIN (?:RSA |EC |OPENSSH |ENCRYPTED )?(?:PRIVATE K
 TOKEN = re.compile(r'gh[pousr]_[A-Za-z0-9]{25,}|github_pat_[A-Za-z0-9_]{25,}|AKIA[A-Z0-9]{16}')
 PERSONAL_STATUS = re.compile(r'(?i)account\s+(?:payment|billing)|billing/spending[- ]limit|recent\s+account\s+payments')
 ASSIGNED_ID = re.compile(r'''(?ix)["'](?:duid|serial_number|serialNumber|access_token|refresh_token|tv_token)["']\s*[:=]\s*["']([^"']+)["']''')
+PUBLIC_DNS_FIXTURES = {'8.8.8.8', '9.9.9.9', '149.112.112.112'}
 DOCUMENTATION = tuple(ipaddress.ip_network(n) for n in ('192.0.2.0/24', '198.51.100.0/24', '203.0.113.0/24', '2001:db8::/32'))
 
 
@@ -32,9 +33,12 @@ def content_findings(name, text, *, device_config=False):
     for address in addresses(text):
         # Local preview/fake socket tests need loopback. Reserved documentation
         # addresses and a public DNS rejection fixture are allowed only in tests.
-        permitted = address.is_loopback or (test and (address.is_unspecified or any(address in n for n in DOCUMENTATION) or str(address) == '8.8.8.8'))
-        if name == 'scripts/privacy_rules.py' and (any(address == n.network_address for n in DOCUMENTATION) or str(address) == '8.8.8.8'):
+        permitted = address.is_loopback or (test and (address.is_unspecified or any(address in n for n in DOCUMENTATION) or str(address) in PUBLIC_DNS_FIXTURES))
+        if name == 'scripts/privacy_rules.py' and (any(address == n.network_address for n in DOCUMENTATION) or str(address) in PUBLIC_DNS_FIXTURES):
             permitted = True  # Reviewed constants defining safe test data.
+        # Reviewed public Quad9 bootstrap resolvers, not an owner's LAN identity.
+        if name == 'tools/dns-protection/prepare.py' and str(address) in {'9.9.9.9', '149.112.112.112'}:
+            permitted = True
         if device_config or not permitted:
             findings.add('literal network address')
     if MAC.search(text):

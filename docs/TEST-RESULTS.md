@@ -1,3 +1,54 @@
+# Direct Privacy dashboard — reference Q60B, 21 November 2026
+
+Settings → Privacy now opens DNS Protection directly, with no intermediate menu. Back returns to Settings with Privacy selected. Installed source `e43e029` passed the actual-TV navigation and trusted native Home-key checks; all 156 retained files, preferences, bindings and native Home/startup readbacks were verified. Normal launch was restored; its fresh physical check is pending.
+
+The full source regression suite, current/Chromium 85 packaged workflows and the same final generic widget (`e5f3118fe0261d1f2ac8bc1d2ff0da51c3c31151d230ead990b10ce2e199bcce`) passed 56 checks on each of eight pinned engines. Encrypted before/after archives were restored from the owner's recovery machine and checked. DNS/server/router policies are unchanged.
+
+# Privacy-page Home fix — reference Q60B, 21 November 2026
+
+Installed source `d7474f1` preserves the launcher identity, preferences, favourite bindings and native Home/startup readbacks. All **156 retained widget files** match the owner-signed artifact. No DNS/router/backend, soundbar, other application or system Home setting changed.
+
+On this firmware, native SmartHub re-entry into the active launcher did not deliver an `appcontrol` event. A foreground-only Samsung SmartHub key registration now returns Privacy/DNS to the existing dock. It is guarded to the exact reference model/firmware and releases on page exit, blur, suspend and pagehide. Other models retain their existing behavior; no wider hardware claim is made.
+
+The owner physically confirmed the temporary registration path. The permanent installed handler then passed a **trusted native-generated `XF86Home`** test, including Privacy, DNS refresh and an unconfirmed disable dialog; each returned to Home and released the key. This is distinct from a fresh physical-button check of the final package. Immediate native generation during first page entry was not reliable, so earliest-entry physical timing is not claimed.
+
+The full source suite, **204 Python tests**, **25 device/key adapter tests**, and current/Chromium **85.0.4182.0** packaged DNS workflows passed. The same generic widget (`d1afed6289a958fbe184164d4f1090a226376c96257590baa12be4ccac180414`) passed **56 checks each** in pinned Chromium 63, 69, 76, 85, 94, 108, 120 and 130. Browser fixtures cover pending requests, confirmation cancellation, unchanged protection/preferences and key cleanup. Encrypted before/after recovery copies were checked by actual copyback/decryption from the owner's recovery machine. The launcher was restored to normal non-debug operation.
+
+# Counter dashboard — reference Q60B deployment, 20 November 2026
+
+Owner-approved 1.4.3 update installed with **Blocked today**, **Lookups today** and **Lifetime blocked**. The widget's only runtime change is `privacy.js`; all 155 retained installed files match the signed artifact. The installer did not retain distributor signature XML; the author signature matches. Application/signing identity, favourites, manual bindings, preferences and native Home/startup readbacks were preserved. The normal launcher is restored after testing.
+
+Lifetime seeds from today plus previous retained days, persists across adapter restarts and keeps separate TV/soundbar totals. No missing earlier activity is invented; unverified history is explained in detail text without mathematical prefixes. A reference-TV backfill matched the retained daily-history totals without double counting. The existing adapter collects every five minutes while the page is closed. A fixed export in the existing host monitor supplies only sanitised TV port-53 packet snapshots; missing/stale data is unknown. No administrator key access is granted to the adapter, and packet counts never inflate lookup totals. No new service or system timer was installed.
+
+Validation: full current-browser regression suite passed before commissioning; final Python suite **204 passed**. Actual TV DOM showed the three new cards and real router counters; this is renderer/readback evidence, not a camera or fresh physical-remote check. Actual immediate pause/resume readbacks passed at approximately **336/307 ms** after fixing the existing two-second resume race; duplicate-write limits remain. Filtering is enabled. Existing host-monitor export, counter-health failure/recovery, service permissions and persisted-counter restart passed. The owner-reported full streaming/audio/SmartThings/wake checks from the separate network trial retain their earlier scope.
+
+Before/after encrypted backups were actually checksummed and restored from the owner's recovery machine. All 41 installed-state hashes matched; a functional isolated lifetime-counter restore preserved its start date and totals with read-only resolver data. The complete new state root is enrolled in the existing encrypted backup system. No router saved field, DNS routing, soundbar policy, native Home, firmware or other application was changed during this update. Encrypted DNS and resolver-outage fallback remain unverified.
+
+Current and Chromium **85.0.4182.0** DNS workflows passed, including compact K/M/B formatting, rounding boundaries and plain-number rendering for partial history. The same final generic integration artifact (`72834b244cbea9a8c2445a7c65eb8ef11241649a78bf4e85cbc8ce66be725764`) passed **56 checks each** in Chromium 63, 69, 76, 85, 94, 108, 120 and 130. These are browser/mock-platform results; they are separate from installed TV evidence. Source/private-data and reachable-history secret scans passed. No merge or public release is implied by this private commissioning.
+
+# Earlier DNS companion validation checkpoint
+
+AdGuard Home v0.107.80 and a limited server-side adapter provide combined and separate TV/soundbar statistics. The independently implemented Veil-inspired panel lives in the existing Clean Home widget. No TV app update or live DNS routing was performed by these tests; the installed 1.3.9 and native Home assignment remain unchanged.
+
+| Validation | Result and scope |
+|---|---|
+| Python suite | **166 passed**, including exact-client attribution, calendar boundaries, partial logs, scope drift, authentication, command limits, profile permissions and private-artifact release rejection |
+| Full source regression suites | Passed in current Chromium 156 and Chromium 85, including remote navigation, unavailable states, cancellation, no Home polling and preservation of existing launcher behavior |
+| Actual unsigned widget | Passed current/85 checks; SHA-256 `cb6a29b0fb0162df89061cad3736afce24830bdb4f84a30a63f973264ffb708e` |
+| Packaged engine matrix | **47 checks each** in Chromium 63, 69, 76, 85, 94, 108, 120 and 130, on the same artifact |
+| Real resolver integration | **26 checks passed** using isolated loopback clients: UDP/TCP filtering, useful-host resolution, denied third client, separate/summed statistics, pause/readback and automatic expiry |
+| Real browser → adapter → resolver | Passed file-origin XHR/CORS, actual controlled counters and pause/enable in current Chromium and Chromium 85; no mocked resolver responses |
+| Cold-copy recovery | Single- and dual-client rehearsals restored **10 hash-verified files** each, authenticated API, saved statistics, blocking and normal DNS on isolated alternate ports |
+| Dashboard navigation cost | Chromium 85 focus navigation retained the statistics DOM: zero body replacements across 40 key events; local p95 approximately 1 ms. This is a browser measurement, not a TV latency claim |
+
+The image in the DNS guide is visibly labelled **browser preview / test data**. Loopback integration used controlled DNS queries, not owner-device traffic. Actual Q60B/Q930D DNS adoption, secondary/hardcoded/encrypted bypass, streaming, SmartThings, eARC/Q-Symphony and physical remote behavior remain commissioning checks. A configured filter or a successful API response does not establish complete device coverage. Hosted CI validates the committed head separately; the new resolver job adds real integration and restore checks without a Dell background job.
+
+A zero-blocked day now renders no positive bar; current/85 regression checks cover this explicitly. The earlier companion widget `5461856afb145bda753a61c384a60ac990b742387a954b92aa9ff38a618426fa` passed its recorded suites before this chart correction.
+
+Owner-local recovery controls additionally pass fixed-action/no-listener and sanitised-failure tests. The development network trial observed independently attributed TV and soundbar requests and actual TV blocks; Dell/another household client retained their existing DNS and were denied by the dedicated resolver. The TV still exposes a secondary resolver, so complete DNS coverage is **not** claimed. Physical streaming/audio and the updated TV dashboard remain unverified.
+
+Earlier successful results below retain their original scope.
+
 # 1.4.3 — cross-model setup diagnostics
 
 Check TV now runs settings-read-only compatibility checks before applying the Home-write profile guard. An unlisted Samsung model can review, save and explicitly send its result. Independent native getters continue after missing-library, missing-symbol or access failures; dependent checks are marked skipped. Only the inspection assembly is staged in diagnostic mode, and root execution is refused. Home writes and original-value queries retain their exact model/firmware/UID guards.
@@ -90,3 +141,8 @@ Documentation and privacy-check changes leave the unsigned widget byte-identical
 ## Build dependency audit
 
 The build requirements are pinned to cryptography 50.0.2, pytest 9.2.0, lxml 6.1.3 and Pillow 13.0.0. The updated environment passes all 63 Python tests. npm audit and pip-audit report no known vulnerabilities in the audited dependencies. These tools are not shipped in the TV widget.
+
+
+## AdGuard native-session regression
+
+The reference deployment exposed repeated Basic authentication as a dashboard-control bottleneck: individual reads measured approximately 0.5–3.9 seconds. The standard-library cookie client reuses AdGuard’s native, memory-only session. Against the actual pinned API, a warm full snapshot measured 0.061 seconds and pause/resume setters measured 0.016/0.024 seconds in that sample; these are backend timings, not TV remote latency guarantees. Fresh device-scope/readback checks remain enabled. Eight new real-HTTP cases cover session reuse, expiry, failed login, redirects, missing cookies, concurrent first reads, response bounds and refusal to replay a setter. The full Python suite passes **174 tests**. No administrator session reaches the TV.

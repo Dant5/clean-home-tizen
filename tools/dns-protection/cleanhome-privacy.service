@@ -1,0 +1,33 @@
+# Prepared template. Installing/enabling this unit is a separate commissioning step.
+[Unit]
+Description=Clean Home TV-only privacy statistics adapter
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=cleanhome-privacy
+Group=cleanhome-privacy
+ExecStart=/usr/bin/python3 -B /opt/cleanhome-privacy/bridge.py --config /etc/cleanhome-privacy/bridge.json
+Restart=on-failure
+RestartSec=10
+TimeoutStopSec=10
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+RestrictAddressFamilies=AF_INET AF_UNIX
+CapabilityBoundingSet=
+LockPersonality=true
+MemoryDenyWriteExecute=true
+UMask=0077
+MemoryMax=96M
+TasksMax=16
+
+[Install]
+WantedBy=multi-user.target

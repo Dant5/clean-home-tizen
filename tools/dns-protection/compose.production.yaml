@@ -1,0 +1,4 @@
+# Apply only after backup/monitoring enrollment and owner approval of deployment.
+services:
+  resolver:
+    restart: unless-stopped

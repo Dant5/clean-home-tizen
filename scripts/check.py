@@ -16,6 +16,16 @@ assert '<meta name="clean-home-version" content="' + manifest.get('version') + '
 assert manifest.find('t:setting', ns).get('background-support') == 'disable'
 assert manifest.find("t:metadata[@key='http://samsung.com/tv/metadata/multitasking.support']", ns).get('value') == 'true'
 assert not manifest.findall('t:background-category', ns)
+# Q60B's physical Home sends default (entry_point=smarthub_key), not main.
+# All supported relaunch paths must dispatch appcontrol to the loaded page.
+for operation in ['http://samsung.com/appcontrol/operation/eden_resume',
+                  'http://tizen.org/appcontrol/operation/main',
+                  'http://tizen.org/appcontrol/operation/default']:
+    controls = [node for node in manifest.findall('t:app-control', ns)
+                if node.find('t:operation', ns).get('name') == operation]
+    assert len(controls) == 1, operation
+    assert controls[0].find('t:src', ns).attrib == {'name': 'index.html', 'reload': 'disable'}
+
 privileges = {e.get('name') for e in manifest.findall('t:privilege', ns)}
 assert privileges == {'http://tizen.org/privilege/' + x for x in ['application.launch', 'application.info', 'tv.inputdevice', 'tv.window', 'system', 'fullscreen', 'internet']} | {'http://developer.samsung.com/privilege/productinfo'}
 for node in manifest.findall('w:access', ns):
