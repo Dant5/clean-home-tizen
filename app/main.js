@@ -1285,7 +1285,7 @@
     else stage.style.removeProperty('--clock-ink');
     if (!adaptive && shown.dockClockInk) stage.style.setProperty('--dock-clock-ink', shown.dockClockInk);
     else stage.style.removeProperty('--dock-clock-ink');
-    FramePrivacyHomeKey.setEnabled(t.id === 'privacy' || t.id === 'dns');
+    FramePrivacyHomeKey.setEnabled(t.id === 'dns');
     applyHomeFont();
     if (!sheet || t.id === 'dns') renderHome(t);
     renderSheet(t, sheet);

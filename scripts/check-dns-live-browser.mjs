@@ -14,7 +14,7 @@ try{
  await page.route('https://**/*',r=>r.abort());
  await page.goto(pathToFileURL(root+'app/index.html').href);
  await page.waitForFunction(()=>typeof ShoreQA!=='undefined'&&ShoreQA.ready());
- await page.evaluate(c=>{CleanHomeConfig.dnsProtection=c;ShoreQA.scene('settings');ShoreQA.activate('settings.group.privacy');ShoreQA.activate('dns.open');},profile);
+ await page.evaluate(c=>{CleanHomeConfig.dnsProtection=c;ShoreQA.scene('settings');ShoreQA.activate('settings.group.privacy');},profile);
  await page.waitForFunction(()=>document.body.textContent.includes('DNS filtering enabled'));
  assert.match(await page.locator('.dns-scroll').innerText(),/TV: DNS received[\s\S]*Soundbar: DNS received/);
  assert.equal(await page.locator('.dns-cards strong').nth(1).innerText(),'4');

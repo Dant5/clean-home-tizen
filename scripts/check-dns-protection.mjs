@@ -46,11 +46,17 @@ try{
  });
  await page.goto(preview.baseURL);await page.waitForFunction(()=>ShoreQA.ready());
  // An ordinary public installation makes no request and claims no protection.
- await page.evaluate(()=>{ShoreQA.scene('settings');ShoreQA.activate('settings.group.privacy');ShoreQA.activate('dns.open');});
+ await page.evaluate(()=>{ShoreQA.scene('settings');ShoreQA.activate('settings.group.privacy');});
  await page.waitForFunction(()=>document.body.textContent.includes('Not connected'));
  assert.equal(gets,0);
- await page.keyboard.press('Escape');await page.keyboard.press('Escape');
- await page.evaluate(()=>{CleanHomeConfig.dnsProtection={endpoint:'http://127.0.0.1:18768',token:'x'.repeat(40)};ShoreQA.activate('settings.group.privacy');ShoreQA.activate('dns.open');});
+ assert.equal(await page.evaluate(()=>ShoreQA.where().view),'dns','Privacy opens the dashboard directly');
+ assert(!await page.evaluate(()=>ShoreQA.actions().includes('dns.open')),'No intermediate Privacy menu');
+ await page.keyboard.press('Escape');
+ assert.equal(await page.evaluate(()=>ShoreQA.where().view),'settings','Dashboard Back returns straight to Settings');
+ assert.equal(await page.evaluate(()=>ShoreQA.state().focusAction),'settings.group.privacy','Back restores Privacy focus');
+ await page.evaluate(()=>{ShoreQA.activate('settings.group.privacy');ShoreQA.activate('dns.back');});
+ assert.equal(await page.evaluate(()=>ShoreQA.where().view),'settings','Dashboard Back button returns straight to Settings');
+ await page.evaluate(()=>{CleanHomeConfig.dnsProtection={endpoint:'http://127.0.0.1:18768',token:'x'.repeat(40)};ShoreQA.activate('settings.group.privacy');});
  await page.waitForFunction(()=>document.body.textContent.includes('DNS filtering enabled'));
  assert.match(await page.locator('.dns-cards').innerText(),/30[\s\S]*120[\s\S]*Lifetime blocked/);
  await page.waitForFunction(()=>document.querySelector('.dns-enforcement').textContent.includes('7 UDP'));
@@ -137,15 +143,15 @@ try{
  assert(!await page.evaluate(()=>ShoreQA.actions().includes('dns.disable')));
  unavailable=false;delay=300;
  await page.evaluate(()=>{ShoreQA.activate('dns.refresh');ShoreQA.nav('back');});
- await page.waitForTimeout(400);assert.equal(await page.evaluate(()=>ShoreQA.where().view),'privacy');
- await page.keyboard.press('Escape');await page.keyboard.press('Escape');const before=gets;
+ await page.waitForTimeout(400);assert.equal(await page.evaluate(()=>ShoreQA.where().view),'settings');
+ await page.keyboard.press('Escape');const before=gets;
  await page.waitForTimeout(1100);assert.equal(gets,before,'No polling or DNS stats on Home');
  // A native Home relaunch must dismiss DNS, including a pending request,
  // without changing protection or saved launcher preferences.
  for(const confirming of [false,true]){
   delay=300;
   const saved=await page.evaluate(()=>localStorage.getItem('cleanhome.home.v1'));
-  await page.evaluate(()=>{ShoreQA.scene('settings');ShoreQA.activate('settings.group.privacy');ShoreQA.activate('dns.open');});
+  await page.evaluate(()=>{ShoreQA.scene('settings');ShoreQA.activate('settings.group.privacy');});
   if(confirming){
    await page.waitForFunction(()=>document.body.textContent.includes('DNS filtering enabled'));
    await page.evaluate(()=>ShoreQA.activate('dns.disable'));
@@ -166,7 +172,7 @@ try{
  for(const confirming of [false,true]){
   delay=300;const previousWrites=writes.slice();
   const saved=await page.evaluate(()=>localStorage.getItem('cleanhome.home.v1'));
-  await page.evaluate(()=>{ShoreQA.scene('settings');ShoreQA.activate('settings.group.privacy');ShoreQA.activate('dns.open');});
+  await page.evaluate(()=>{ShoreQA.scene('settings');ShoreQA.activate('settings.group.privacy');});
   assert(await page.evaluate(()=>window.__privacyHomeRegistered));
   if(confirming){
    await page.waitForFunction(()=>document.body.textContent.includes('DNS filtering enabled'));
