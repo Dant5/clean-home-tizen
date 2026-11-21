@@ -34,6 +34,12 @@ try{
   return route.fulfill({status:unavailable?503:200,json:unavailable?{}:data,headers});
  });
  await page.addInitScript(()=>{
+  window.__privacyKeyOps=[];window.__privacyHomeRegistered=false;
+  window.webapis={productinfo:{getRealModel:function(){return 'QA55Q60BAWXXY';},getFirmware:function(){return 'T-NKLBUABC-1720.7';}},appcommon:{
+   getSpecialSupportedKeys:function(){return [{name:'SmartHub',code:10071}];},
+   registerKey:function(keys){window.__privacyKeyOps.push('register');window.__privacyHomeRegistered=true;},
+   unregisterKey:function(keys){window.__privacyKeyOps.push('unregister');window.__privacyHomeRegistered=false;}
+  }};
   localStorage.setItem('cleanhome.home.v1',JSON.stringify({dailyBing:false}));
   window.__dnsBodies=[];
   var send=XMLHttpRequest.prototype.send;XMLHttpRequest.prototype.send=function(body){if(typeof body==='string'&&body.indexOf('"action"')>=0)window.__dnsBodies.push(JSON.parse(body));return send.apply(this,arguments);};
@@ -154,6 +160,33 @@ try{
   assert.equal(await page.evaluate(()=>localStorage.getItem('cleanhome.home.v1')),saved);
   assert.deepEqual(writes,previousWrites,'Home never confirms a pending protection change');
   const settled=gets;await page.waitForTimeout(1100);assert.equal(gets,settled,'Home stops dashboard refresh');
+ }
+ // The reference TV suppresses appcontrol for physical SmartHub re-entry.
+ // Its scoped key path must also dismiss pending requests/confirmations.
+ for(const confirming of [false,true]){
+  delay=300;const previousWrites=writes.slice();
+  const saved=await page.evaluate(()=>localStorage.getItem('cleanhome.home.v1'));
+  await page.evaluate(()=>{ShoreQA.scene('settings');ShoreQA.activate('settings.group.privacy');ShoreQA.activate('dns.open');});
+  assert(await page.evaluate(()=>window.__privacyHomeRegistered));
+  if(confirming){
+   await page.waitForFunction(()=>document.body.textContent.includes('DNS filtering enabled'));
+   await page.evaluate(()=>ShoreQA.activate('dns.disable'));
+   assert(await page.evaluate(()=>ShoreQA.actions().includes('dns.confirm')));
+  }
+  await page.evaluate(()=>{
+   window.dispatchEvent(new Event('blur'));
+   if(window.__privacyHomeRegistered)throw Error('Home key retained on blur');
+   window.dispatchEvent(new Event('focus'));
+   if(!window.__privacyHomeRegistered)throw Error('Home key not restored on focus');
+   var event=new Event('keydown',{bubbles:true,cancelable:true});Object.defineProperty(event,'keyCode',{value:10071});document.dispatchEvent(event);
+  });
+  assert.equal(await page.evaluate(()=>ShoreQA.where().view),'home');
+  assert.equal(await page.evaluate(()=>window.__privacyHomeRegistered),false,'Home key released on dock');
+  assert.equal(await page.locator('.dns-overlay:visible').count(),0);
+  await page.waitForTimeout(450);
+  assert.equal(await page.evaluate(()=>ShoreQA.where().view),'home');
+  assert.equal(await page.evaluate(()=>localStorage.getItem('cleanhome.home.v1')),saved);
+  assert.deepEqual(writes,previousWrites);
  }
  assert.deepEqual(errors,[]);
  writeFileSync(root+'.local/qa/dns-browser'+(process.env.CLEANHOME_CHROMIUM?'-85':'')+'.json',JSON.stringify({engine:await preview.browser.version(),scope:'Browser fixtures, not TV traffic',errors,passed:true},null,2)+'\n');
