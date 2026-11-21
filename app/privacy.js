@@ -77,19 +77,6 @@
       if (id === 'confirm') { t.confirm = false; t.f.i = 0; fetch(t, 'disable'); return; }
       fetch(t, id === 'refresh' ? null : id);
     }
-    V.privacy = {
-      sheet: true, norm: function (t) { t.f.i = Math.min(1, Math.max(0, t.f.i || 0)); },
-      key: function (t, k) {
-        if (k === 'back') ctx.pop();
-        else if (k === 'up' || k === 'left') t.f.i = 0;
-        else if (k === 'down' || k === 'right') t.f.i = 1;
-        else if (k === 'ok') {
-          if (t.f.i) ctx.pop();
-          else { var next = { id: 'dns', f: { i: 0 }, data: null }; ctx.push(next); fetch(next); }
-        }
-      },
-      point: function (t, z, i) { t.f.i = i; this.key(t, 'ok'); }
-    };
     V.dns = {
       sheet: true, norm: function (t) { t.f.i = Math.min(actions(t).length - 1, Math.max(0, t.f.i || 0)); },
       key: function (t, k) {
@@ -101,11 +88,9 @@
       },
       point: function (t, z, i) { t.f.i = i; this.key(t, 'ok'); }
     };
-    frames.privacy = function () { return '<div class="dns-page"><p class="dns-breadcrumb">Settings</p><h2>Privacy</h2><p class="dns-lead">Protection for your TV and soundbar, with your data kept at home.</p><div data-slot="body"></div></div>'; };
-    fills.privacy = function (t, el) { el.body.innerHTML = '<div class="dns-menu">' + button(t, 'DNS Protection', 'open', 0) + button(t, 'Back', 'back', 1) + '</div><p class="dns-note">DNS filtering can block known ad and tracking domains for your TV and soundbar. It cannot remove every ad or replace Samsung\u2019s privacy settings.</p>'; };
     function shield() { return '<svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M14 3 24 7v7c0 5-5 9-10 11C9 23 4 19 4 14V7Z"/><path d="m9 14 3 3 7-7"/></svg>'; }
     frames.dns = function () {
-      return '<div class="dns-overlay"><p class="dns-location">Settings / Privacy / DNS Protection</p><div class="dns-pill" data-slot="pill"></div>'
+      return '<div class="dns-overlay"><p class="dns-location">Settings / Privacy</p><div class="dns-pill" data-slot="pill"></div>'
         + '<section class="dns-panel" aria-labelledby="dnsTitle"><h2 id="dnsTitle" class="dns-sr">DNS Protection</h2><div class="dns-scroll" data-slot="body" aria-live="polite"></div>'
         + '<div class="dns-footer"><div class="dns-toolbar" data-slot="actions"></div><p class="dns-hint">Left/Right: all-device controls · Up/Down: details · Back</p></div></section></div>';
     };
@@ -168,7 +153,7 @@
     });
     window.addEventListener('blur', function () { stop(); var t = ctx.top(); if (t.id === 'dns') t.busy = false; });
     window.addEventListener('focus', function () { var t = ctx.top(); if (t.id === 'dns' && !document.hidden) fetch(t); });
-    return { open: function () { ctx.push({ id: 'privacy', f: { i: 0 } }); } };
+    return { open: function () { var next = { id: 'dns', f: { i: 0 }, data: null }; ctx.push(next); fetch(next); } };
   }
   window.FramePrivacy = { install: install };
 })();

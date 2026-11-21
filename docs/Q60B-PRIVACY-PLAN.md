@@ -16,7 +16,7 @@ Owner inventories, consent states, network addresses, signed packages, profiles 
 
 ## Current implementation
 
-The owner selected server-side DNS protection for only the Q60B and Q930D with **Settings → Privacy → DNS Protection**. [Implementation, deployment approval boundary and recovery](DNS-PROTECTION.md). It uses AdGuard Home and a limited local statistics/control adapter; the launcher never gets administrator credentials. No TV install, DHCP/DNS change, root or package/service modification is part of local testing.
+The owner selected server-side DNS protection for only the Q60B and Q930D with **Settings → Privacy**. [Implementation, deployment approval boundary and recovery](DNS-PROTECTION.md). It uses AdGuard Home and a limited local statistics/control adapter; the launcher never gets administrator credentials. No TV install, DHCP/DNS change, root or package/service modification is part of local testing.
 
 ## Deferred Samsung consent controls
 
